@@ -35,3 +35,8 @@ export const selectUserId = createSelector(
     selectCurrentUser,
     (user) => user?.id || ''
 );
+
+export const selectUserRole = createSelector(
+    selectCurrentUser,
+    (user) => user?.role?.name || ''
+);
