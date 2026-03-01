@@ -1,0 +1,236 @@
+/* ===== Error 401 — Unauthorized ===== */
+
+:host {
+    display: block;
+    width: 100%;
+    height: 100vh;
+}
+
+/* ---------- Page ---------- */
+.error-page {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: linear-gradient(160deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+    padding: 2rem;
+}
+
+/* ---------- Floating Particles ---------- */
+.particle {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(239, 68, 68, 0.15);
+    pointer-events: none;
+    animation: float 12s ease-in-out infinite;
+}
+
+.particle-1 {
+    width: 200px;
+    height: 200px;
+    top: -60px;
+    left: -40px;
+    animation-delay: 0s;
+}
+
+.particle-2 {
+    width: 120px;
+    height: 120px;
+    bottom: 10%;
+    right: 5%;
+    background: rgba(249, 115, 22, 0.12);
+    animation-delay: -3s;
+    animation-duration: 15s;
+}
+
+.particle-3 {
+    width: 80px;
+    height: 80px;
+    top: 30%;
+    right: 15%;
+    background: rgba(236, 72, 153, 0.1);
+    animation-delay: -6s;
+    animation-duration: 18s;
+}
+
+.particle-4 {
+    width: 150px;
+    height: 150px;
+    bottom: -40px;
+    left: 20%;
+    background: rgba(239, 68, 68, 0.08);
+    animation-delay: -2s;
+    animation-duration: 20s;
+}
+
+.particle-5 {
+    width: 60px;
+    height: 60px;
+    top: 15%;
+    left: 40%;
+    background: rgba(249, 115, 22, 0.1);
+    animation-delay: -8s;
+    animation-duration: 14s;
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0) translateX(0) scale(1);
+    }
+
+    25% {
+        transform: translateY(-30px) translateX(15px) scale(1.05);
+    }
+
+    50% {
+        transform: translateY(10px) translateX(-20px) scale(0.95);
+    }
+
+    75% {
+        transform: translateY(-15px) translateX(10px) scale(1.02);
+    }
+}
+
+/* ---------- Content ---------- */
+.error-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: 460px;
+}
+
+/* ---------- Icon ---------- */
+.error-icon {
+    width: 100px;
+    height: 100px;
+    color: #ef4444;
+    margin-bottom: 1.5rem;
+    animation: pulse-glow 3s ease-in-out infinite;
+}
+
+.error-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+@keyframes pulse-glow {
+
+    0%,
+    100% {
+        filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.3));
+    }
+
+    50% {
+        filter: drop-shadow(0 0 24px rgba(239, 68, 68, 0.6));
+    }
+}
+
+/* ---------- Error Code ---------- */
+.error-code {
+    font-size: 8rem;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    background: linear-gradient(135deg, #f97316 0%, #ef4444 50%, #ec4899 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin: 0 0 0.5rem;
+    animation: code-glow 4s ease-in-out infinite;
+}
+
+@keyframes code-glow {
+
+    0%,
+    100% {
+        filter: drop-shadow(0 0 12px rgba(239, 68, 68, 0.25));
+    }
+
+    50% {
+        filter: drop-shadow(0 0 28px rgba(239, 68, 68, 0.5));
+    }
+}
+
+/* ---------- Text ---------- */
+.error-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #f1f5f9;
+    margin: 0 0 0.75rem;
+}
+
+.error-message {
+    font-size: 1rem;
+    color: #94a3b8;
+    line-height: 1.7;
+    margin: 0 0 2.5rem;
+}
+
+/* ---------- CTA Button ---------- */
+.error-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.875rem 2.25rem;
+    border: none;
+    border-radius: 9999px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #ffffff;
+    background: linear-gradient(135deg, #f97316 0%, #ef4444 50%, #ec4899 100%);
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 0.25s, box-shadow 0.25s;
+    box-shadow: 0 4px 20px rgba(239, 68, 68, 0.35);
+}
+
+.error-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(239, 68, 68, 0.5);
+}
+
+.error-cta:active {
+    transform: translateY(0);
+}
+
+.cta-icon {
+    width: 20px;
+    height: 20px;
+}
+
+/* ---------- Footer ---------- */
+.error-footer {
+    position: absolute;
+    bottom: 2rem;
+    font-size: 0.75rem;
+    color: #475569;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 640px) {
+    .error-code {
+        font-size: 5rem;
+    }
+
+    .error-title {
+        font-size: 1.375rem;
+    }
+
+    .error-message {
+        font-size: 0.9375rem;
+    }
+
+    .error-icon {
+        width: 72px;
+        height: 72px;
+    }
+}
