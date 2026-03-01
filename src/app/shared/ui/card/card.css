@@ -1,0 +1,48 @@
+/* ===== Card Base ===== */
+.ui-card {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+/* ===== Hoverable ===== */
+.ui-card-hoverable {
+    cursor: pointer;
+}
+
+.ui-card-hoverable:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+/* ===== Image ===== */
+.ui-card-image {
+    width: 100%;
+    overflow: hidden;
+}
+
+.ui-card-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+}
+
+/* ===== Body ===== */
+.ui-card-body {
+    padding: 20px;
+}
+
+/* ===== Footer ===== */
+.ui-card-footer:empty {
+    display: none;
+}
+
+.ui-card-footer {
+    padding: 12px 20px;
+    border-top: 1px solid var(--color-border);
+    background: var(--color-bg-subtle);
+}

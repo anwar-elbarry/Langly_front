@@ -1,0 +1,48 @@
+.ui-select-wrapper {
+    position: relative;
+    display: inline-flex;
+    width: 100%;
+}
+
+.ui-select {
+    width: 100%;
+    padding: 8px 32px 8px 12px;
+    font-size: 14px;
+    font-family: var(--font-sans);
+    color: var(--color-text);
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    outline: none;
+    appearance: none;
+    cursor: pointer;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.ui-select:focus {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px var(--color-accent-light);
+}
+
+.ui-select:disabled {
+    background: var(--color-bg-subtle);
+    color: var(--color-text-muted);
+    cursor: not-allowed;
+}
+
+.ui-select-error .ui-select {
+    border-color: var(--color-danger);
+}
+
+.ui-select-error .ui-select:focus {
+    box-shadow: 0 0 0 3px var(--color-danger-light);
+}
+
+.ui-select-chevron {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-text-muted);
+    pointer-events: none;
+}
