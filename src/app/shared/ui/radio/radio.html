@@ -1,0 +1,7 @@
+<label class="ui-radio" [class.ui-radio-disabled]="disabled">
+    <input type="radio" [name]="name" [value]="value" [checked]="checked" [disabled]="disabled" (change)="onSelect()" />
+    <span class="ui-radio-circle"></span>
+    @if (label) {
+    <span class="ui-radio-label">{{ label }}</span>
+    }
+</label>

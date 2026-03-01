@@ -44,6 +44,10 @@ export const routes: Routes = [
     loadComponent: () => import('./core/pages/error-500/error-500').then(m => m.Error500)
   },
   {
+    path: 'test',
+    loadComponent: () => import('./core/pages/ui-test/ui-test').then(m => m.UiTestComponent)
+  },
+  {
     path: '**',
     redirectTo: 'error/404'
   }

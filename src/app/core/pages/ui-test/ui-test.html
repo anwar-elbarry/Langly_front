@@ -1,0 +1,241 @@
+<div class="test-page">
+    <h1 class="test-title">UI Component Library</h1>
+    <p class="test-subtitle">Notion / Linear-inspired design system</p>
+
+    <!-- ============ BUTTONS ============ -->
+    <section class="test-section">
+        <h2 class="section-title">Buttons</h2>
+
+        <div class="test-group">
+            <h3 class="group-label">Variants</h3>
+            <div class="test-row">
+                <app-button variant="primary">Primary</app-button>
+                <app-button variant="secondary">Secondary</app-button>
+                <app-button variant="outline">Outline</app-button>
+                <app-button variant="ghost">Ghost</app-button>
+                <app-button variant="danger">Danger</app-button>
+                <app-button variant="success">Success</app-button>
+                <app-button variant="link">Link</app-button>
+            </div>
+        </div>
+
+        <div class="test-group">
+            <h3 class="group-label">Sizes</h3>
+            <div class="test-row align-center">
+                <app-button size="sm">Small</app-button>
+                <app-button size="md">Medium</app-button>
+                <app-button size="lg">Large</app-button>
+            </div>
+        </div>
+
+        <div class="test-group">
+            <h3 class="group-label">States</h3>
+            <div class="test-row">
+                <app-button [disabled]="true">Disabled</app-button>
+                <app-button [loading]="true">Loading</app-button>
+                <app-button [fullWidth]="true">Full Width</app-button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ FORM FIELDS ============ -->
+    <section class="test-section">
+        <h2 class="section-title">Form Fields</h2>
+
+        <div class="test-grid-2">
+            <app-form-field label="First Name" [required]="true" hint="Enter your first name">
+                <app-input placeholder="e.g. John" />
+            </app-form-field>
+
+            <app-form-field label="Email" [required]="true" error="Please enter a valid email">
+                <app-input type="email" placeholder="john@example.com" [error]="true" />
+            </app-form-field>
+
+            <app-form-field label="Country">
+                <app-select>
+                    <option value="" disabled selected>Select a country</option>
+                    <option value="us">United States</option>
+                    <option value="uk">United Kingdom</option>
+                    <option value="fr">France</option>
+                    <option value="ma">Morocco</option>
+                </app-select>
+            </app-form-field>
+
+            <app-form-field label="Password" hint="At least 8 characters">
+                <app-input type="password" placeholder="••••••••" />
+            </app-form-field>
+        </div>
+
+        <div class="test-group">
+            <app-form-field label="Bio" hint="Tell us about yourself">
+                <app-textarea placeholder="Write something..." [rows]="3" />
+            </app-form-field>
+        </div>
+
+        <div class="test-group">
+            <h3 class="group-label">Checkbox & Radio</h3>
+            <div class="test-row">
+                <app-checkbox label="I agree to the terms" />
+                <app-checkbox label="Subscribe to newsletter" [checked]="true" />
+                <app-checkbox label="Disabled option" [disabled]="true" />
+            </div>
+            <div class="test-row" style="margin-top: 12px;">
+                <app-radio label="Option A" name="demo" value="option1" [checked]="selectedRadio === 'option1'"
+                    (selected)="selectedRadio = $event" />
+                <app-radio label="Option B" name="demo" value="option2" [checked]="selectedRadio === 'option2'"
+                    (selected)="selectedRadio = $event" />
+                <app-radio label="Option C" name="demo" value="option3" [checked]="selectedRadio === 'option3'"
+                    (selected)="selectedRadio = $event" />
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ CARDS ============ -->
+    <section class="test-section">
+        <h2 class="section-title">Cards</h2>
+
+        <div class="test-grid-3">
+            <app-card>
+                <h3 class="card-title">Default Card</h3>
+                <p class="card-text">A simple card with body content and no extra features.</p>
+            </app-card>
+
+            <app-card [hoverable]="true">
+                <h3 class="card-title">Hoverable Card</h3>
+                <p class="card-text">Hover over this card to see the lift effect and shadow transition.</p>
+            </app-card>
+
+            <app-card [hoverable]="true">
+                <h3 class="card-title">Card with Footer</h3>
+                <p class="card-text">This card has a footer section with actions.</p>
+                <div card-footer>
+                    <app-button variant="ghost" size="sm">Cancel</app-button>
+                    <app-button variant="primary" size="sm">Save</app-button>
+                </div>
+            </app-card>
+        </div>
+    </section>
+
+    <!-- ============ ALERTS ============ -->
+    <section class="test-section">
+        <h2 class="section-title">Alerts</h2>
+
+        <div class="test-stack">
+            <app-alert type="info">
+                <strong>Info:</strong> This is an informational message to keep you updated.
+            </app-alert>
+            <app-alert type="success" [dismissible]="true">
+                <strong>Success!</strong> Your changes have been saved successfully.
+            </app-alert>
+            <app-alert type="warning" [dismissible]="true">
+                <strong>Warning:</strong> Your session will expire in 5 minutes.
+            </app-alert>
+            <app-alert type="error">
+                <strong>Error:</strong> Failed to connect to the server. Please try again.
+            </app-alert>
+        </div>
+    </section>
+
+    <!-- ============ TOASTS ============ -->
+    <section class="test-section">
+        <h2 class="section-title">Toasts</h2>
+        <p class="test-hint">Click a button to trigger a toast notification (top-right corner).</p>
+
+        <div class="test-row">
+            <app-button variant="outline" (click)="showToast('info')">Info Toast</app-button>
+            <app-button variant="success" (click)="showToast('success')">Success Toast</app-button>
+            <app-button variant="secondary" (click)="showToast('warning')">Warning Toast</app-button>
+            <app-button variant="danger" (click)="showToast('error')">Error Toast</app-button>
+        </div>
+    </section>
+
+    <!-- ============ MODAL ============ -->
+    <section class="test-section">
+        <h2 class="section-title">Modal</h2>
+
+        <app-button variant="primary" (click)="modalOpen = true">Open Modal</app-button>
+
+        <app-modal [isOpen]="modalOpen" (closed)="modalOpen = false">
+            <span modal-header>Confirm Action</span>
+            <p>Are you sure you want to proceed? This action cannot be undone.</p>
+            <div modal-footer>
+                <app-button variant="outline" size="sm" (click)="modalOpen = false">Cancel</app-button>
+                <app-button variant="primary" size="sm" (click)="modalOpen = false">Confirm</app-button>
+            </div>
+        </app-modal>
+    </section>
+
+    <!-- ============ SPINNER ============ -->
+    <section class="test-section">
+        <h2 class="section-title">Spinner</h2>
+
+        <div class="test-group">
+            <h3 class="group-label">Sizes</h3>
+            <div class="test-row align-center">
+                <app-spinner size="sm" />
+                <app-spinner size="md" />
+                <app-spinner size="lg" />
+            </div>
+        </div>
+
+        <div class="test-group">
+            <h3 class="group-label">Colors</h3>
+            <div class="test-row align-center">
+                <app-spinner color="accent" />
+                <app-spinner color="muted" />
+                <div class="spinner-dark-bg">
+                    <app-spinner color="white" />
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ TABLE ============ -->
+    <section class="test-section">
+        <h2 class="section-title">Table</h2>
+
+        <app-table [hoverable]="true">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th>Joined</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Sarah Johnson</td>
+                    <td><span class="text-muted">sarah&#64;example.com</span></td>
+                    <td>Teacher</td>
+                    <td><span class="badge badge-success">Active</span></td>
+                    <td>Jan 15, 2024</td>
+                </tr>
+                <tr>
+                    <td>Anwar El Barry</td>
+                    <td><span class="text-muted">anwar&#64;example.com</span></td>
+                    <td>Admin</td>
+                    <td><span class="badge badge-success">Active</span></td>
+                    <td>Mar 02, 2024</td>
+                </tr>
+                <tr>
+                    <td>Emma Wilson</td>
+                    <td><span class="text-muted">emma&#64;example.com</span></td>
+                    <td>Student</td>
+                    <td><span class="badge badge-warning">Pending</span></td>
+                    <td>Jun 20, 2024</td>
+                </tr>
+                <tr>
+                    <td>David Brown</td>
+                    <td><span class="text-muted">david&#64;example.com</span></td>
+                    <td>Teacher</td>
+                    <td><span class="badge badge-danger">Inactive</span></td>
+                    <td>Sep 10, 2024</td>
+                </tr>
+            </tbody>
+        </app-table>
+    </section>
+</div>
+
+<app-toast-container />

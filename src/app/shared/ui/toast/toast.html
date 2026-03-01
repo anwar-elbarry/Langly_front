@@ -1,0 +1,50 @@
+<div class="ui-toast-container">
+    @for (toast of toastService.toasts; track toast.id) {
+    <div class="ui-toast" [class.ui-toast-info]="toast.type === 'info'"
+        [class.ui-toast-success]="toast.type === 'success'" [class.ui-toast-warning]="toast.type === 'warning'"
+        [class.ui-toast-error]="toast.type === 'error'">
+
+        <div class="ui-toast-icon">
+            @switch (toast.type) {
+            @case ('info') {
+            <svg width="16" height="16" viewBox="0 0 18 18" fill="none">
+                <circle cx="9" cy="9" r="8" stroke="currentColor" stroke-width="1.5" />
+                <path d="M9 8V13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                <circle cx="9" cy="5.5" r="0.75" fill="currentColor" />
+            </svg>
+            }
+            @case ('success') {
+            <svg width="16" height="16" viewBox="0 0 18 18" fill="none">
+                <circle cx="9" cy="9" r="8" stroke="currentColor" stroke-width="1.5" />
+                <path d="M5.5 9L8 11.5L12.5 6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                    stroke-linejoin="round" />
+            </svg>
+            }
+            @case ('warning') {
+            <svg width="16" height="16" viewBox="0 0 18 18" fill="none">
+                <path d="M9 2L16.5 15.5H1.5L9 2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+                <path d="M9 7V10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                <circle cx="9" cy="13" r="0.75" fill="currentColor" />
+            </svg>
+            }
+            @case ('error') {
+            <svg width="16" height="16" viewBox="0 0 18 18" fill="none">
+                <circle cx="9" cy="9" r="8" stroke="currentColor" stroke-width="1.5" />
+                <path d="M6.5 6.5L11.5 11.5M11.5 6.5L6.5 11.5" stroke="currentColor" stroke-width="1.5"
+                    stroke-linecap="round" />
+            </svg>
+            }
+            }
+        </div>
+
+        <span class="ui-toast-message">{{ toast.message }}</span>
+
+        <button class="ui-toast-close" (click)="toastService.remove(toast.id)" aria-label="Dismiss">
+            <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+                <path d="M3.5 3.5L10.5 10.5M10.5 3.5L3.5 10.5" stroke="currentColor" stroke-width="1.5"
+                    stroke-linecap="round" />
+            </svg>
+        </button>
+    </div>
+    }
+</div>

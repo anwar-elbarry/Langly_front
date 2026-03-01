@@ -1,0 +1,111 @@
+/* ===== Table Wrapper ===== */
+.ui-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+}
+
+/* ===== Table Base ===== */
+.ui-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    font-family: var(--font-sans);
+    color: var(--color-text);
+}
+
+/* ===== Head ===== */
+:host ::ng-deep thead {
+    background: var(--color-bg-subtle);
+}
+
+:host ::ng-deep thead th {
+    padding: 12px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    text-align: left;
+    white-space: nowrap;
+    border-bottom: 1px solid var(--color-border);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+/* ===== Body ===== */
+:host ::ng-deep tbody tr {
+    border-bottom: 1px solid var(--color-border);
+    transition: background 0.15s ease;
+}
+
+:host ::ng-deep tbody tr:last-child {
+    border-bottom: none;
+}
+
+:host ::ng-deep tbody td {
+    padding: 12px 16px;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+/* ===== Hoverable ===== */
+.ui-table-hoverable :host ::ng-deep tbody tr:hover,
+:host .ui-table-hoverable ::ng-deep tbody tr:hover {
+    background: var(--color-bg-subtle);
+}
+
+/* ===== Striped ===== */
+.ui-table-striped :host ::ng-deep tbody tr:nth-child(even),
+:host .ui-table-striped ::ng-deep tbody tr:nth-child(even) {
+    background: var(--color-bg-subtle);
+}
+
+/* ===== Compact ===== */
+.ui-table-compact :host ::ng-deep thead th,
+:host .ui-table-compact ::ng-deep thead th {
+    padding: 8px 12px;
+    font-size: 12px;
+}
+
+.ui-table-compact :host ::ng-deep tbody td,
+:host .ui-table-compact ::ng-deep tbody td {
+    padding: 8px 12px;
+    font-size: 13px;
+}
+
+/* ===== Status Badge helpers ===== */
+:host ::ng-deep .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 99px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+:host ::ng-deep .badge-success {
+    background: var(--color-success-light);
+    color: var(--color-success);
+}
+
+:host ::ng-deep .badge-danger {
+    background: var(--color-danger-light);
+    color: var(--color-danger);
+}
+
+:host ::ng-deep .badge-warning {
+    background: var(--color-warning-light);
+    color: var(--color-warning);
+}
+
+:host ::ng-deep .badge-info {
+    background: var(--color-info-light);
+    color: var(--color-info);
+}
+
+/* ===== Text helpers ===== */
+:host ::ng-deep .text-muted {
+    color: var(--color-text-muted);
+    font-size: 12px;
+}

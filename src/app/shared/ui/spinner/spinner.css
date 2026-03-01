@@ -1,0 +1,56 @@
+/* ===== Spinner Base ===== */
+.ui-spinner {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ui-spinner svg {
+    animation: spinnerRotate 0.75s linear infinite;
+}
+
+/* ===== Sizes ===== */
+.ui-spinner-sm svg {
+    width: 16px;
+    height: 16px;
+}
+
+.ui-spinner-md svg {
+    width: 24px;
+    height: 24px;
+}
+
+.ui-spinner-lg svg {
+    width: 40px;
+    height: 40px;
+}
+
+/* ===== Track (faint circle) ===== */
+.ui-spinner-track {
+    opacity: 0.15;
+}
+
+/* ===== Arc (spinning part) ===== */
+.ui-spinner-arc {
+    opacity: 1;
+}
+
+/* ===== Colors ===== */
+.ui-spinner-accent {
+    color: var(--color-accent);
+}
+
+.ui-spinner-white {
+    color: #ffffff;
+}
+
+.ui-spinner-muted {
+    color: var(--color-text-muted);
+}
+
+/* ===== Animation ===== */
+@keyframes spinnerRotate {
+    to {
+        transform: rotate(360deg);
+    }
+}

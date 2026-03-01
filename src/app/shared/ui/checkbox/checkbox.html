@@ -1,0 +1,12 @@
+<label class="ui-checkbox" [class.ui-checkbox-disabled]="disabled">
+    <input type="checkbox" [checked]="checked" [disabled]="disabled" (change)="toggle()" />
+    <span class="ui-checkbox-box">
+        <svg class="ui-checkbox-check" width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <path d="M2.5 6L5 8.5L9.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                stroke-linejoin="round" />
+        </svg>
+    </span>
+    @if (label) {
+    <span class="ui-checkbox-label">{{ label }}</span>
+    }
+</label>
