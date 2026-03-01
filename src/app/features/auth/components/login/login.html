@@ -19,14 +19,25 @@
                     <!-- Email Field -->
                     <div class="form-group">
                         <input type="email" id="email" formControlName="email" placeholder="Email or Username"
-                            class="form-input" />
+                            class="form-input"
+                            [class.input-error]="form.get('email')?.touched && form.get('email')?.invalid" />
+                        @if (form.get('email')?.touched && form.get('email')?.invalid) {
+                        <div class="error-message">
+                            @if (form.get('email')?.hasError('required')) {
+                            <span>Email is required</span>
+                            } @else if (form.get('email')?.hasError('email')) {
+                            <span>Please enter a valid email address</span>
+                            }
+                        </div>
+                        }
                     </div>
 
                     <!-- Password Field -->
                     <div class="form-group">
                         <div class="password-wrapper">
                             <input [type]="showPassword ? 'text' : 'password'" id="password" formControlName="password"
-                                placeholder="Password" class="form-input" />
+                                placeholder="Password" class="form-input"
+                                [class.input-error]="form.get('password')?.touched && form.get('password')?.invalid" />
                             <button type="button" class="password-toggle" (click)="togglePassword()"
                                 aria-label="Toggle password visibility">
                                 <!-- Eye-off icon (password hidden) -->
@@ -49,6 +60,11 @@
                                 }
                             </button>
                         </div>
+                        @if (form.get('password')?.touched && form.get('password')?.invalid) {
+                        <div class="error-message">
+                            <span>Password is required</span>
+                        </div>
+                        }
                     </div>
 
                     <!-- Forgot Password -->
