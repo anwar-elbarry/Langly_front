@@ -1,4 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { ToastActions } from '../../../core/store/actions/toast.actions';
 
 export interface Toast {
     id: number;
@@ -9,12 +11,12 @@ export interface Toast {
 
 @Injectable({ providedIn: 'root' })
 export class ToastService {
-    toasts: Toast[] = [];
+    private store = inject(Store);
     private nextId = 0;
 
     show(message: string, type: Toast['type'] = 'info', duration = 4000): void {
         const id = this.nextId++;
-        this.toasts.push({ id, message, type, duration });
+        this.store.dispatch(ToastActions.addToast({ toast: { id, message, type, duration } }));
 
         if (duration > 0) {
             setTimeout(() => this.remove(id), duration);
@@ -38,6 +40,6 @@ export class ToastService {
     }
 
     remove(id: number): void {
-        this.toasts = this.toasts.filter(t => t.id !== id);
+        this.store.dispatch(ToastActions.removeToast({ id }));
     }
 }
