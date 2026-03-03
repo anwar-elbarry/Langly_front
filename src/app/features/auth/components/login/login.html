@@ -17,27 +17,16 @@
 
                 <form class="login-form" [formGroup]="form" (ngSubmit)="onSubmit()">
                     <!-- Email Field -->
-                    <div class="form-group">
-                        <input type="email" id="email" formControlName="email" placeholder="Email or Username"
-                            class="form-input"
-                            [class.input-error]="form.get('email')?.touched && form.get('email')?.invalid" />
-                        @if (form.get('email')?.touched && form.get('email')?.invalid) {
-                        <div class="error-message">
-                            @if (form.get('email')?.hasError('required')) {
-                            <span>Email is required</span>
-                            } @else if (form.get('email')?.hasError('email')) {
-                            <span>Please enter a valid email address</span>
-                            }
-                        </div>
-                        }
-                    </div>
+                    <app-form-field [error]="emailError">
+                        <app-input type="email" id="email" formControlName="email" placeholder="Email or Username"
+                            [error]="!!emailError" />
+                    </app-form-field>
 
                     <!-- Password Field -->
-                    <div class="form-group">
+                    <app-form-field [error]="passwordError">
                         <div class="password-wrapper">
-                            <input [type]="showPassword ? 'text' : 'password'" id="password" formControlName="password"
-                                placeholder="Password" class="form-input"
-                                [class.input-error]="form.get('password')?.touched && form.get('password')?.invalid" />
+                            <app-input [type]="showPassword ? 'text' : 'password'" id="password"
+                                formControlName="password" placeholder="Password" [error]="!!passwordError" />
                             <button type="button" class="password-toggle" (click)="togglePassword()"
                                 aria-label="Toggle password visibility">
                                 <!-- Eye-off icon (password hidden) -->
@@ -60,25 +49,29 @@
                                 }
                             </button>
                         </div>
-                        @if (form.get('password')?.touched && form.get('password')?.invalid) {
-                        <div class="error-message">
-                            <span>Password is required</span>
-                        </div>
-                        }
-                    </div>
+                    </app-form-field>
 
                     <!-- Forgot Password -->
                     <a href="#" class="forgot-password">Forgot password?</a>
 
                     <!-- Submit Button -->
-                    <button type="submit" class="sign-in-btn">
-                        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1">
-                            </path>
-                        </svg>
-                        Login
-                    </button>
+                    <div style="margin-top: 12px;"></div>
+                    <app-button type="submit" variant="primary" [fullWidth]="true">
+                        @if (isLoading()) {
+                            <app-spinner color="white"/>
+                        }@else {
+<div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+                            <svg class="btn-icon" style="width: 20px; height: 20px;" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1">
+                                </path>
+                            </svg>
+                            Login
+                        </div>
+                        }
+                        
+                    </app-button>
                 </form>
             </div>
 
