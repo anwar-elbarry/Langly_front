@@ -9,9 +9,9 @@ export const routes: Routes = [
   },
   {
     path: 'superAdmin',
-    loadComponent: () => import('./features/superAdmin/components/dashboard-container/dashboard-container').then(m => m.DashboardContainer),
     canActivate: [roleGuard],
-    data: { role: RoleEnum.SUPER_ADMIN }
+    data: { role: RoleEnum.SUPER_ADMIN },
+    loadChildren: () => import('./features/superAdmin/super-admin.routes').then(m => m.SUPER_ADMIN_ROUTES),
   },
   {
     path: 'schoolAdmin',
