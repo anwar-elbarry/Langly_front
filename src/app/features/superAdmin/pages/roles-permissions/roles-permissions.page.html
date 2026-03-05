@@ -1,0 +1,227 @@
+<section class="sa-page">
+  <!-- Header -->
+  <div class="sa-page-head">
+    <h1 class="sa-page-title">Roles & Permissions</h1>
+    <div class="sa-actions">
+      <app-button variant="outline" (click)="openManagePermissions()">Manage Permissions</app-button>
+      <app-button (click)="openCreateRole()">New Role</app-button>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="sa-empty">Loading...</div>
+  } @else {
+    <!-- Master-detail layout -->
+    <div class="rp-layout">
+      <!-- Left: Role list -->
+      <div class="rp-roles">
+        <div class="rp-roles-header">
+          <span class="rp-roles-title">Roles</span>
+          <span class="rp-count-pill">{{ roles().length }}</span>
+        </div>
+
+        @if (roles().length === 0) {
+          <div class="rp-empty-hint">No roles created yet.</div>
+        }
+
+        @for (role of roles(); track role.id) {
+          <button
+            class="rp-role-card"
+            [class.rp-role-active]="selectedRoleId() === role.id"
+            (click)="selectRole(role)"
+            type="button"
+          >
+            <div class="rp-role-main">
+              <span class="rp-role-name">{{ role.name }}</span>
+              <span class="rp-role-badge">{{ getRolePermissionCount(role) }}</span>
+            </div>
+            <div class="rp-role-actions">
+              <button class="rp-icon-btn" type="button" title="Edit" (click)="openEditRole(role, $event)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+              </button>
+              <button class="rp-icon-btn rp-icon-danger" type="button" title="Delete" (click)="openDeleteRole(role.id, $event)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="3 6 5 6 21 6"/>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                </svg>
+              </button>
+            </div>
+          </button>
+        }
+      </div>
+
+      <!-- Right: Permission editor -->
+      <div class="rp-editor">
+        @if (!selectedRoleId()) {
+          <div class="rp-editor-empty">
+            <svg class="rp-editor-empty-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            <p class="rp-editor-empty-title">Select a role</p>
+            <p class="rp-editor-empty-hint">Choose a role from the list to view and manage its permissions</p>
+          </div>
+        } @else {
+          <!-- Editor header -->
+          <div class="rp-editor-header">
+            <div class="rp-editor-title-row">
+              <h2 class="rp-editor-title">{{ selectedRoleName() }}</h2>
+              @if (hasUnsavedChanges()) {
+                <span class="rp-unsaved-badge">Unsaved changes</span>
+              }
+            </div>
+            <div class="rp-editor-toolbar">
+              <div class="rp-search-wrapper">
+                <svg class="rp-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                <input class="rp-search" placeholder="Filter permissions..." (input)="onSearch($event)" />
+              </div>
+              <div class="rp-bulk-actions">
+                <button class="rp-text-btn" type="button" (click)="selectAllPermissions()">Select all</button>
+                <button class="rp-text-btn" type="button" (click)="clearAllPermissions()">Clear all</button>
+              </div>
+              <app-button
+                [loading]="savingPermissions()"
+                [disabled]="!hasUnsavedChanges()"
+                (click)="savePermissionsForRole()"
+              >Save Changes</app-button>
+            </div>
+          </div>
+
+          @if (loadingPermissions()) {
+            <div class="rp-empty-hint">Loading permissions for this role...</div>
+          } @else {
+          <!-- Permission groups -->
+          <div class="rp-groups">
+            @if (filteredPermissionGroups().length === 0) {
+              <div class="rp-empty-hint">No permissions match your search.</div>
+            }
+
+            @for (group of filteredPermissionGroups(); track group.key) {
+              <div class="rp-group">
+                <div class="rp-group-header">
+                  <div class="rp-group-check">
+                    <app-checkbox
+                      [checked]="isGroupFullySelected(group)"
+                      (checkedChange)="toggleGroup(group, $event)"
+                    />
+                  </div>
+                  <span class="rp-group-name">{{ group.name }}</span>
+                  <span class="rp-group-counter">{{ getGroupSelectedCount(group) }} / {{ group.permissions.length }}</span>
+                </div>
+                <div class="rp-group-body">
+                  @for (perm of group.permissions; track perm.id) {
+                    <div class="rp-perm-chip" [class.rp-perm-active]="isPermissionChecked(perm.id)">
+                      <app-checkbox
+                        [label]="perm.displayName"
+                        [checked]="isPermissionChecked(perm.id)"
+                        (checkedChange)="togglePermission(perm.id, $event)"
+                      />
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+          }
+        }
+      </div>
+    </div>
+  }
+</section>
+
+<!-- Role Create/Edit Modal -->
+<app-modal [isOpen]="roleModalOpen()" (closed)="closeRoleModal()">
+  <span modal-header>{{ editingRoleId() ? 'Edit Role' : 'Create Role' }}</span>
+  <form class="sa-modal-form" [formGroup]="roleForm">
+    <app-form-field label="Role Name" [required]="true">
+      <app-input formControlName="name" placeholder="e.g. SCHOOL_ADMIN" />
+    </app-form-field>
+  </form>
+  <div modal-footer>
+    <app-button variant="outline" (click)="closeRoleModal()">Cancel</app-button>
+    <app-button [loading]="saving()" (click)="saveRole()">
+      {{ editingRoleId() ? 'Update' : 'Create' }}
+    </app-button>
+  </div>
+</app-modal>
+
+<!-- Delete Role Confirmation -->
+<app-modal [isOpen]="deleteOpen()" (closed)="closeDelete()">
+  <span modal-header>Delete Role</span>
+  <p>Are you sure you want to delete this role?</p>
+  <div class="sa-danger">This action cannot be undone.</div>
+  <div modal-footer>
+    <app-button variant="outline" (click)="closeDelete()">Cancel</app-button>
+    <app-button variant="danger" (click)="deleteRole()">Delete</app-button>
+  </div>
+</app-modal>
+
+<!-- Permission Catalog Modal -->
+<app-modal [isOpen]="permissionsModalOpen()" (closed)="closeManagePermissions()">
+  <span modal-header>Permission Catalog</span>
+  <div class="rp-catalog">
+    <!-- Create controls -->
+    <div class="rp-catalog-create">
+      <div class="rp-catalog-toggle">
+        <app-button size="sm" [variant]="showBatchForm() ? 'outline' : 'primary'" (click)="showBatchForm.set(false)">Single</app-button>
+        <app-button size="sm" [variant]="showBatchForm() ? 'primary' : 'outline'" (click)="showBatchForm.set(true)">Batch</app-button>
+      </div>
+
+      @if (!showBatchForm()) {
+        <form class="rp-catalog-form" [formGroup]="singlePermForm">
+          <app-form-field label="Permission Name" [required]="true">
+            <app-input formControlName="name" placeholder="e.g. USERS_READ" />
+          </app-form-field>
+          <app-button size="sm" [loading]="savingNewPermission()" (click)="createSinglePermission()">Add</app-button>
+        </form>
+      } @else {
+        <form class="rp-catalog-form rp-catalog-form-batch" [formGroup]="batchPermForm">
+          <app-form-field label="Permission names (comma or newline separated)" [required]="true">
+            <textarea
+              class="sa-textarea"
+              formControlName="names"
+              placeholder="USERS_READ&#10;USERS_CREATE&#10;USERS_UPDATE"
+            ></textarea>
+          </app-form-field>
+          <app-button size="sm" [loading]="savingNewPermission()" (click)="createBatchPermissions()">Add All</app-button>
+        </form>
+      }
+    </div>
+
+    <!-- Permission list -->
+    <div class="rp-catalog-list">
+      <div class="rp-catalog-list-header">
+        <span>All Permissions</span>
+        <span class="rp-count-pill">{{ allPermissions().length }}</span>
+      </div>
+
+      @if (allPermissions().length === 0) {
+        <div class="rp-empty-hint">No permissions created yet.</div>
+      }
+
+      @for (group of permissionGroups(); track group.key) {
+        <div class="rp-catalog-group">
+          <div class="rp-catalog-group-name">{{ group.name }}</div>
+          @for (perm of group.permissions; track perm.id) {
+            <div class="rp-catalog-item">
+              <span class="rp-catalog-item-name">{{ perm.name }}</span>
+              <button class="rp-icon-btn rp-icon-danger" type="button" title="Delete permission" (click)="deletePermission(perm.id)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+              </button>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+  <div modal-footer>
+    <app-button variant="outline" (click)="closeManagePermissions()">Close</app-button>
+  </div>
+</app-modal>

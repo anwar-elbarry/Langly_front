@@ -1,0 +1,76 @@
+<section class="sa-page">
+  <div class="sa-page-head">
+    <h1 class="sa-page-title">Roles</h1>
+    <app-button (click)="openCreate()">New Role</app-button>
+  </div>
+
+  @if (loading()) {
+    <div class="sa-empty">Loading roles...</div>
+  } @else if (roles().length === 0) {
+    <div class="sa-empty">No roles found.</div>
+  } @else {
+    <app-table [striped]="true">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (role of roles(); track role.id) {
+          <tr>
+            <td>{{ role.name }}</td>
+            <td>
+              <div class="sa-actions">
+                <app-button size="sm" variant="secondary" (click)="openPermissions(role)">Permissions</app-button>
+                <app-button size="sm" variant="outline" (click)="openEdit(role)">Edit</app-button>
+                <app-button size="sm" variant="danger" (click)="openDelete(role.id)">Delete</app-button>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </app-table>
+  }
+</section>
+
+<app-modal [isOpen]="roleModalOpen()" (closed)="closeRoleModal()">
+  <span modal-header>{{ editingRoleId() ? 'Edit Role' : 'Create Role' }}</span>
+  <form class="sa-modal-form" [formGroup]="form">
+    <app-form-field label="Name" [required]="true">
+      <app-input formControlName="name" placeholder="Role name" />
+    </app-form-field>
+  </form>
+  <div modal-footer>
+    <app-button variant="outline" (click)="closeRoleModal()">Cancel</app-button>
+    <app-button [loading]="saving()" (click)="saveRole()">{{ editingRoleId() ? 'Update' : 'Create' }}</app-button>
+  </div>
+</app-modal>
+
+<app-modal [isOpen]="permissionsModalOpen()" (closed)="closePermissionsModal()">
+  <span modal-header>Manage Permissions</span>
+  <div class="sa-modal-form">
+    @for (permission of permissions(); track permission.id) {
+      <app-checkbox
+        [label]="permission.name"
+        [checked]="isPermissionChecked(permission.id)"
+        (checkedChange)="togglePermission(permission.id, $event)"
+      />
+    }
+  </div>
+  <div modal-footer>
+    <app-button variant="outline" (click)="closePermissionsModal()">Cancel</app-button>
+    <app-button [loading]="savingPermissions()" (click)="savePermissionsForRole()">Save</app-button>
+  </div>
+</app-modal>
+
+<app-modal [isOpen]="deleteOpen()" (closed)="closeDelete()">
+  <span modal-header>Delete Role</span>
+  <p>Are you sure you want to delete this role?</p>
+  <div class="sa-danger">This action cannot be undone.</div>
+  <div modal-footer>
+    <app-button variant="outline" (click)="closeDelete()">Cancel</app-button>
+    <app-button variant="danger" (click)="deleteRole()">Delete</app-button>
+  </div>
+</app-modal>
+

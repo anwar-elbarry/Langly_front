@@ -1,0 +1,516 @@
+@import '../page.shared.css';
+
+/* ── Master-Detail Layout ── */
+
+.rp-layout {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 16px;
+  min-height: 500px;
+}
+
+/* ── Role List (Left Panel) ── */
+
+.rp-roles {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: var(--sa-page-surface);
+  border: 1px solid var(--sa-page-border);
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: var(--sa-page-shadow);
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+}
+
+.rp-roles-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--sa-page-border);
+  margin-bottom: 4px;
+}
+
+.rp-roles-title {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--sa-page-muted);
+}
+
+.rp-count-pill {
+  font-size: 11px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #0ea5e9, #1d4ed8);
+  color: white;
+  border-radius: 999px;
+  padding: 2px 8px;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* ── Role Card ── */
+
+.rp-role-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+
+.rp-role-card:hover {
+  background: rgba(14, 165, 233, 0.06);
+  border-color: rgba(14, 165, 233, 0.15);
+}
+
+.rp-role-active {
+  background: linear-gradient(135deg, rgba(14, 165, 233, 0.1), rgba(30, 58, 138, 0.08));
+  border-color: rgba(14, 165, 233, 0.35);
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.12);
+}
+
+.rp-role-main {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.rp-role-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--sa-page-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rp-role-badge {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--sa-page-muted);
+  background: rgba(100, 116, 139, 0.1);
+  border-radius: 999px;
+  padding: 1px 7px;
+  flex-shrink: 0;
+}
+
+.rp-role-active .rp-role-badge {
+  background: rgba(14, 165, 233, 0.15);
+  color: #0369a1;
+}
+
+.rp-role-actions {
+  display: flex;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity 0.15s;
+  flex-shrink: 0;
+}
+
+.rp-role-card:hover .rp-role-actions,
+.rp-role-active .rp-role-actions {
+  opacity: 1;
+}
+
+/* ── Icon Buttons ── */
+
+.rp-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  color: var(--sa-page-muted);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.rp-icon-btn:hover {
+  background: rgba(14, 165, 233, 0.1);
+  color: #0369a1;
+}
+
+.rp-icon-danger:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+}
+
+/* ── Permission Editor (Right Panel) ── */
+
+.rp-editor {
+  display: flex;
+  flex-direction: column;
+  background: var(--sa-page-surface);
+  border: 1px solid var(--sa-page-border);
+  border-radius: 14px;
+  box-shadow: var(--sa-page-shadow);
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+}
+
+/* ── Empty State ── */
+
+.rp-editor-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 60px 20px;
+  text-align: center;
+  flex: 1;
+}
+
+.rp-editor-empty-icon {
+  color: #cbd5e1;
+  margin-bottom: 8px;
+}
+
+.rp-editor-empty-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--sa-page-ink);
+  margin: 0;
+}
+
+.rp-editor-empty-hint {
+  font-size: 14px;
+  color: var(--sa-page-muted);
+  margin: 0;
+}
+
+/* ── Editor Header ── */
+
+.rp-editor-header {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  padding: 16px;
+  border-bottom: 1px solid var(--sa-page-border);
+  background: linear-gradient(180deg, #ffffff, #fafbfc);
+}
+
+.rp-editor-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.rp-editor-title {
+  margin: 0;
+  font-size: 20px;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+  color: var(--sa-page-ink);
+}
+
+.rp-unsaved-badge {
+  font-size: 11px;
+  font-weight: 600;
+  color: #9a6700;
+  background: #fef3c7;
+  border: 1px solid #fcd34d;
+  border-radius: 999px;
+  padding: 2px 10px;
+  animation: rpPulse 2s infinite;
+}
+
+@keyframes rpPulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.rp-editor-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* ── Search ── */
+
+.rp-search-wrapper {
+  position: relative;
+  flex: 1;
+  min-width: 180px;
+}
+
+.rp-search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--sa-page-muted);
+  pointer-events: none;
+}
+
+.rp-search {
+  width: 100%;
+  border: 1px solid var(--sa-page-border);
+  background: var(--sa-page-surface);
+  color: var(--sa-page-ink);
+  border-radius: 10px;
+  font-size: 13px;
+  padding: 8px 12px 8px 36px;
+  outline: 0;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.rp-search:focus {
+  border-color: rgba(14, 165, 233, 0.7);
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.12);
+}
+
+.rp-bulk-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.rp-text-btn {
+  border: none;
+  background: none;
+  color: var(--sa-page-brand);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 8px;
+  transition: background 0.15s;
+}
+
+.rp-text-btn:hover {
+  background: rgba(14, 165, 233, 0.08);
+}
+
+/* ── Permission Groups ── */
+
+.rp-groups {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.rp-group {
+  border: 1px solid var(--sa-page-border);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+
+.rp-group:hover {
+  box-shadow: 0 2px 12px rgba(14, 165, 233, 0.08);
+}
+
+.rp-group-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: #f8fafc;
+  border-bottom: 1px solid var(--sa-page-border);
+}
+
+.rp-group-check {
+  flex-shrink: 0;
+}
+
+.rp-group-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--sa-page-ink);
+  letter-spacing: -0.01em;
+}
+
+.rp-group-counter {
+  margin-left: auto;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--sa-page-muted);
+  background: rgba(100, 116, 139, 0.08);
+  border-radius: 999px;
+  padding: 2px 8px;
+}
+
+.rp-group-body {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 12px 14px;
+}
+
+/* ── Permission Chips ── */
+
+.rp-perm-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 10px 5px 6px;
+  border: 1px solid var(--sa-page-border);
+  border-radius: 8px;
+  transition: all 0.15s;
+  background: var(--sa-page-surface);
+}
+
+.rp-perm-chip:hover {
+  border-color: rgba(14, 165, 233, 0.4);
+  background: rgba(14, 165, 233, 0.04);
+}
+
+.rp-perm-active {
+  border-color: rgba(14, 165, 233, 0.5);
+  background: rgba(14, 165, 233, 0.06);
+}
+
+/* ── Empty Hint ── */
+
+.rp-empty-hint {
+  padding: 20px;
+  text-align: center;
+  color: var(--sa-page-muted);
+  font-size: 14px;
+}
+
+/* ── Permission Catalog Modal ── */
+
+.rp-catalog {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.rp-catalog-create {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.rp-catalog-toggle {
+  display: flex;
+  gap: 4px;
+}
+
+.rp-catalog-form {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.rp-catalog-form app-form-field {
+  flex: 1;
+}
+
+.rp-catalog-form-batch {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.rp-catalog-form-batch app-button {
+  align-self: flex-end;
+}
+
+.rp-catalog-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border-top: 1px solid var(--sa-page-border);
+  padding-top: 12px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.rp-catalog-list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--sa-page-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding-bottom: 8px;
+}
+
+.rp-catalog-group {
+  margin-bottom: 8px;
+}
+
+.rp-catalog-group-name {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--sa-page-brand);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 4px 0;
+}
+
+.rp-catalog-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 8px;
+  border-radius: 8px;
+  transition: background 0.15s;
+}
+
+.rp-catalog-item:hover {
+  background: rgba(239, 68, 68, 0.04);
+}
+
+.rp-catalog-item-name {
+  font-size: 13px;
+  color: var(--sa-page-ink);
+  font-family: 'SFMono-Regular', 'Consolas', 'Menlo', monospace;
+}
+
+/* ── Responsive ── */
+
+@media (max-width: 900px) {
+  .rp-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .rp-roles {
+    max-height: none;
+  }
+
+  .rp-editor {
+    max-height: none;
+  }
+
+  .rp-editor-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .rp-search-wrapper {
+    min-width: 0;
+  }
+
+  .rp-bulk-actions {
+    justify-content: center;
+  }
+}
