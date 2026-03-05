@@ -1,0 +1,75 @@
+<section class="sa-page">
+  <div class="sa-page-head">
+    <h1 class="sa-page-title">Permissions</h1>
+    <div class="sa-actions">
+      <app-button variant="outline" (click)="openBatchModal()">Create Batch</app-button>
+      <app-button (click)="openSingleModal()">Create Permission</app-button>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="sa-empty">Loading permissions...</div>
+  } @else if (permissions().length === 0) {
+    <div class="sa-empty">No permissions found.</div>
+  } @else {
+    <app-table [striped]="true">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (permission of permissions(); track permission.id) {
+          <tr>
+            <td>{{ permission.name }}</td>
+            <td>
+              <app-button size="sm" variant="danger" (click)="openDelete(permission.id)">Delete</app-button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </app-table>
+  }
+</section>
+
+<app-modal [isOpen]="singleModalOpen()" (closed)="closeSingleModal()">
+  <span modal-header>Create Permission</span>
+  <form class="sa-modal-form" [formGroup]="singleForm">
+    <app-form-field label="Permission Name" [required]="true">
+      <app-input formControlName="name" placeholder="e.g. USERS_READ" />
+    </app-form-field>
+  </form>
+  <div modal-footer>
+    <app-button variant="outline" (click)="closeSingleModal()">Cancel</app-button>
+    <app-button [loading]="saving()" (click)="createSingle()">Create</app-button>
+  </div>
+</app-modal>
+
+<app-modal [isOpen]="batchModalOpen()" (closed)="closeBatchModal()">
+  <span modal-header>Create Permissions Batch</span>
+  <form class="sa-modal-form" [formGroup]="batchForm">
+    <app-form-field label="Permission names (comma or newline separated)" [required]="true">
+      <textarea
+        class="sa-textarea"
+        formControlName="names"
+        placeholder="USERS_READ&#10;USERS_CREATE&#10;SUBSCRIPTIONS_UPDATE_STATUS"
+      ></textarea>
+    </app-form-field>
+  </form>
+  <div modal-footer>
+    <app-button variant="outline" (click)="closeBatchModal()">Cancel</app-button>
+    <app-button [loading]="saving()" (click)="createBatch()">Create Batch</app-button>
+  </div>
+</app-modal>
+
+<app-modal [isOpen]="deleteOpen()" (closed)="closeDelete()">
+  <span modal-header>Delete Permission</span>
+  <p>Are you sure you want to delete this permission?</p>
+  <div class="sa-danger">This action cannot be undone.</div>
+  <div modal-footer>
+    <app-button variant="outline" (click)="closeDelete()">Cancel</app-button>
+    <app-button variant="danger" (click)="deletePermission()">Delete</app-button>
+  </div>
+</app-modal>
+
