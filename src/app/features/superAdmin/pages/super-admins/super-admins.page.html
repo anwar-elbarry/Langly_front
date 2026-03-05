@@ -1,0 +1,82 @@
+<section class="sa-page">
+  <div class="sa-page-head">
+    <h1 class="sa-page-title">Super Admins</h1>
+    <app-button (click)="openCreate()">New Super Admin</app-button>
+  </div>
+
+  @if (loading()) {
+    <div class="sa-empty">Loading super admins...</div>
+  } @else if (admins().length === 0) {
+    <div class="sa-empty">No super admins found.</div>
+  } @else {
+    <app-table [striped]="true">
+      <thead>
+        <tr>
+          <th>Full Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (admin of admins(); track admin.id) {
+          <tr>
+            <td>{{ admin.firstName }} {{ admin.lastName }}</td>
+            <td>{{ admin.email }}</td>
+            <td>{{ admin.phoneNumber || '-' }}</td>
+            <td>
+              <div class="sa-actions">
+                <app-button size="sm" variant="outline" (click)="openEdit(admin)">Edit</app-button>
+                <app-button size="sm" variant="danger" (click)="openDelete(admin.id)">Delete</app-button>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </app-table>
+  }
+</section>
+
+<app-modal [isOpen]="modalOpen()" (closed)="closeModal()">
+  <span modal-header>{{ editingId() ? 'Edit Super Admin' : 'Create Super Admin' }}</span>
+  <form class="sa-modal-form" [formGroup]="form">
+    <div class="sa-grid-2">
+      <app-form-field label="First Name" [required]="true">
+        <app-input formControlName="firstName" placeholder="First name" />
+      </app-form-field>
+      <app-form-field label="Last Name" [required]="true">
+        <app-input formControlName="lastName" placeholder="Last name" />
+      </app-form-field>
+    </div>
+
+    <app-form-field label="Email" [required]="true">
+      <app-input type="email" formControlName="email" placeholder="admin@example.com" />
+    </app-form-field>
+    <app-form-field label="Password" [required]="!editingId()">
+      <app-input type="password" formControlName="password" placeholder="Password" />
+    </app-form-field>
+    <div class="sa-grid-2">
+      <app-form-field label="Phone">
+        <app-input formControlName="phoneNumber" placeholder="+212..." />
+      </app-form-field>
+      <app-form-field label="Profile URL">
+        <app-input formControlName="profile" placeholder="https://..." />
+      </app-form-field>
+    </div>
+  </form>
+  <div modal-footer>
+    <app-button variant="outline" (click)="closeModal()">Cancel</app-button>
+    <app-button [loading]="saving()" (click)="save()">{{ editingId() ? 'Update' : 'Create' }}</app-button>
+  </div>
+</app-modal>
+
+<app-modal [isOpen]="deleteOpen()" (closed)="closeDelete()">
+  <span modal-header>Delete Super Admin</span>
+  <p>Are you sure you want to delete this super admin?</p>
+  <div class="sa-danger">This action cannot be undone.</div>
+  <div modal-footer>
+    <app-button variant="outline" (click)="closeDelete()">Cancel</app-button>
+    <app-button variant="danger" (click)="deleteAdmin()">Delete</app-button>
+  </div>
+</app-modal>
+
