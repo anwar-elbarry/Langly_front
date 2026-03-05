@@ -1,0 +1,163 @@
+<section class="sa-page">
+  <div class="sa-page-head">
+    <h1 class="sa-page-title">Users</h1>
+    <app-button (click)="openCreate()">New User</app-button>
+  </div>
+
+  <div class="sa-filters">
+    <select class="sa-select" [value]="roleFilter()" (change)="onChangeRoleFilter($any($event.target).value)">
+      <option value="">All Roles</option>
+      @for (role of roles(); track role.id) {
+        <option [value]="role.name">{{ role.name }}</option>
+      }
+    </select>
+
+    <select class="sa-select" [value]="schoolFilter()" (change)="onChangeSchoolFilter($any($event.target).value)">
+      <option value="">All Schools</option>
+      @for (school of schools(); track school.id) {
+        <option [value]="school.id">{{ school.name }}</option>
+      }
+    </select>
+  </div>
+
+  @if (loading()) {
+    <div class="sa-empty">Loading users...</div>
+  } @else if (users().length === 0) {
+    <div class="sa-empty">No users found.</div>
+  } @else {
+    <app-table [striped]="true">
+      <thead>
+        <tr>
+          <th>Full Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Role</th>
+          <th>School</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (user of users(); track user.id) {
+          <tr>
+            <td>{{ (user.firstName || '') + ' ' + (user.lastName || '') }}</td>
+            <td>{{ user.email || '-' }}</td>
+            <td>{{ user.phoneNumber || '-' }}</td>
+            <td>{{ user.role?.name || '-' }}</td>
+            <td>{{ schoolNameById(user.schoolId) }}</td>
+            <td><span [class]="userStatusClass(user.status || 'ACTIVE')">{{ user.status || 'ACTIVE' }}</span></td>
+            <td>
+              <div class="sa-actions">
+                <app-button size="sm" variant="outline" (click)="openEdit(user)">Edit</app-button>
+                <app-button size="sm" variant="secondary" (click)="toggleStatus(user)">
+                  {{ user.status === 'SUSPENDED' ? 'Activate' : 'Suspend' }}
+                </app-button>
+                <app-button size="sm" variant="danger" (click)="openDelete(user.id)">Delete</app-button>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </app-table>
+  }
+
+  <div class="sa-pagination">
+    <span>Page {{ page() + 1 }} / {{ totalPages() }}</span>
+    <app-button size="sm" variant="outline" [disabled]="page() === 0" (click)="previousPage()">Prev</app-button>
+    <app-button
+      size="sm"
+      variant="outline"
+      [disabled]="page() + 1 >= totalPages()"
+      (click)="nextPage()"
+    >
+      Next
+    </app-button>
+  </div>
+</section>
+
+<app-modal [isOpen]="modalOpen()" (closed)="closeModal()">
+  <span modal-header>{{ editingUserId() ? 'Edit User' : 'Create User' }}</span>
+  <form class="sa-modal-form" [formGroup]="form">
+    <div class="sa-grid-2">
+      <app-form-field label="First Name">
+        <app-input formControlName="firstName" placeholder="First name" />
+      </app-form-field>
+      <app-form-field label="Last Name">
+        <app-input formControlName="lastName" placeholder="Last name" />
+      </app-form-field>
+    </div>
+
+    <app-form-field label="Email" [required]="true">
+      <app-input type="email" formControlName="email" placeholder="user@example.com" />
+    </app-form-field>
+
+    <div class="sa-grid-2">
+      <app-form-field label="Phone">
+        <app-input formControlName="phoneNumber" placeholder="+212..." />
+      </app-form-field>
+      <app-form-field label="Profile URL">
+        <app-input formControlName="profile" placeholder="https://..." />
+      </app-form-field>
+    </div>
+
+    @if (!editingUserId()) {
+      <div class="sa-grid-2">
+        <app-form-field label="Role" [required]="true">
+          <select class="sa-select" formControlName="roleName">
+            <option value="">Select role</option>
+            @for (role of roles(); track role.id) {
+              <option [value]="role.name">{{ role.name }}</option>
+            }
+          </select>
+        </app-form-field>
+
+        <app-form-field label="School" [required]="true">
+          <select class="sa-select" formControlName="schoolId">
+            <option value="">Select school</option>
+            @for (school of schools(); track school.id) {
+              <option [value]="school.id">{{ school.name }}</option>
+            }
+          </select>
+        </app-form-field>
+      </div>
+    } @else {
+      <app-form-field label="New Password (optional)">
+        <app-input type="password" formControlName="password" placeholder="Leave empty to keep current password" />
+      </app-form-field>
+    }
+  </form>
+  <div modal-footer>
+    <app-button variant="outline" (click)="closeModal()">Cancel</app-button>
+    <app-button [loading]="saving()" (click)="saveUser()">{{ editingUserId() ? 'Update' : 'Create' }}</app-button>
+  </div>
+</app-modal>
+
+<app-modal [isOpen]="confirmDeleteOpen()" (closed)="closeDelete()">
+  <span modal-header>Delete User</span>
+  <p>Are you sure you want to delete this user?</p>
+  <div class="sa-danger">This action cannot be undone.</div>
+  <div modal-footer>
+    <app-button variant="outline" (click)="closeDelete()">Cancel</app-button>
+    <app-button variant="danger" (click)="deleteUser()">Delete</app-button>
+  </div>
+</app-modal>
+
+<app-modal [isOpen]="emailPreviewOpen()" (closed)="closeEmailPreview()">
+  <span modal-header>Email Preview</span>
+
+  <div class="sa-modal-form">
+    <div><strong>From:</strong> {{ emailPreview()?.from || '-' }}</div>
+    <div><strong>To:</strong> {{ emailPreview()?.to || '-' }}</div>
+    <div><strong>Subject:</strong> {{ emailPreview()?.subject || '-' }}</div>
+    <div><strong>Login Link:</strong> {{ emailPreview()?.loginLink || '-' }}</div>
+    <div><strong>Temporary Password:</strong> {{ emailPreview()?.temporaryPassword || '-' }}</div>
+    <div>
+      <strong>Message:</strong>
+      <pre class="sa-email-message">{{ emailPreview()?.message || '-' }}</pre>
+    </div>
+  </div>
+
+  <div modal-footer>
+    <app-button (click)="closeEmailPreview()">Close</app-button>
+  </div>
+</app-modal>
