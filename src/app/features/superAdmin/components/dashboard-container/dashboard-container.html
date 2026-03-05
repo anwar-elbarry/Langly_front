@@ -1,1 +1,53 @@
-<p>dashboard-container works!</p>
+<div class="sa-layout">
+  <aside class="sa-sidebar" [class.open]="isSidebarOpen()">
+    <div class="sa-sidebar-head">
+      <div>
+        <p class="sa-brand-kicker">Platform</p>
+        <div class="sa-brand">Langly Control</div>
+      </div>
+      <button class="sa-close" type="button" (click)="closeSidebar()">Close</button>
+    </div>
+
+    <nav class="sa-nav">
+      @for (item of navItems; track item.route) {
+        <a
+          [routerLink]="item.route"
+          routerLinkActive="active"
+          class="sa-nav-link"
+          (click)="closeSidebar()"
+        >
+          <span class="sa-nav-dot"></span>
+          <span>{{ item.label }}</span>
+        </a>
+      }
+    </nav>
+
+    <div class="sa-sidebar-foot">Super Admin Workspace</div>
+  </aside>
+
+  @if (isSidebarOpen()) {
+    <button class="sa-overlay" type="button" (click)="closeSidebar()" aria-label="Close sidebar"></button>
+  }
+
+  <section class="sa-main">
+    <header class="sa-topbar">
+      <div class="sa-topbar-left">
+        <button class="sa-menu-btn" type="button" (click)="toggleSidebar()">Menu</button>
+        <div>
+          <p class="sa-topbar-kicker">Super Admin</p>
+          <h1 class="sa-topbar-title">Command Center</h1>
+        </div>
+      </div>
+
+      <div class="sa-user">
+        <div class="sa-user-avatar">{{ initials() }}</div>
+        <span class="sa-user-name">{{ fullName() }}</span>
+        <app-button size="sm" variant="outline" (click)="logout()">Logout</app-button>
+      </div>
+    </header>
+
+    <main class="sa-content">
+      <router-outlet />
+    </main>
+  </section>
+</div>
