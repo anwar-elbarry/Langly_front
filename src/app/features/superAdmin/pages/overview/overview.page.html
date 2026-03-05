@@ -1,0 +1,61 @@
+<section class="sa-page">
+  <div class="sa-page-head">
+    <h1 class="sa-page-title">Overview</h1>
+    <app-button variant="outline" size="sm" (click)="loadData()">Refresh</app-button>
+  </div>
+
+  <section class="sa-overview-hero">
+    <p class="sa-overview-kicker">Realtime Snapshot</p>
+    <h2>Platform Health At A Glance</h2>
+    <p>Track schools, users, and payment risk instantly from one command surface.</p>
+  </section>
+
+  <div class="sa-kpi-grid">
+    <article class="sa-kpi-card">
+      <div class="sa-kpi-title">Total Schools</div>
+      <div class="sa-kpi-value">{{ data().totalSchools }}</div>
+    </article>
+    <article class="sa-kpi-card">
+      <div class="sa-kpi-title">Total Users</div>
+      <div class="sa-kpi-value">{{ data().totalUsers }}</div>
+    </article>
+    <article class="sa-kpi-card">
+      <div class="sa-kpi-title">Active Subscriptions</div>
+      <div class="sa-kpi-value">{{ data().activeSubscriptions }}</div>
+    </article>
+    <article class="sa-kpi-card">
+      <div class="sa-kpi-title">Overdue Subscriptions</div>
+      <div class="sa-kpi-value">{{ data().overdueSubscriptions }}</div>
+    </article>
+  </div>
+
+  <h2 class="sa-section-title">Recent Subscriptions</h2>
+  @if (loading()) {
+    <div class="sa-empty">Loading overview data...</div>
+  } @else if (data().recentSubscriptions.length === 0) {
+    <div class="sa-empty">No recent subscriptions found.</div>
+  } @else {
+    <app-table [striped]="true">
+      <thead>
+        <tr>
+          <th>School</th>
+          <th>Amount</th>
+          <th>Cycle</th>
+          <th>Status</th>
+          <th>Next Payment</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of data().recentSubscriptions; track item.id) {
+          <tr>
+            <td>{{ item.schoolName || item.schoolId }}</td>
+            <td>{{ item.amount | number: '1.2-2' }} {{ item.currency }}</td>
+            <td>{{ item.billingCycle }}</td>
+            <td><span [class]="paymentStatusClass(item.status)">{{ item.status }}</span></td>
+            <td>{{ item.nextPaymentDate ? (item.nextPaymentDate | date: 'mediumDate') : '-' }}</td>
+          </tr>
+        }
+      </tbody>
+    </app-table>
+  }
+</section>
