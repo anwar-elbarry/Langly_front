@@ -28,4 +28,12 @@ export class EnrollmentService {
   enroll(payload: EnrollmentRequest): Observable<EnrollmentResponse> {
     return this.http.post<EnrollmentResponse>(this.apiUrl, payload);
   }
+
+  approveEnrollment(id: string): Observable<EnrollmentResponse> {
+    return this.http.patch<EnrollmentResponse>(`${this.apiUrl}/${id}/approve`, {});
+  }
+
+  rejectEnrollment(id: string): Observable<EnrollmentResponse> {
+    return this.http.patch<EnrollmentResponse>(`${this.apiUrl}/${id}/reject`, {});
+  }
 }
