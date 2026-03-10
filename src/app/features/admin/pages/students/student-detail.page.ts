@@ -4,9 +4,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { finalize, forkJoin } from 'rxjs';
 import { SpinnerComponent } from '../../../../shared/ui/spinner/spinner';
 import { TableComponent } from '../../../../shared/ui/table/table';
+import { ToastService } from '../../../../shared/ui/toast/toast.service';
 import { StudentResponse } from '../../models/student.model';
 import { EnrollmentResponse } from '../../models/enrollment.model';
 import { BillingResponse } from '../../models/billing.model';
+import { Gender, Level } from '../../models/enums';
 import { StudentService } from '../../services/student.service';
 import { EnrollmentService } from '../../services/enrollment.service';
 import { BillingService } from '../../services/billing.service';
@@ -26,12 +28,17 @@ export class StudentDetailPage implements OnInit {
   private studentService = inject(StudentService);
   private enrollmentService = inject(EnrollmentService);
   private billingService = inject(BillingService);
+  private toast = inject(ToastService);
 
   loading = signal(true);
   student = signal<StudentResponse | null>(null);
   enrollments = signal<EnrollmentResponse[]>([]);
   billings = signal<BillingResponse[]>([]);
   activeTab = signal<Tab>('enrollments');
+
+  editLevel = signal<string>('');
+  editGender = signal<string>('');
+  savingAdmin = signal(false);
 
   levelBadgeClass = levelBadgeClass;
   enrollmentStatusClass = enrollmentStatusClass;
@@ -52,6 +59,8 @@ export class StudentDetailPage implements OnInit {
       .subscribe({
         next: ({ student, enrollments, billings }) => {
           this.student.set(student);
+          this.editLevel.set(student.level || '');
+          this.editGender.set(student.gender || '');
           this.enrollments.set(enrollments);
           this.billings.set(billings);
         },
@@ -69,5 +78,30 @@ export class StudentDetailPage implements OnInit {
   hasMissingFields(): boolean {
     const s = this.student();
     return !!s && !!s.missingFields && s.missingFields.length > 0;
+  }
+
+  saveAdminUpdate(): void {
+    const s = this.student();
+    if (!s) return;
+
+    const request: { level?: Level; gender?: Gender } = {};
+    if (this.editLevel()) request.level = this.editLevel() as Level;
+    if (this.editGender()) request.gender = this.editGender() as Gender;
+
+    if (!request.level && !request.gender) return;
+
+    this.savingAdmin.set(true);
+    this.studentService
+      .updateByAdmin(s.id, request)
+      .pipe(finalize(() => this.savingAdmin.set(false)))
+      .subscribe({
+        next: (updated) => {
+          this.student.set(updated);
+          this.toast.success('Étudiant mis à jour avec succès');
+        },
+        error: () => {
+          this.toast.error('Erreur lors de la mise à jour');
+        },
+      });
   }
 }
