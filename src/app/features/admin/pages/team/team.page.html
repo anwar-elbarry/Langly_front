@@ -1,0 +1,140 @@
+<!-- Header -->
+<div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+  <div>
+    <h2 class="text-xl font-bold text-gray-900">Équipe</h2>
+    <p class="text-sm text-gray-500">Gérer les professeurs et étudiants de votre école</p>
+  </div>
+  <app-button variant="primary" (click)="openInvite()">
+    <i class="fa-solid fa-plus mr-2"></i>Inviter
+  </app-button>
+</div>
+
+<!-- Tabs -->
+<div class="mb-4 flex gap-1 rounded-lg bg-gray-100 p-1">
+  @for (tab of tabs; track tab.value) {
+    <button
+      class="rounded-md px-4 py-2 text-sm font-medium transition-colors"
+      [class]="activeTab() === tab.value ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'"
+      (click)="setTab(tab.value)"
+    >
+      {{ tab.label }}
+    </button>
+  }
+</div>
+
+<!-- Table -->
+@if (loading()) {
+  <div class="flex h-64 items-center justify-center">
+    <app-spinner size="lg" />
+  </div>
+} @else {
+  <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+    <app-table [striped]="true" [hoverable]="true">
+      <thead>
+        <tr>
+          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Nom complet</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Email</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Téléphone</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Rôle</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Statut</th>
+          <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (u of filteredUsers(); track u.id) {
+          <tr>
+            <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ u.firstName }} {{ u.lastName }}</td>
+            <td class="px-4 py-3 text-sm text-gray-600">{{ u.email }}</td>
+            <td class="px-4 py-3 text-sm text-gray-600">{{ u.phoneNumber || '—' }}</td>
+            <td class="px-4 py-3">
+              <span [class]="roleBadgeClass(u.role?.name)">{{ u.role?.name }}</span>
+            </td>
+            <td class="px-4 py-3">
+              <span [class]="userStatusClass($any(u).status)">{{ $any(u).status || 'ACTIVE' }}</span>
+            </td>
+            <td class="px-4 py-3 text-right">
+              <div class="flex items-center justify-end gap-2">
+                <button
+                  class="rounded-md px-2 py-1 text-xs font-medium text-blue-600 transition hover:bg-blue-50"
+                  (click)="toggleStatus(u)"
+                >
+                  {{ $any(u).status === 'ACTIVE' ? 'Suspendre' : 'Activer' }}
+                </button>
+                <button
+                  class="rounded-md px-2 py-1 text-xs font-medium text-red-600 transition hover:bg-red-50"
+                  (click)="openDelete(u.id)"
+                >
+                  Supprimer
+                </button>
+              </div>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="6" class="px-4 py-8 text-center text-sm text-gray-400">Aucun membre trouvé</td>
+          </tr>
+        }
+      </tbody>
+    </app-table>
+  </div>
+}
+
+<!-- Invite Modal -->
+<app-modal [isOpen]="modalOpen()" (closed)="closeModal()">
+  <div class="modal-header">
+    <h3 class="text-lg font-semibold text-gray-900">Inviter un membre</h3>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="saveInvite()" class="space-y-4 p-1">
+    <app-form-field label="Email" [required]="true" [error]="form.controls.email.touched && form.controls.email.invalid ? 'Email requis et valide' : ''">
+      <app-input type="email" formControlName="email" placeholder="email@exemple.com" />
+    </app-form-field>
+
+    <div class="grid grid-cols-2 gap-4">
+      <app-form-field label="Prénom" [required]="true" [error]="form.controls.firstName.touched && form.controls.firstName.invalid ? 'Prénom requis' : ''">
+        <app-input formControlName="firstName" placeholder="Prénom" />
+      </app-form-field>
+      <app-form-field label="Nom" [required]="true" [error]="form.controls.lastName.touched && form.controls.lastName.invalid ? 'Nom requis' : ''">
+        <app-input formControlName="lastName" placeholder="Nom" />
+      </app-form-field>
+    </div>
+
+    <app-form-field label="Rôle" [required]="true">
+      <div class="flex gap-4">
+        <app-radio name="roleName" label="Étudiant" value="STUDENT"
+          [checked]="form.controls.roleName.value === 'STUDENT'"
+          (selected)="form.controls.roleName.setValue('STUDENT')" />
+        <app-radio name="roleName" label="Professeur" value="TEACHER"
+          [checked]="form.controls.roleName.value === 'TEACHER'"
+          (selected)="form.controls.roleName.setValue('TEACHER')" />
+      </div>
+    </app-form-field>
+
+    <app-form-field label="Téléphone">
+      <app-input formControlName="phoneNumber" placeholder="+212 6XX XXX XXX" />
+    </app-form-field>
+  </form>
+
+  <div class="modal-footer">
+    <div class="flex justify-end gap-3">
+      <app-button variant="ghost" (click)="closeModal()">Annuler</app-button>
+      <app-button variant="primary" [loading]="saving()" (click)="saveInvite()">Envoyer l'invitation</app-button>
+    </div>
+  </div>
+</app-modal>
+
+<!-- Delete Confirmation -->
+<app-modal [isOpen]="confirmDeleteOpen()" (closed)="closeDelete()">
+  <div class="modal-header">
+    <h3 class="text-lg font-semibold text-gray-900">Confirmer la suppression</h3>
+  </div>
+  <p class="px-1 py-4 text-sm text-gray-600">
+    Êtes-vous sûr de vouloir supprimer cet utilisateur ? Cette action est irréversible.
+  </p>
+  <div class="modal-footer">
+    <div class="flex justify-end gap-3">
+      <app-button variant="ghost" (click)="closeDelete()">Annuler</app-button>
+      <app-button variant="danger" (click)="deleteUser()">Supprimer</app-button>
+    </div>
+  </div>
+</app-modal>
