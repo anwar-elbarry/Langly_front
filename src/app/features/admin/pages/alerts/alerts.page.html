@@ -1,0 +1,81 @@
+@if (loading()) {
+  <div class="flex h-64 items-center justify-center">
+    <app-spinner size="lg" />
+  </div>
+} @else {
+  <!-- Header -->
+  <div class="mb-6">
+    <h2 class="text-xl font-bold text-gray-900">Alertes — Profils incomplets</h2>
+    <p class="text-sm text-gray-500">Étudiants dont le profil nécessite des informations supplémentaires</p>
+  </div>
+
+  <!-- KPI Card -->
+  <div class="mb-6 rounded-xl border border-red-200 bg-red-50 p-5">
+    <div class="flex items-center gap-3">
+      <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-red-100">
+        <i class="fa-solid fa-triangle-exclamation text-red-600"></i>
+      </div>
+      <div>
+        <p class="text-2xl font-bold text-red-900">{{ incompleteStudents().length }}</p>
+        <p class="text-sm text-red-700">
+          étudiants sur {{ totalStudents() }} ont un profil incomplet
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+    <app-table [striped]="true" [hoverable]="true">
+      <thead>
+        <tr>
+          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Nom complet</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Email</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Champs manquants</th>
+          <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (student of incompleteStudents(); track student.id) {
+          <tr>
+            <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ student.firstName }} {{ student.lastName }}</td>
+            <td class="px-4 py-3 text-sm text-gray-600">{{ student.email }}</td>
+            <td class="px-4 py-3">
+              <div class="flex flex-wrap gap-1.5">
+                @for (field of student.missingFields; track field) {
+                  <span class="inline-flex items-center rounded px-2 py-0.5 text-xs font-medium bg-red-100 text-red-700">
+                    {{ field }}
+                  </span>
+                }
+              </div>
+            </td>
+            <td class="px-4 py-3 text-right">
+              <div class="flex items-center justify-end gap-2">
+                <button
+                  class="rounded-md px-2 py-1 text-xs font-medium text-blue-600 transition hover:bg-blue-50"
+                  (click)="viewStudent(student.id)"
+                >
+                  Voir le profil
+                </button>
+                <button
+                  class="rounded-md px-2 py-1 text-xs font-medium text-gray-400 cursor-not-allowed"
+                  disabled
+                  title="Fonctionnalité à venir"
+                >
+                  Envoyer un rappel
+                </button>
+              </div>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="4" class="px-4 py-8 text-center text-sm text-gray-400">
+              <i class="fa-solid fa-circle-check mr-2 text-green-500"></i>
+              Tous les profils sont complets
+            </td>
+          </tr>
+        }
+      </tbody>
+    </app-table>
+  </div>
+}
