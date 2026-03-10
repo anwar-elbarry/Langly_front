@@ -43,3 +43,9 @@ export interface UserUpdateRequest {
   profile?: string;
   password?: string;
 }
+
+export interface UpdatePasswordRequest {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}
