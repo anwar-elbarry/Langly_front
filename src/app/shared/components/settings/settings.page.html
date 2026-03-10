@@ -1,0 +1,76 @@
+<section class="mx-auto max-w-3xl space-y-6">
+  <!-- Page header -->
+  <div class="rounded-2xl border border-sky-200/50 bg-gradient-to-br from-sky-100/60 to-slate-100/60 p-4">
+    <h1 class="m-0 text-2xl font-bold tracking-tight text-slate-900">Settings</h1>
+    <p class="m-0 mt-1 text-sm text-slate-500">Manage your account information and security</p>
+  </div>
+
+  <!-- Profile Information -->
+  <div class="rounded-2xl border border-gray-200 bg-white p-5">
+    <div class="mb-4 flex items-center gap-3">
+      <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+        <i class="fa-solid fa-user text-lg"></i>
+      </div>
+      <div>
+        <h2 class="m-0 text-base font-semibold text-gray-900">Profile Information</h2>
+        <p class="m-0 text-[13px] text-gray-500">Update your personal details</p>
+      </div>
+    </div>
+
+    <form class="space-y-3" [formGroup]="profileForm">
+      <div class="grid gap-3 md:grid-cols-2">
+        <app-form-field label="First Name" [required]="true"
+          [error]="profileForm.controls.firstName.touched && profileForm.controls.firstName.invalid ? 'First name is required' : ''">
+          <app-input formControlName="firstName" placeholder="First name" />
+        </app-form-field>
+        <app-form-field label="Last Name" [required]="true"
+          [error]="profileForm.controls.lastName.touched && profileForm.controls.lastName.invalid ? 'Last name is required' : ''">
+          <app-input formControlName="lastName" placeholder="Last name" />
+        </app-form-field>
+      </div>
+      <app-form-field label="Email" [required]="true"
+        [error]="profileForm.controls.email.touched && profileForm.controls.email.invalid ? 'Valid email is required' : ''">
+        <app-input type="email" formControlName="email" placeholder="email@example.com" />
+      </app-form-field>
+      <app-form-field label="Phone Number">
+        <app-input formControlName="phoneNumber" placeholder="+212..." />
+      </app-form-field>
+      <div class="flex justify-end pt-2">
+        <app-button [loading]="savingProfile()" (click)="saveProfile()">Save Changes</app-button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Change Password -->
+  <div class="rounded-2xl border border-gray-200 bg-white p-5">
+    <div class="mb-4 flex items-center gap-3">
+      <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-50 text-amber-600">
+        <i class="fa-solid fa-lock text-lg"></i>
+      </div>
+      <div>
+        <h2 class="m-0 text-base font-semibold text-gray-900">Change Password</h2>
+        <p class="m-0 text-[13px] text-gray-500">Update your password to keep your account secure</p>
+      </div>
+    </div>
+
+    <form class="space-y-3" [formGroup]="passwordForm">
+      <app-form-field label="Current Password" [required]="true"
+        [error]="passwordForm.controls.currentPassword.touched && passwordForm.controls.currentPassword.invalid ? 'Current password is required' : ''">
+        <app-input type="password" formControlName="currentPassword" placeholder="Enter current password" />
+      </app-form-field>
+      <div class="grid gap-3 md:grid-cols-2">
+        <app-form-field label="New Password" [required]="true"
+          [error]="passwordForm.controls.newPassword.touched && passwordForm.controls.newPassword.invalid ? 'Minimum 8 characters required' : ''">
+          <app-input type="password" formControlName="newPassword" placeholder="Enter new password" />
+        </app-form-field>
+        <app-form-field label="Confirm Password" [required]="true"
+          [error]="passwordForm.controls.confirmPassword.touched ? (passwordForm.controls.confirmPassword.invalid ? 'Confirmation is required' : (passwordMismatch ? 'Passwords do not match' : '')) : ''">
+          <app-input type="password" formControlName="confirmPassword" placeholder="Confirm new password" />
+        </app-form-field>
+      </div>
+      <div class="flex justify-end pt-2">
+        <app-button [loading]="savingPassword()" (click)="savePassword()">Update Password</app-button>
+      </div>
+    </form>
+  </div>
+</section>
