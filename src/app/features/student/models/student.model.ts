@@ -20,15 +20,19 @@ export interface UpcomingSession {
     meetingLink?: string;
 }
 
-// Checkout
-export interface CheckoutRequest {
+// Enrollment request
+export interface StudentEnrollmentRequest {
     courseId: string;
-    level: Level;
 }
 
-export interface CheckoutResponse {
-    checkoutUrl: string;
-    billingId: string;
+// Payment
+export interface PaymentMethodSelection {
+    paymentMethod: 'CASH' | 'BANK_TRANSFER' | 'STRIPE';
+}
+
+export interface PaymentResponse {
+    billing: import('../../admin/models/billing.model').BillingResponse;
+    checkoutUrl?: string;
 }
 
 // Attendance
