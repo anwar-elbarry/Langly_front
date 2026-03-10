@@ -29,7 +29,6 @@ import { userStatusClass } from '../../utils/status.utils';
     InputComponent,
   ],
   templateUrl: './users.page.html',
-  styleUrl: './users.page.css',
 })
 export class UsersPage implements OnInit {
   private usersService = inject(UsersService);
