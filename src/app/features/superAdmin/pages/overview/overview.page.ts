@@ -10,7 +10,6 @@ import { paymentStatusClass } from '../../utils/status.utils';
   standalone: true,
   imports: [CommonModule, TableComponent, ButtonComponent],
   templateUrl: './overview.page.html',
-  styleUrl: './overview.page.css',
 })
 export class OverviewPage implements OnInit {
   private overviewService = inject(OverviewService);
@@ -39,4 +38,3 @@ export class OverviewPage implements OnInit {
 
   paymentStatusClass = paymentStatusClass;
 }
-
