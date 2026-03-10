@@ -89,8 +89,8 @@ export class HomePage implements OnInit {
   }
 
   private buildEnrollmentStatusChart(enrollments: EnrollmentResponse[]): void {
-    const statuses = ['IN_PROGRESS', 'PASSED', 'FAILED', 'WITHDRAWN', 'TRANSFERRED'] as const;
-    const labels = ['En cours', 'Réussi', 'Échoué', 'Retiré', 'Transféré'];
+    const statuses = ['PENDING_APPROVAL', 'APPROVED', 'IN_PROGRESS', 'PASSED', 'FAILED', 'REJECTED', 'WITHDRAWN', 'TRANSFERRED'] as const;
+    const labels = ['En attente', 'Approuvé', 'En cours', 'Réussi', 'Échoué', 'Rejeté', 'Retiré', 'Transféré'];
     const counts = statuses.map(
       (s) => enrollments.filter((e) => e.status === s).length
     );
@@ -99,7 +99,7 @@ export class HomePage implements OnInit {
       datasets: [
         {
           data: counts,
-          backgroundColor: ['#F59E0B', '#22C55E', '#EF4444', '#6B7280', '#3B82F6'],
+          backgroundColor: ['#F97316', '#3B82F6', '#F59E0B', '#22C55E', '#EF4444', '#DC2626', '#6B7280', '#0EA5E9'],
         },
       ],
     });
