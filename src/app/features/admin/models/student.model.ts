@@ -1,4 +1,4 @@
-import { Level } from './enums';
+import { Gender, Level } from './enums';
 
 export interface StudentResponse {
   id: string;
@@ -10,5 +10,6 @@ export interface StudentResponse {
   birthDate: string;
   cnie: string;
   level: Level;
+  gender: Gender;
   missingFields: string[];
 }
