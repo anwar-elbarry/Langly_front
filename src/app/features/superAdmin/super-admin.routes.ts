@@ -50,6 +50,11 @@ export const SUPER_ADMIN_ROUTES: Routes = [
         loadComponent: () =>
           import('./pages/subscriptions/subscriptions.page').then((m) => m.SubscriptionsPage),
       },
+      {
+        path: 'settings',
+        loadComponent: () =>
+          import('../../shared/components/settings/settings.page').then((m) => m.SettingsPage),
+      },
     ],
   },
 ];
