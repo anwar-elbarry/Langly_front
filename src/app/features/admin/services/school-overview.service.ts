@@ -13,6 +13,7 @@ export interface SchoolOverview {
   pendingBillingCount: number;
   incompleteProfileCount: number;
   activeEnrollmentCount: number;
+  pendingEnrollmentCount: number;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -39,6 +40,7 @@ export class SchoolOverviewService {
         pendingBillingCount: pendingBillings.length,
         incompleteProfileCount: incompleteStudents.length,
         activeEnrollmentCount: enrollments.filter(e => e.status === 'IN_PROGRESS').length,
+        pendingEnrollmentCount: enrollments.filter(e => e.status === 'PENDING_APPROVAL').length,
       }))
     );
   }
