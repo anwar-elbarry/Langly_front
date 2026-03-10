@@ -24,7 +24,6 @@ import { PermissionsService } from '../../services/permissions.service';
     InputComponent,
   ],
   templateUrl: './permissions.page.html',
-  styleUrl: './permissions.page.css',
 })
 export class PermissionsPage implements OnInit {
   private permissionsService = inject(PermissionsService);
@@ -139,4 +138,3 @@ export class PermissionsPage implements OnInit {
     });
   }
 }
-
