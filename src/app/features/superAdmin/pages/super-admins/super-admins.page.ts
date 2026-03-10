@@ -24,7 +24,6 @@ import { SuperAdminsService } from '../../services/super-admins.service';
     InputComponent,
   ],
   templateUrl: './super-admins.page.html',
-  styleUrl: './super-admins.page.css',
 })
 export class SuperAdminsPage implements OnInit {
   private superAdminsService = inject(SuperAdminsService);
@@ -139,4 +138,3 @@ export class SuperAdminsPage implements OnInit {
     });
   }
 }
-
