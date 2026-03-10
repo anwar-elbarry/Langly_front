@@ -38,7 +38,6 @@ interface PermissionGroup {
     InputComponent,
   ],
   templateUrl: './roles-permissions.page.html',
-  styleUrl: './roles-permissions.page.css',
 })
 export class RolesPermissionsPage implements OnInit {
   private rolesService = inject(RolesService);
