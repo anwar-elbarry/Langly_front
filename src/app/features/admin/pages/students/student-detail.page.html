@@ -1,0 +1,157 @@
+@if (loading()) {
+  <div class="flex h-64 items-center justify-center">
+    <app-spinner size="lg" />
+  </div>
+} @else if (student()) {
+  <!-- Back button -->
+  <div class="mb-4">
+    <button
+      class="inline-flex items-center gap-2 text-sm font-medium text-gray-500 transition hover:text-gray-700"
+      (click)="goBack()"
+    >
+      <i class="fa-solid fa-arrow-left"></i> Retour aux élèves
+    </button>
+  </div>
+
+  <!-- Missing fields alert -->
+  @if (hasMissingFields()) {
+    <div class="mb-6 rounded-lg border border-red-200 bg-red-50 p-4">
+      <div class="flex items-start gap-3">
+        <i class="fa-solid fa-triangle-exclamation mt-0.5 text-red-500"></i>
+        <div>
+          <p class="text-sm font-medium text-red-800">Profil incomplet</p>
+          <p class="mt-1 text-sm text-red-700">
+            Veuillez demander à l'étudiant de compléter les champs suivants :
+          </p>
+          <div class="mt-2 flex flex-wrap gap-1.5">
+            @for (field of student()!.missingFields; track field) {
+              <span class="inline-flex items-center rounded px-2 py-0.5 text-xs font-medium bg-red-100 text-red-700">
+                {{ field }}
+              </span>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Profile card -->
+  <div class="mb-6 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+    <div class="flex items-start gap-4">
+      <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-blue-600 to-sky-500 text-lg font-bold text-white">
+        {{ (student()!.firstName[0] || '') + (student()!.lastName[0] || '') }}
+      </div>
+      <div class="flex-1">
+        <h2 class="text-xl font-bold text-gray-900">{{ student()!.firstName }} {{ student()!.lastName }}</h2>
+        <div class="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div>
+            <span class="text-xs text-gray-500">Email</span>
+            <p class="text-sm font-medium text-gray-900">{{ student()!.email || '—' }}</p>
+          </div>
+          <div>
+            <span class="text-xs text-gray-500">Téléphone</span>
+            <p class="text-sm font-medium text-gray-900">{{ student()!.phoneNumber || '—' }}</p>
+          </div>
+          <div>
+            <span class="text-xs text-gray-500">Date de naissance</span>
+            <p class="text-sm font-medium text-gray-900">{{ student()!.birthDate ? (student()!.birthDate | date:'dd/MM/yyyy') : '—' }}</p>
+          </div>
+          <div>
+            <span class="text-xs text-gray-500">CNIE</span>
+            <p class="text-sm font-medium text-gray-900">{{ student()!.cnie || '—' }}</p>
+          </div>
+          <div>
+            <span class="text-xs text-gray-500">Niveau</span>
+            <p class="mt-0.5">
+              <span [class]="levelBadgeClass(student()!.level)">{{ student()!.level || '—' }}</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="mb-4 flex gap-1 rounded-lg bg-gray-100 p-1">
+    <button
+      class="rounded-md px-4 py-2 text-sm font-medium transition-colors"
+      [class]="activeTab() === 'enrollments' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'"
+      (click)="setTab('enrollments')"
+    >
+      Inscriptions ({{ enrollments().length }})
+    </button>
+    <button
+      class="rounded-md px-4 py-2 text-sm font-medium transition-colors"
+      [class]="activeTab() === 'billings' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'"
+      (click)="setTab('billings')"
+    >
+      Paiements ({{ billings().length }})
+    </button>
+  </div>
+
+  <!-- Enrollments tab -->
+  @if (activeTab() === 'enrollments') {
+    <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+      <app-table [striped]="true" [hoverable]="true">
+        <thead>
+          <tr>
+            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Cours</th>
+            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Niveau</th>
+            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Statut</th>
+            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Date d'inscription</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (e of enrollments(); track e.id) {
+            <tr>
+              <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ e.courseName }}</td>
+              <td class="px-4 py-3"><span [class]="levelBadgeClass(e.level)">{{ e.level }}</span></td>
+              <td class="px-4 py-3"><span [class]="enrollmentStatusClass(e.status)">{{ enrollmentStatusLabel(e.status) }}</span></td>
+              <td class="px-4 py-3 text-sm text-gray-600">{{ e.enrolledAt | date:'dd/MM/yyyy' }}</td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="4" class="px-4 py-8 text-center text-sm text-gray-400">Aucune inscription</td>
+            </tr>
+          }
+        </tbody>
+      </app-table>
+    </div>
+  }
+
+  <!-- Billings tab -->
+  @if (activeTab() === 'billings') {
+    <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+      <app-table [striped]="true" [hoverable]="true">
+        <thead>
+          <tr>
+            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Montant</th>
+            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Statut</th>
+            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Méthode</th>
+            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Prochaine échéance</th>
+            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Date de paiement</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (b of billings(); track b.id) {
+            <tr>
+              <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ b.price }} MAD</td>
+              <td class="px-4 py-3"><span [class]="paymentStatusClass(b.status)">{{ paymentStatusLabel(b.status) }}</span></td>
+              <td class="px-4 py-3 text-sm text-gray-600">
+                @if (b.status === 'PAID') {
+                  {{ b.paymentMethod === 'CASH' ? 'Espèces' : b.paymentMethod === 'BANK_TRANSFER' ? 'Virement' : '—' }}
+                } @else { — }
+              </td>
+              <td class="px-4 py-3 text-sm text-gray-600">{{ b.nextBillDate | date:'dd/MM/yyyy' }}</td>
+              <td class="px-4 py-3 text-sm text-gray-600">{{ b.paidAt ? (b.paidAt | date:'dd/MM/yyyy') : '—' }}</td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="5" class="px-4 py-8 text-center text-sm text-gray-400">Aucun paiement</td>
+            </tr>
+          }
+        </tbody>
+      </app-table>
+    </div>
+  }
+}
