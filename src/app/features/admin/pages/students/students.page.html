@@ -1,0 +1,92 @@
+<!-- Header -->
+<div class="mb-6">
+  <h2 class="text-xl font-bold text-gray-900">Élèves</h2>
+  <p class="text-sm text-gray-500">Consulter les profils des étudiants de votre école</p>
+</div>
+
+<!-- Filters -->
+<div class="mb-4 flex flex-wrap items-center gap-3">
+  <select
+    class="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+    [value]="levelFilter()"
+    (change)="setLevelFilter($any($event.target).value)"
+  >
+    <option value="">Tous les niveaux</option>
+    <option value="A1">A1</option>
+    <option value="A2">A2</option>
+    <option value="B1">B1</option>
+    <option value="B2">B2</option>
+    <option value="C1">C1</option>
+    <option value="C2">C2</option>
+  </select>
+
+  <select
+    class="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+    [value]="profileFilter()"
+    (change)="setProfileFilter($any($event.target).value)"
+  >
+    <option value="ALL">Tous les profils</option>
+    <option value="COMPLETE">Profils complets</option>
+    <option value="INCOMPLETE">Profils incomplets</option>
+  </select>
+</div>
+
+@if (loading()) {
+  <div class="flex h-64 items-center justify-center">
+    <app-spinner size="lg" />
+  </div>
+} @else {
+  <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+    <app-table [striped]="true" [hoverable]="true">
+      <thead>
+        <tr>
+          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Nom complet</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Email</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Téléphone</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Date de naissance</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">CNIE</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Niveau</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Profil</th>
+          <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (student of filteredStudents(); track student.id) {
+          <tr>
+            <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ student.firstName }} {{ student.lastName }}</td>
+            <td class="px-4 py-3 text-sm text-gray-600">{{ student.email }}</td>
+            <td class="px-4 py-3 text-sm text-gray-600">{{ student.phoneNumber || '—' }}</td>
+            <td class="px-4 py-3 text-sm text-gray-600">{{ student.birthDate ? (student.birthDate | date:'dd/MM/yyyy') : '—' }}</td>
+            <td class="px-4 py-3 text-sm text-gray-600">{{ student.cnie || '—' }}</td>
+            <td class="px-4 py-3">
+              <span [class]="levelBadgeClass(student.level)">{{ student.level || '—' }}</span>
+            </td>
+            <td class="px-4 py-3">
+              @if (isProfileComplete(student)) {
+                <span class="inline-flex items-center gap-1 text-sm text-green-600">
+                  <i class="fa-solid fa-circle-check"></i> Complet
+                </span>
+              } @else {
+                <span class="inline-flex items-center gap-1 text-sm text-amber-600" [title]="student.missingFields.join(', ')">
+                  <i class="fa-solid fa-triangle-exclamation"></i> Incomplet
+                </span>
+              }
+            </td>
+            <td class="px-4 py-3 text-right">
+              <button
+                class="rounded-md px-2 py-1 text-xs font-medium text-blue-600 transition hover:bg-blue-50"
+                (click)="viewStudent(student.id)"
+              >
+                Voir
+              </button>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="8" class="px-4 py-8 text-center text-sm text-gray-400">Aucun élève trouvé</td>
+          </tr>
+        }
+      </tbody>
+    </app-table>
+  </div>
+}
