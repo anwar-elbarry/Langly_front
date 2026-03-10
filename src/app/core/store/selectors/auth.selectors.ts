@@ -40,3 +40,8 @@ export const selectUserRole = createSelector(
     selectCurrentUser,
     (user) => user?.role?.name || ''
 );
+
+export const selectSchoolId = createSelector(
+    selectCurrentUser,
+    (user) => user?.schoolId || ''
+);
