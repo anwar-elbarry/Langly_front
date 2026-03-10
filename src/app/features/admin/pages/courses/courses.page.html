@@ -1,0 +1,187 @@
+<!-- Header -->
+<div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+  <div>
+    <h2 class="text-xl font-bold text-gray-900">Cours</h2>
+    <p class="text-sm text-gray-500">Créer et gérer les cours de votre école</p>
+  </div>
+  <app-button variant="primary" (click)="openCreate()">
+    <i class="fa-solid fa-plus mr-2"></i>Nouveau cours
+  </app-button>
+</div>
+
+@if (loading()) {
+  <div class="flex h-64 items-center justify-center">
+    <app-spinner size="lg" />
+  </div>
+} @else {
+  <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+    <app-table [striped]="true" [hoverable]="true">
+      <thead>
+        <tr>
+          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Nom</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Code</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Langue</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Niveau</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Dates</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Prix</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Capacité</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Professeur</th>
+          <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (course of courses(); track course.id) {
+          <tr>
+            <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ course.name }}</td>
+            <td class="px-4 py-3 text-sm text-gray-600">{{ course.code }}</td>
+            <td class="px-4 py-3 text-sm text-gray-600">{{ course.language }}</td>
+            <td class="px-4 py-3">
+              <span [class]="levelBadgeClass(course.requiredLevel)">{{ course.requiredLevel }}</span>
+              <i class="fa-solid fa-arrow-right mx-1 text-[10px] text-gray-400"></i>
+              <span [class]="levelBadgeClass(course.targetLevel)">{{ course.targetLevel }}</span>
+            </td>
+            <td class="px-4 py-3 text-sm text-gray-600">
+              {{ course.startDate | date:'dd/MM/yyyy' }} — {{ course.endDate | date:'dd/MM/yyyy' }}
+            </td>
+            <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ course.price }} MAD</td>
+            <td class="px-4 py-3">
+              <div class="flex items-center gap-2">
+                <span class="text-sm text-gray-600">{{ course.enrolledCount }}/{{ course.capacity }}</span>
+                @if (isFull(course)) {
+                  <span class="inline-flex items-center rounded-full bg-red-100 px-2 py-0.5 text-xs font-semibold text-red-700">Complet</span>
+                } @else {
+                  <div class="h-1.5 w-16 overflow-hidden rounded-full bg-gray-200">
+                    <div class="h-full rounded-full bg-blue-500 transition-all"
+                      [style.width.%]="capacityPercent(course)"></div>
+                  </div>
+                }
+              </div>
+            </td>
+            <td class="px-4 py-3 text-sm text-gray-600">{{ course.teacherFullName }}</td>
+            <td class="px-4 py-3 text-right">
+              <div class="flex items-center justify-end gap-2">
+                <button class="rounded-md px-2 py-1 text-xs font-medium text-blue-600 transition hover:bg-blue-50" (click)="openEdit(course)">
+                  Modifier
+                </button>
+                <button class="rounded-md px-2 py-1 text-xs font-medium text-red-600 transition hover:bg-red-50" (click)="openDelete(course.id)">
+                  Supprimer
+                </button>
+              </div>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="9" class="px-4 py-8 text-center text-sm text-gray-400">Aucun cours trouvé</td>
+          </tr>
+        }
+      </tbody>
+    </app-table>
+  </div>
+}
+
+<!-- Create/Edit Modal -->
+<app-modal [isOpen]="modalOpen()" (closed)="closeModal()">
+  <div class="modal-header">
+    <h3 class="text-lg font-semibold text-gray-900">
+      {{ editingCourseId() ? 'Modifier le cours' : 'Nouveau cours' }}
+    </h3>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="saveCourse()" class="space-y-4 p-1">
+    <div class="grid grid-cols-2 gap-4">
+      <app-form-field label="Nom du cours" [required]="true" [error]="form.controls.name.touched && form.controls.name.invalid ? 'Nom requis' : ''">
+        <app-input formControlName="name" placeholder="Français Débutant" />
+      </app-form-field>
+      <app-form-field label="Code" [required]="true" [error]="form.controls.code.touched && form.controls.code.invalid ? 'Code requis' : ''">
+        <app-input formControlName="code" placeholder="FR-A1-001" />
+      </app-form-field>
+    </div>
+
+    <app-form-field label="Langue" [required]="true">
+      <select formControlName="language" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none">
+        <option value="">Sélectionner une langue</option>
+        @for (lang of languages; track lang) {
+          <option [value]="lang">{{ lang }}</option>
+        }
+      </select>
+    </app-form-field>
+
+    <div class="grid grid-cols-2 gap-4">
+      <app-form-field label="Niveau requis" [required]="true">
+        <select formControlName="requiredLevel" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none">
+          <option value="">Sélectionner</option>
+          @for (level of levels; track level) {
+            <option [value]="level">{{ level }}</option>
+          }
+        </select>
+      </app-form-field>
+      <app-form-field label="Niveau cible" [required]="true">
+        <select formControlName="targetLevel" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none">
+          <option value="">Sélectionner</option>
+          @for (level of levels; track level) {
+            <option [value]="level">{{ level }}</option>
+          }
+        </select>
+      </app-form-field>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <app-form-field label="Date début" [required]="true">
+        <app-input type="date" formControlName="startDate" />
+      </app-form-field>
+      <app-form-field label="Date fin" [required]="true">
+        <app-input type="date" formControlName="endDate" />
+      </app-form-field>
+    </div>
+
+    <div class="grid grid-cols-3 gap-4">
+      <app-form-field label="Prix (MAD)" [required]="true">
+        <app-input type="number" formControlName="price" placeholder="2500" />
+      </app-form-field>
+      <app-form-field label="Capacité" [required]="true">
+        <app-input type="number" formControlName="capacity" placeholder="25" />
+      </app-form-field>
+      <app-form-field label="Sessions/sem." [required]="true">
+        <app-input type="number" formControlName="sessionPerWeek" placeholder="3" />
+      </app-form-field>
+    </div>
+
+    <app-form-field label="Minutes/session">
+      <app-input type="number" formControlName="minutesPerSession" placeholder="90" />
+    </app-form-field>
+
+    <app-form-field label="Professeur" [required]="true">
+      <select formControlName="teacherId" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none">
+        <option value="">Sélectionner un professeur</option>
+        @for (teacher of teachers(); track teacher.id) {
+          <option [value]="teacher.id">{{ teacher.firstName }} {{ teacher.lastName }}</option>
+        }
+      </select>
+    </app-form-field>
+  </form>
+
+  <div class="modal-footer">
+    <div class="flex justify-end gap-3">
+      <app-button variant="ghost" (click)="closeModal()">Annuler</app-button>
+      <app-button variant="primary" [loading]="saving()" (click)="saveCourse()">
+        {{ editingCourseId() ? 'Enregistrer' : 'Créer le cours' }}
+      </app-button>
+    </div>
+  </div>
+</app-modal>
+
+<!-- Delete Confirmation -->
+<app-modal [isOpen]="confirmDeleteOpen()" (closed)="closeDelete()">
+  <div class="modal-header">
+    <h3 class="text-lg font-semibold text-gray-900">Confirmer la suppression</h3>
+  </div>
+  <p class="px-1 py-4 text-sm text-gray-600">
+    Êtes-vous sûr de vouloir supprimer ce cours ? Les inscriptions associées seront également affectées.
+  </p>
+  <div class="modal-footer">
+    <div class="flex justify-end gap-3">
+      <app-button variant="ghost" (click)="closeDelete()">Annuler</app-button>
+      <app-button variant="danger" (click)="deleteCourse()">Supprimer</app-button>
+    </div>
+  </div>
+</app-modal>
