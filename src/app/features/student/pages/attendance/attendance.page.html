@@ -1,0 +1,65 @@
+<!-- Header -->
+<div class="mb-6">
+    <h2 class="m-0 text-xl font-bold text-gray-900">Marquer ma présence</h2>
+    <p class="m-0 mt-1 text-sm text-gray-500">Scannez le QR code fourni par votre professeur</p>
+</div>
+
+<div class="mx-auto max-w-md">
+    <!-- QR illustration -->
+    <div class="mb-6 flex flex-col items-center rounded-xl border border-gray-200 bg-white p-8">
+        <div class="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-emerald-50">
+            <i class="fa-solid fa-qrcode text-4xl text-emerald-500"></i>
+        </div>
+        <p class="m-0 text-center text-sm text-gray-500">
+            Demandez à votre professeur de générer un QR code, puis renseignez les informations ci-dessous
+        </p>
+    </div>
+
+    <!-- Form -->
+    <div class="rounded-xl border border-gray-200 bg-white p-6">
+        <!-- Session ID -->
+        <div class="mb-4">
+            <label class="mb-1.5 block text-sm font-medium text-gray-700">ID de la session</label>
+            <input type="text"
+                class="w-full rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-900 outline-none transition focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100"
+                placeholder="Entrez l'identifiant de la session" [ngModel]="sessionId()"
+                (ngModelChange)="sessionId.set($event)" />
+        </div>
+
+        <!-- QR Token -->
+        <div class="mb-4">
+            <label class="mb-1.5 block text-sm font-medium text-gray-700">Code QR</label>
+            <input type="text"
+                class="w-full rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-900 outline-none transition focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100"
+                placeholder="Entrez le code du QR" [ngModel]="qrToken()" (ngModelChange)="qrToken.set($event)" />
+        </div>
+
+        <!-- Success -->
+        @if (success()) {
+        <div class="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700">
+            <i class="fa-solid fa-circle-check mr-2"></i>{{ success() }}
+        </div>
+        }
+
+        <!-- Error -->
+        @if (error()) {
+        <div class="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+            <i class="fa-solid fa-circle-exclamation mr-2"></i>{{ error() }}
+        </div>
+        }
+
+        <!-- Submit button -->
+        <button
+            class="w-full cursor-pointer rounded-lg border-0 bg-emerald-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
+            [disabled]="submitting()" (click)="markAttendance()">
+            @if (submitting()) {
+            <div class="inline-flex items-center gap-2">
+                <div class="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"></div>
+                Enregistrement...
+            </div>
+            } @else {
+            <i class="fa-solid fa-check mr-2"></i>Confirmer ma présence
+            }
+        </button>
+    </div>
+</div>
