@@ -9,6 +9,7 @@ export interface BillingResponse {
   paidAt: string;
   studentId: string;
   studentFullName: string;
+  enrollmentId?: string;
 }
 
 export interface BillingConfirmRequest {

@@ -12,6 +12,7 @@
     (change)="setLevelFilter($any($event.target).value)"
   >
     <option value="">Tous les niveaux</option>
+    <option value="A0">A0</option>
     <option value="A1">A1</option>
     <option value="A2">A2</option>
     <option value="B1">B1</option>
@@ -46,6 +47,7 @@
           <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Date de naissance</th>
           <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">CNIE</th>
           <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Niveau</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Genre</th>
           <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Profil</th>
           <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">Actions</th>
         </tr>
@@ -61,6 +63,7 @@
             <td class="px-4 py-3">
               <span [class]="levelBadgeClass(student.level)">{{ student.level || '—' }}</span>
             </td>
+            <td class="px-4 py-3 text-sm text-gray-600">{{ student.gender === 'MALE' ? 'Homme' : student.gender === 'FEMALE' ? 'Femme' : '—' }}</td>
             <td class="px-4 py-3">
               @if (isProfileComplete(student)) {
                 <span class="inline-flex items-center gap-1 text-sm text-green-600">
@@ -83,7 +86,7 @@
           </tr>
         } @empty {
           <tr>
-            <td colspan="8" class="px-4 py-8 text-center text-sm text-gray-400">Aucun élève trouvé</td>
+            <td colspan="9" class="px-4 py-8 text-center text-sm text-gray-400">Aucun élève trouvé</td>
           </tr>
         }
       </tbody>

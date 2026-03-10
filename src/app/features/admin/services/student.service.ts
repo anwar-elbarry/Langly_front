@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment.development';
 import { StudentResponse } from '../models/student.model';
+import { Gender, Level } from '../models/enums';
 
 @Injectable({ providedIn: 'root' })
 export class StudentService {
@@ -19,5 +20,9 @@ export class StudentService {
 
   getIncomplete(schoolId: string): Observable<StudentResponse[]> {
     return this.http.get<StudentResponse[]>(`${this.apiUrl}/school/${schoolId}/incomplete`);
+  }
+
+  updateByAdmin(id: string, request: { level?: Level; gender?: Gender }): Observable<StudentResponse> {
+    return this.http.patch<StudentResponse>(`${this.apiUrl}/${id}/admin`, request);
   }
 }

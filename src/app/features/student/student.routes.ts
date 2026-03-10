@@ -41,7 +41,7 @@ export const STUDENT_ROUTES: Routes = [
             {
                 path: 'settings',
                 loadComponent: () =>
-                    import('../../shared/components/settings/settings.page').then((m) => m.SettingsPage),
+                    import('./pages/settings/student-settings.page').then((m) => m.StudentSettingsPage),
             },
         ],
     },

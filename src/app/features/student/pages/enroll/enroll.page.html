@@ -1,18 +1,18 @@
 <!-- Header -->
 <div class="mb-6">
     <h2 class="m-0 text-xl font-bold text-gray-900">S'inscrire à un cours</h2>
-    <p class="m-0 mt-1 text-sm text-gray-500">Parcourez les cours disponibles et inscrivez-vous</p>
+    <p class="m-0 mt-1 text-sm text-gray-500">Parcourez les cours disponibles et faites une demande d'inscription</p>
 </div>
 
 <!-- Loading -->
 @if (loading()) {
 <div class="flex items-center justify-center py-20">
-    <div class="h-8 w-8 animate-spin rounded-full border-4 border-emerald-200 border-t-emerald-600"></div>
+    <app-spinner size="lg" />
 </div>
 }
 
 <!-- Empty -->
-@if (!loading() && courses().length === 0) {
+@if (!loading() && enrichedCourses().length === 0) {
 <div class="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-200 bg-white py-16">
     <i class="fa-solid fa-search text-3xl text-gray-300"></i>
     <p class="mt-2 text-sm text-gray-500">Aucun cours disponible pour le moment</p>
@@ -20,11 +20,12 @@
 }
 
 <!-- Course grid -->
-@if (!loading() && courses().length > 0) {
+@if (!loading() && enrichedCourses().length > 0) {
 <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-    @for (course of courses(); track course.id) {
+    @for (course of enrichedCourses(); track course.id) {
     <div
         class="flex flex-col rounded-xl border border-gray-200 bg-white p-5 transition hover:border-emerald-300 hover:shadow-md">
+        <!-- Top row: language + price -->
         <div class="mb-3 flex items-start justify-between">
             <span class="rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
                 {{ course.language }}
@@ -35,8 +36,12 @@
         <h3 class="m-0 text-[15px] font-semibold text-gray-900">{{ course.name }}</h3>
         <p class="m-0 mt-0.5 text-xs font-mono text-gray-400">{{ course.code }}</p>
 
+        <!-- Info badges -->
         <div class="mt-3 flex flex-wrap gap-2 text-xs text-gray-500">
-            <span class="rounded bg-gray-100 px-2 py-1">{{ course.requiredLevel }} → {{ course.targetLevel }}</span>
+            <span [class]="levelBadgeClass(course.requiredLevel)">
+                Niveau requis : {{ course.requiredLevel }}
+            </span>
+            <span class="rounded bg-gray-100 px-2 py-1">→ {{ course.targetLevel }}</span>
             <span class="rounded bg-gray-100 px-2 py-1">{{ course.sessionPerWeek }} séances/sem</span>
             <span class="rounded bg-gray-100 px-2 py-1">{{ course.enrolledCount }}/{{ course.capacity }}</span>
         </div>
@@ -45,23 +50,63 @@
             <i class="fa-solid fa-chalkboard-user mr-1 text-gray-400"></i>{{ course.teacherFullName }}
         </div>
 
+        <!-- Enrollment status badge (if exists) -->
+        @if (course.enrollment) {
+        <div class="mt-3">
+            <span [class]="enrollmentStatusClass(course.enrollment.status)">
+                {{ enrollmentStatusLabel(course.enrollment.status) }}
+            </span>
+        </div>
+        }
+
+        <!-- Action area -->
         <div class="mt-auto pt-4">
-            @if (checkingOut() === course.id) {
-            <div
-                class="flex items-center justify-center gap-2 rounded-lg bg-gray-100 px-4 py-2.5 text-sm text-gray-500">
+            @if (submitting() === course.id) {
+            <!-- Submitting state -->
+            <div class="flex items-center justify-center gap-2 rounded-lg bg-gray-100 px-4 py-2.5 text-sm text-gray-500">
                 <div class="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-emerald-600"></div>
-                Redirection...
+                Envoi...
             </div>
-            } @else {
-            <button
-                class="w-full cursor-pointer rounded-lg border-0 bg-emerald-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-emerald-700"
-                (click)="openLevelModal(course)" [disabled]="course.enrolledCount >= course.capacity">
-                @if (course.enrolledCount >= course.capacity) {
-                Complet
-                } @else {
-                <i class="fa-solid fa-credit-card mr-2"></i>S'inscrire · {{ course.price }} MAD
+            } @else if (course.enrollment?.status === 'IN_PROGRESS' || course.enrollment?.status === 'PASSED') {
+            <!-- Already active / passed -->
+            <div class="rounded-lg bg-green-50 px-4 py-2.5 text-center text-sm font-medium text-green-700">
+                <i class="fa-solid fa-circle-check mr-2"></i>Inscrit
+            </div>
+            } @else if (course.enrollment?.status === 'APPROVED') {
+            <!-- Approved — show Pay button -->
+            <app-button variant="primary" [fullWidth]="true" (click)="openPaymentModal(course)">
+                <i class="fa-solid fa-credit-card mr-2"></i>Payer · {{ course.price }} MAD
+            </app-button>
+            } @else if (course.enrollment?.status === 'PENDING_APPROVAL') {
+            <!-- Pending approval -->
+            <div class="rounded-lg bg-amber-50 px-4 py-2.5 text-center text-sm font-medium text-amber-700">
+                <i class="fa-solid fa-clock mr-2"></i>En attente d'approbation
+            </div>
+            } @else if (course.enrollment?.status === 'REJECTED') {
+            <!-- Rejected — can re-apply -->
+            <div class="space-y-2">
+                <div class="rounded-lg bg-red-50 px-4 py-2 text-center text-xs text-red-600">
+                    <i class="fa-solid fa-circle-xmark mr-1"></i>Demande rejetée
+                </div>
+                @if (course.canEnroll) {
+                <app-button variant="outline" [fullWidth]="true" (click)="openConfirmModal(course)">
+                    <i class="fa-solid fa-rotate-right mr-2"></i>Redemander
+                </app-button>
                 }
+            </div>
+            } @else if (!course.canEnroll) {
+            <!-- Cannot enroll — show reason -->
+            <button
+                class="w-full cursor-not-allowed rounded-lg border-0 bg-gray-200 px-4 py-2.5 text-sm font-medium text-gray-500"
+                disabled
+                [title]="course.disableReason || ''">
+                {{ course.disableReason }}
             </button>
+            } @else {
+            <!-- Can enroll -->
+            <app-button variant="primary" [fullWidth]="true" (click)="openConfirmModal(course)">
+                <i class="fa-solid fa-paper-plane mr-2"></i>S'inscrire
+            </app-button>
             }
         </div>
     </div>
@@ -69,29 +114,113 @@
 </div>
 }
 
-<!-- Level selection modal -->
-@if (showLevelModal()) {
-<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
-    (click)="closeLevelModal()">
-    <div class="w-full max-w-sm rounded-xl bg-white p-6 shadow-xl" (click)="$event.stopPropagation()">
-        <h3 class="m-0 text-lg font-bold text-gray-900">Sélectionnez votre niveau</h3>
-        <p class="m-0 mt-1 text-sm text-gray-500">Pour le cours : {{ selectedCourse()?.name }}</p>
-
-        <div class="mt-4 grid grid-cols-3 gap-2">
-            @for (level of levels; track level) {
-            <button
-                class="cursor-pointer rounded-lg border border-gray-200 bg-white px-4 py-3 text-sm font-semibold text-gray-700 transition hover:border-emerald-400 hover:bg-emerald-50 hover:text-emerald-700"
-                (click)="enrollWithLevel(level)">
-                {{ level }}
-            </button>
-            }
-        </div>
-
-        <button
-            class="mt-4 w-full cursor-pointer rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-500 transition hover:bg-gray-50"
-            (click)="closeLevelModal()">
-            Annuler
-        </button>
+<!-- Enrollment confirmation modal -->
+<app-modal [isOpen]="showConfirmModal()" (closed)="closeConfirmModal()">
+    <div class="modal-header">
+        <h3 class="text-lg font-semibold text-gray-900">Confirmer la demande d'inscription</h3>
     </div>
-</div>
-}
+    <div class="p-1">
+        <p class="text-sm text-gray-600">
+            Vous allez demander l'inscription au cours
+            <strong>{{ confirmCourse()?.name }}</strong>.
+        </p>
+        <p class="mt-2 text-sm text-gray-500">
+            Niveau requis : <span [class]="levelBadgeClass(confirmCourse()?.requiredLevel)">{{ confirmCourse()?.requiredLevel }}</span>
+        </p>
+        <p class="mt-1 text-sm text-gray-500">
+            Votre demande sera examinée par l'administration. Vous serez notifié(e) une fois la décision prise.
+        </p>
+    </div>
+    <div class="modal-footer">
+        <div class="flex justify-end gap-3">
+            <app-button variant="ghost" (click)="closeConfirmModal()">Annuler</app-button>
+            <app-button variant="primary" (click)="confirmEnrollment()">
+                <i class="fa-solid fa-paper-plane mr-2"></i>Envoyer la demande
+            </app-button>
+        </div>
+    </div>
+</app-modal>
+
+<!-- Payment method modal -->
+<app-modal [isOpen]="showPaymentModal()" (closed)="closePaymentModal()">
+    <div class="modal-header">
+        <h3 class="text-lg font-semibold text-gray-900">Choisir le mode de paiement</h3>
+    </div>
+    <div class="space-y-3 p-1">
+        <p class="text-sm text-gray-600">
+            Cours : <strong>{{ paymentCourse()?.name }}</strong>
+            — Montant : <strong>{{ paymentCourse()?.price }} MAD</strong>
+        </p>
+
+        <!-- CASH -->
+        <label
+            class="flex cursor-pointer items-start gap-3 rounded-lg border p-4 transition"
+            [class]="selectedPaymentMethod() === 'CASH'
+                ? 'border-emerald-500 bg-emerald-50'
+                : 'border-gray-200 hover:border-gray-300'"
+            (click)="selectMethod('CASH')">
+            <input type="radio" name="paymentMethod" value="CASH"
+                [checked]="selectedPaymentMethod() === 'CASH'"
+                class="mt-0.5 accent-emerald-600" />
+            <div>
+                <p class="m-0 text-sm font-semibold text-gray-900">
+                    <i class="fa-solid fa-money-bill-wave mr-2 text-green-600"></i>Espèces
+                </p>
+                <p class="m-0 mt-1 text-xs text-gray-500">
+                    Payez à l'accueil de l'école. L'admin confirmera la réception.
+                </p>
+            </div>
+        </label>
+
+        <!-- BANK_TRANSFER -->
+        <label
+            class="flex cursor-pointer items-start gap-3 rounded-lg border p-4 transition"
+            [class]="selectedPaymentMethod() === 'BANK_TRANSFER'
+                ? 'border-emerald-500 bg-emerald-50'
+                : 'border-gray-200 hover:border-gray-300'"
+            (click)="selectMethod('BANK_TRANSFER')">
+            <input type="radio" name="paymentMethod" value="BANK_TRANSFER"
+                [checked]="selectedPaymentMethod() === 'BANK_TRANSFER'"
+                class="mt-0.5 accent-emerald-600" />
+            <div>
+                <p class="m-0 text-sm font-semibold text-gray-900">
+                    <i class="fa-solid fa-building-columns mr-2 text-blue-600"></i>Virement bancaire
+                </p>
+                <p class="m-0 mt-1 text-xs text-gray-500">
+                    Effectuez un virement. L'admin vérifiera et confirmera la réception.
+                </p>
+            </div>
+        </label>
+
+        <!-- STRIPE -->
+        <label
+            class="flex cursor-pointer items-start gap-3 rounded-lg border p-4 transition"
+            [class]="selectedPaymentMethod() === 'ONLINE_GATEWAY'
+                ? 'border-emerald-500 bg-emerald-50'
+                : 'border-gray-200 hover:border-gray-300'"
+            (click)="selectMethod('ONLINE_GATEWAY')">
+            <input type="radio" name="paymentMethod" value="ONLINE_GATEWAY"
+                [checked]="selectedPaymentMethod() === 'ONLINE_GATEWAY'"
+                class="mt-0.5 accent-emerald-600" />
+            <div>
+                <p class="m-0 text-sm font-semibold text-gray-900">
+                    <i class="fa-solid fa-globe mr-2 text-purple-600"></i>Paiement en ligne
+                </p>
+                <p class="m-0 mt-1 text-xs text-gray-500">
+                    Paiement sécurisé par carte bancaire. Validation instantanée.
+                </p>
+            </div>
+        </label>
+    </div>
+    <div class="modal-footer">
+        <div class="flex justify-end gap-3">
+            <app-button variant="ghost" (click)="closePaymentModal()">Annuler</app-button>
+            <app-button variant="primary"
+                [disabled]="!selectedPaymentMethod()"
+                [loading]="processingPayment()"
+                (click)="confirmPayment()">
+                Confirmer le paiement
+            </app-button>
+        </div>
+    </div>
+</app-modal>

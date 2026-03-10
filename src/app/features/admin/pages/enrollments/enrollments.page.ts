@@ -56,12 +56,20 @@ export class EnrollmentsPage implements OnInit {
   enrollmentStatusLabel = enrollmentStatusLabel;
   levelBadgeClass = levelBadgeClass;
 
+  approvingId = signal<string | null>(null);
+  rejectingId = signal<string | null>(null);
+
   tabs: { label: string; value: StatusFilter }[] = [
     { label: 'Tous', value: 'ALL' },
+    { label: 'En attente', value: 'PENDING_APPROVAL' },
+    { label: 'Approuvé', value: 'APPROVED' },
     { label: 'En cours', value: 'IN_PROGRESS' },
     { label: 'Réussi', value: 'PASSED' },
     { label: 'Échoué', value: 'FAILED' },
+    { label: 'Rejeté', value: 'REJECTED' },
   ];
+
+  pendingCount = computed(() => this.enrollments().filter(e => e.status === 'PENDING_APPROVAL').length);
 
   filteredEnrollments = computed(() => {
     const tab = this.activeTab();
@@ -118,6 +126,32 @@ export class EnrollmentsPage implements OnInit {
 
   closeModal(): void {
     this.modalOpen.set(false);
+  }
+
+  approveEnrollment(id: string): void {
+    this.approvingId.set(id);
+    this.enrollmentService.approveEnrollment(id)
+      .pipe(finalize(() => this.approvingId.set(null)))
+      .subscribe({
+        next: () => {
+          this.toast.success('Inscription approuvée. Facturation créée.');
+          this.loadData();
+        },
+        error: () => this.toast.error('Erreur lors de l\'approbation.'),
+      });
+  }
+
+  rejectEnrollment(id: string): void {
+    this.rejectingId.set(id);
+    this.enrollmentService.rejectEnrollment(id)
+      .pipe(finalize(() => this.rejectingId.set(null)))
+      .subscribe({
+        next: () => {
+          this.toast.success('Inscription rejetée.');
+          this.loadData();
+        },
+        error: () => this.toast.error('Erreur lors du rejet.'),
+      });
   }
 
   saveEnrollment(): void {

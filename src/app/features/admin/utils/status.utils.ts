@@ -1,9 +1,9 @@
 import { EnrollmentStatus, Level, PaymentStatus } from '../models/enums';
 
 const SUCCESS = new Set(['PAID', 'PASSED', 'ACTIVE']);
-const WARNING = new Set(['PENDING', 'IN_PROGRESS']);
-const DANGER = new Set(['OVERDUE', 'FAILED', 'SUSPENDED']);
-const INFO = new Set(['TRANSFERRED']);
+const WARNING = new Set(['PENDING', 'IN_PROGRESS', 'PENDING_APPROVAL']);
+const DANGER = new Set(['OVERDUE', 'FAILED', 'SUSPENDED', 'REJECTED']);
+const INFO = new Set(['TRANSFERRED', 'APPROVED']);
 
 export function getBadgeClass(status?: string): string {
   const normalized = (status || '').toUpperCase();
@@ -49,6 +49,9 @@ export function userStatusClass(status?: string): string {
 
 export function enrollmentStatusLabel(status?: EnrollmentStatus): string {
   switch (status) {
+    case 'PENDING_APPROVAL': return 'En attente d\'approbation';
+    case 'APPROVED': return 'Approuvé — Paiement requis';
+    case 'REJECTED': return 'Rejeté';
     case 'IN_PROGRESS': return 'En cours';
     case 'PASSED': return 'Réussi';
     case 'FAILED': return 'Échoué';

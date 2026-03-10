@@ -1,6 +1,6 @@
-import { Gender, Level } from './enums';
+import { Gender, Level } from '../../admin/models/enums';
 
-export interface StudentResponse {
+export interface StudentProfileResponse {
   id: string;
   userId: string;
   firstName: string;
@@ -12,4 +12,9 @@ export interface StudentResponse {
   level: Level;
   gender: Gender;
   missingFields: string[];
+}
+
+export interface StudentProfileUpdateRequest {
+  cnie?: string;
+  birthDate?: string;
 }

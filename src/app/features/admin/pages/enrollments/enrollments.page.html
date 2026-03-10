@@ -18,6 +18,11 @@
       (click)="setTab(tab.value)"
     >
       {{ tab.label }}
+      @if (tab.value === 'PENDING_APPROVAL' && pendingCount() > 0) {
+        <span class="ml-1.5 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-amber-500 px-1.5 text-[10px] font-bold text-white">
+          {{ pendingCount() }}
+        </span>
+      }
     </button>
   }
 </div>
@@ -36,6 +41,7 @@
           <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Niveau</th>
           <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Statut</th>
           <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Date d'inscription</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -50,10 +56,28 @@
               <span [class]="enrollmentStatusClass(enrollment.status)">{{ enrollmentStatusLabel(enrollment.status) }}</span>
             </td>
             <td class="px-4 py-3 text-sm text-gray-600">{{ enrollment.enrolledAt | date:'dd/MM/yyyy' }}</td>
+            <td class="px-4 py-3">
+              @if (enrollment.status === 'PENDING_APPROVAL') {
+                <div class="flex gap-2">
+                  <app-button variant="success" size="sm"
+                    [loading]="approvingId() === enrollment.id"
+                    [disabled]="rejectingId() === enrollment.id"
+                    (click)="approveEnrollment(enrollment.id)">
+                    <i class="fa-solid fa-check mr-1"></i>Accepter
+                  </app-button>
+                  <app-button variant="danger" size="sm"
+                    [loading]="rejectingId() === enrollment.id"
+                    [disabled]="approvingId() === enrollment.id"
+                    (click)="rejectEnrollment(enrollment.id)">
+                    <i class="fa-solid fa-xmark mr-1"></i>Rejeter
+                  </app-button>
+                </div>
+              }
+            </td>
           </tr>
         } @empty {
           <tr>
-            <td colspan="5" class="px-4 py-8 text-center text-sm text-gray-400">Aucune inscription trouvée</td>
+            <td colspan="6" class="px-4 py-8 text-center text-sm text-gray-400">Aucune inscription trouvée</td>
           </tr>
         }
       </tbody>
