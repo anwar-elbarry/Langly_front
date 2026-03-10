@@ -11,6 +11,7 @@ import { AuthEffects } from './core/store/effect/auth.effect';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { errorInterceptor } from './core/interceptors/error/error-interceptor';
 import { toastReducer } from './core/store/reducers/toast.reducer';
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -19,6 +20,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptors([authInterceptor, errorInterceptor])),
     provideStore({ auth: authReducer, toast: toastReducer }),
     provideEffects(AuthEffects),
-    provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() })
+    provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
+    provideCharts(withDefaultRegisterables())
   ]
 };
