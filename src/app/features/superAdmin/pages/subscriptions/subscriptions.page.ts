@@ -33,7 +33,6 @@ import { paymentStatusClass } from '../../utils/status.utils';
     InputComponent,
   ],
   templateUrl: './subscriptions.page.html',
-  styleUrl: './subscriptions.page.css',
 })
 export class SubscriptionsPage implements OnInit {
   private subscriptionsService = inject(SubscriptionsService);
@@ -211,4 +210,3 @@ export class SubscriptionsPage implements OnInit {
 
   paymentStatusClass = paymentStatusClass;
 }
-

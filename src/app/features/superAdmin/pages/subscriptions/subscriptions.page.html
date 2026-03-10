@@ -1,18 +1,28 @@
-<section class="sa-page">
-  <div class="sa-page-head">
-    <h1 class="sa-page-title">Subscriptions</h1>
+<section class="space-y-4 text-slate-900">
+  <div
+    class="flex flex-col items-start justify-between gap-3 rounded-2xl border border-sky-200/50 bg-gradient-to-br from-sky-100/60 to-slate-100/60 p-4 md:flex-row md:items-center"
+  >
+    <h1 class="m-0 text-2xl font-bold tracking-tight">Subscriptions</h1>
     <app-button (click)="openCreate()">New Subscription</app-button>
   </div>
 
-  <div class="sa-filters">
-    <select class="sa-select" [value]="statusFilter()" (change)="statusFilter.set($any($event.target).value)">
+  <div class="grid gap-3 md:grid-cols-2">
+    <select
+      class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-sky-500 focus:ring-4 focus:ring-sky-200"
+      [value]="statusFilter()"
+      (change)="statusFilter.set($any($event.target).value)"
+    >
       <option value="">All Statuses</option>
       <option value="PAID">PAID</option>
       <option value="PENDING">PENDING</option>
       <option value="OVERDUE">OVERDUE</option>
     </select>
 
-    <select class="sa-select" [value]="schoolFilter()" (change)="schoolFilter.set($any($event.target).value)">
+    <select
+      class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-sky-500 focus:ring-4 focus:ring-sky-200"
+      [value]="schoolFilter()"
+      (change)="schoolFilter.set($any($event.target).value)"
+    >
       <option value="">All Schools</option>
       @for (school of schools(); track school.id) {
         <option [value]="school.id">{{ school.name }}</option>
@@ -21,9 +31,13 @@
   </div>
 
   @if (loading()) {
-    <div class="sa-empty">Loading subscriptions...</div>
+    <div class="rounded-2xl border border-dashed border-slate-400/50 bg-white p-8 text-center text-slate-500">
+      Loading subscriptions...
+    </div>
   } @else if (filteredSubscriptions().length === 0) {
-    <div class="sa-empty">No subscriptions found.</div>
+    <div class="rounded-2xl border border-dashed border-slate-400/50 bg-white p-8 text-center text-slate-500">
+      No subscriptions found.
+    </div>
   } @else {
     <app-table [striped]="true">
       <thead>
@@ -46,16 +60,14 @@
             <td>{{ item.currency }}</td>
             <td>{{ item.billingCycle }}</td>
             <td>
-              {{
-                item.currentPeriodStart ? (item.currentPeriodStart | date: 'mediumDate') : '-'
-              }}
-              →
+              {{ item.currentPeriodStart ? (item.currentPeriodStart | date: 'mediumDate') : '-' }}
+              &rarr;
               {{ item.currentPeriodEnd ? (item.currentPeriodEnd | date: 'mediumDate') : '-' }}
             </td>
             <td><span [class]="paymentStatusClass(item.status)">{{ item.status }}</span></td>
             <td>{{ item.nextPaymentDate ? (item.nextPaymentDate | date: 'mediumDate') : '-' }}</td>
             <td>
-              <div class="sa-actions">
+              <div class="flex flex-wrap gap-2">
                 <app-button size="sm" variant="outline" (click)="openEdit(item)">Edit</app-button>
                 <app-button size="sm" variant="secondary" (click)="openPaymentModal(item)">
                   Payment Status
@@ -72,10 +84,13 @@
 
 <app-modal [isOpen]="modalOpen()" (closed)="closeModal()">
   <span modal-header>{{ editingId() ? 'Edit Subscription' : 'Create Subscription' }}</span>
-  <form class="sa-modal-form" [formGroup]="form">
+  <form class="space-y-3" [formGroup]="form">
     @if (!editingId()) {
       <app-form-field label="School" [required]="true">
-        <select class="sa-select" formControlName="schoolId">
+        <select
+          class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-sky-500 focus:ring-4 focus:ring-sky-200"
+          formControlName="schoolId"
+        >
           <option value="">Select school</option>
           @for (school of schools(); track school.id) {
             <option [value]="school.id">{{ school.name }}</option>
@@ -84,12 +99,15 @@
       </app-form-field>
     }
 
-    <div class="sa-grid-2">
+    <div class="grid gap-3 md:grid-cols-2">
       <app-form-field label="Amount" [required]="true">
         <app-input type="number" formControlName="amount" placeholder="299.99" />
       </app-form-field>
       <app-form-field label="Currency" [required]="true">
-        <select class="sa-select" formControlName="currency">
+        <select
+          class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-sky-500 focus:ring-4 focus:ring-sky-200"
+          formControlName="currency"
+        >
           <option value="MAD">MAD</option>
           <option value="EUR">EUR</option>
           <option value="USD">USD</option>
@@ -98,7 +116,10 @@
     </div>
 
     <app-form-field label="Billing Cycle" [required]="true">
-      <select class="sa-select" formControlName="billingCycle">
+      <select
+        class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-sky-500 focus:ring-4 focus:ring-sky-200"
+        formControlName="billingCycle"
+      >
         <option value="MONTHLY">MONTHLY</option>
         <option value="YEARLY">YEARLY</option>
       </select>
@@ -112,19 +133,23 @@
 
 <app-modal [isOpen]="paymentModalOpen()" (closed)="closePaymentModal()">
   <span modal-header>Update Payment Status</span>
-  <p>Choose a new payment status for this subscription.</p>
-  <select class="sa-select" [value]="paymentStatus()" (change)="paymentStatus.set($any($event.target).value)">
+  <p class="mb-3 text-sm text-slate-700">Choose a new payment status for this subscription.</p>
+  <select
+    class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-sky-500 focus:ring-4 focus:ring-sky-200"
+    [value]="paymentStatus()"
+    (change)="paymentStatus.set($any($event.target).value)"
+  >
     <option value="PAID">PAID</option>
     <option value="PENDING">PENDING</option>
     <option value="OVERDUE">OVERDUE</option>
   </select>
 
   @if (paymentStatus() === 'OVERDUE') {
-    <div class="sa-danger">
+    <div class="mt-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
       This will suspend the school and may block access for all its users.
     </div>
   } @else if (paymentStatus() === 'PAID') {
-    <div class="sa-warning">
+    <div class="mt-3 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-700">
       This will mark the subscription as paid and reactivate the school.
     </div>
   }
@@ -138,10 +163,11 @@
 <app-modal [isOpen]="deleteOpen()" (closed)="closeDelete()">
   <span modal-header>Delete Subscription</span>
   <p>Are you sure you want to delete this subscription?</p>
-  <div class="sa-danger">This action cannot be undone.</div>
+  <div class="mt-2 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+    This action cannot be undone.
+  </div>
   <div modal-footer>
     <app-button variant="outline" (click)="closeDelete()">Cancel</app-button>
     <app-button variant="danger" (click)="deleteSubscription()">Delete</app-button>
   </div>
 </app-modal>
-
