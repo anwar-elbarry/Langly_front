@@ -1,0 +1,116 @@
+<!-- Header -->
+<div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+  <div>
+    <h2 class="text-xl font-bold text-gray-900">Inscriptions</h2>
+    <p class="text-sm text-gray-500">Inscrire les étudiants aux cours</p>
+  </div>
+  <app-button variant="primary" (click)="openCreate()">
+    <i class="fa-solid fa-plus mr-2"></i>Nouvelle inscription
+  </app-button>
+</div>
+
+<!-- Tabs -->
+<div class="mb-4 flex gap-1 rounded-lg bg-gray-100 p-1">
+  @for (tab of tabs; track tab.value) {
+    <button
+      class="rounded-md px-4 py-2 text-sm font-medium transition-colors"
+      [class]="activeTab() === tab.value ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'"
+      (click)="setTab(tab.value)"
+    >
+      {{ tab.label }}
+    </button>
+  }
+</div>
+
+@if (loading()) {
+  <div class="flex h-64 items-center justify-center">
+    <app-spinner size="lg" />
+  </div>
+} @else {
+  <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+    <app-table [striped]="true" [hoverable]="true">
+      <thead>
+        <tr>
+          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Élève</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Cours</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Niveau</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Statut</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Date d'inscription</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (enrollment of filteredEnrollments(); track enrollment.id) {
+          <tr>
+            <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ enrollment.studentFullName }}</td>
+            <td class="px-4 py-3 text-sm text-gray-600">{{ enrollment.courseName }}</td>
+            <td class="px-4 py-3">
+              <span [class]="levelBadgeClass(enrollment.level)">{{ enrollment.level }}</span>
+            </td>
+            <td class="px-4 py-3">
+              <span [class]="enrollmentStatusClass(enrollment.status)">{{ enrollmentStatusLabel(enrollment.status) }}</span>
+            </td>
+            <td class="px-4 py-3 text-sm text-gray-600">{{ enrollment.enrolledAt | date:'dd/MM/yyyy' }}</td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="5" class="px-4 py-8 text-center text-sm text-gray-400">Aucune inscription trouvée</td>
+          </tr>
+        }
+      </tbody>
+    </app-table>
+  </div>
+}
+
+<!-- Create Modal -->
+<app-modal [isOpen]="modalOpen()" (closed)="closeModal()">
+  <div class="modal-header">
+    <h3 class="text-lg font-semibold text-gray-900">Nouvelle inscription</h3>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="saveEnrollment()" class="space-y-4 p-1">
+    <app-form-field label="Élève" [required]="true">
+      <select formControlName="studentId" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none">
+        <option value="">Sélectionner un élève</option>
+        @for (student of students(); track student.id) {
+          <option [value]="student.id">{{ student.firstName }} {{ student.lastName }}</option>
+        }
+      </select>
+    </app-form-field>
+
+    <app-form-field label="Cours" [required]="true">
+      <select formControlName="courseId" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none">
+        <option value="">Sélectionner un cours</option>
+        @for (course of courses(); track course.id) {
+          <option [value]="course.id">
+            {{ course.name }} ({{ course.enrolledCount }}/{{ course.capacity }} places)
+          </option>
+        }
+      </select>
+    </app-form-field>
+
+    @if (isCourseFull()) {
+      <div class="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
+        <i class="fa-solid fa-circle-exclamation mr-2"></i>
+        Ce cours est complet. Impossible d'inscrire un étudiant.
+      </div>
+    }
+
+    <app-form-field label="Niveau" [required]="true">
+      <select formControlName="level" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none">
+        <option value="">Sélectionner un niveau</option>
+        @for (level of levels; track level) {
+          <option [value]="level">{{ level }}</option>
+        }
+      </select>
+    </app-form-field>
+  </form>
+
+  <div class="modal-footer">
+    <div class="flex justify-end gap-3">
+      <app-button variant="ghost" (click)="closeModal()">Annuler</app-button>
+      <app-button variant="primary" [loading]="saving()" [disabled]="isCourseFull()" (click)="saveEnrollment()">
+        Inscrire
+      </app-button>
+    </div>
+  </div>
+</app-modal>
