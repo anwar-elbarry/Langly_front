@@ -1,0 +1,84 @@
+<!-- Header -->
+<div class="mb-6">
+    <h2 class="m-0 text-xl font-bold text-gray-900">Mes Cours Actifs</h2>
+    <p class="m-0 mt-1 text-sm text-gray-500">Vos cours en cours avec les prochaines sessions</p>
+</div>
+
+<!-- Loading -->
+@if (loading()) {
+<div class="flex items-center justify-center py-20">
+    <div class="h-8 w-8 animate-spin rounded-full border-4 border-emerald-200 border-t-emerald-600"></div>
+</div>
+}
+
+<!-- Error -->
+@if (error()) {
+<div class="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+    <i class="fa-solid fa-circle-exclamation mr-2"></i>{{ error() }}
+</div>
+}
+
+<!-- Empty state -->
+@if (!loading() && !error() && courses().length === 0) {
+<div class="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-200 bg-white py-16">
+    <div class="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50">
+        <i class="fa-solid fa-book-open text-2xl text-emerald-400"></i>
+    </div>
+    <h3 class="m-0 text-lg font-semibold text-gray-900">Aucun cours actif</h3>
+    <p class="m-0 mt-1 text-sm text-gray-500">Inscrivez-vous à un cours pour commencer</p>
+    <a routerLink="/student/enroll"
+        class="mt-4 inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-emerald-700">
+        <i class="fa-solid fa-plus"></i>
+        S'inscrire à un cours
+    </a>
+</div>
+}
+
+<!-- Courses grid -->
+@if (!loading() && courses().length > 0) {
+<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    @for (course of courses(); track course.courseId) {
+    <a [routerLink]="'/student/courses/' + course.courseId"
+        class="group flex flex-col rounded-xl border border-gray-200 bg-white p-5 transition-all duration-200 hover:border-emerald-300 hover:shadow-md no-underline">
+        <!-- Course header -->
+        <div class="mb-3 flex items-start justify-between">
+            <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
+                <i class="fa-solid fa-book text-lg"></i>
+            </div>
+            <span class="rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
+                {{ course.language }}
+            </span>
+        </div>
+
+        <!-- Course info -->
+        <h3 class="m-0 text-[15px] font-semibold text-gray-900 group-hover:text-emerald-700">
+            {{ course.courseName }}
+        </h3>
+        <p class="m-0 mt-0.5 text-[12px] font-mono text-gray-400">{{ course.courseCode }}</p>
+
+        <!-- Teacher -->
+        <div class="mt-3 flex items-center gap-2 text-[12px] text-gray-500">
+            <i class="fa-solid fa-chalkboard-user text-gray-400"></i>
+            <span>{{ course.teacherFullName }}</span>
+        </div>
+
+        <!-- Next session -->
+        <div class="mt-auto pt-4 border-t border-gray-100 mt-4">
+            <div class="flex items-center gap-2 text-[12px] text-gray-500">
+                <i class="fa-regular fa-calendar text-gray-400"></i>
+                <span>{{ getNextSession(course) }}</span>
+            </div>
+            @if (course.upcomingSessions?.length) {
+            <div class="mt-1 flex items-center gap-2 text-[12px] text-gray-500">
+                <i [class]="getModeIcon(course.upcomingSessions[0].mode) + ' text-gray-400'"></i>
+                <span>{{ course.upcomingSessions[0].mode }}</span>
+                @if (course.upcomingSessions[0].room) {
+                <span>· {{ course.upcomingSessions[0].room }}</span>
+                }
+            </div>
+            }
+        </div>
+    </a>
+    }
+</div>
+}
