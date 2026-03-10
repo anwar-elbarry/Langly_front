@@ -15,9 +15,9 @@ export const routes: Routes = [
   },
   {
     path: 'schoolAdmin',
-    loadComponent: () => import('./features/admin/components/dashboard-container/dashboard-container').then(m => m.DashboardContainer),
     canActivate: [roleGuard],
-    data: { role: RoleEnum.SCHOOL_ADMIN }
+    data: { role: RoleEnum.SCHOOL_ADMIN },
+    loadChildren: () => import('./features/admin/school-admin.routes').then(m => m.SCHOOL_ADMIN_ROUTES),
   },
   {
     path: 'teacher',
@@ -27,9 +27,9 @@ export const routes: Routes = [
   },
   {
     path: 'student',
-    loadComponent: () => import('./features/student/components/dashboard-container/dashboard-container').then(m => m.DashboardContainer),
     canActivate: [roleGuard],
-    data: { role: RoleEnum.STUDENT }
+    data: { role: RoleEnum.STUDENT },
+    loadChildren: () => import('./features/student/student.routes').then(m => m.STUDENT_ROUTES),
   },
   {
     path: 'error/401',
