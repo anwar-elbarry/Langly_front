@@ -1,0 +1,134 @@
+<!-- Header -->
+<div class="mb-6">
+  <h2 class="text-xl font-bold text-gray-900">Paiements</h2>
+  <p class="text-sm text-gray-500">Suivre et confirmer les paiements des étudiants</p>
+</div>
+
+<!-- Tabs -->
+<div class="mb-4 flex gap-1 rounded-lg bg-gray-100 p-1">
+  <button
+    class="rounded-md px-4 py-2 text-sm font-medium transition-colors"
+    [class]="activeTab() === 'PENDING' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'"
+    (click)="setTab('PENDING')"
+  >
+    En attente
+  </button>
+  <button
+    class="rounded-md px-4 py-2 text-sm font-medium transition-colors"
+    [class]="activeTab() === 'ALL' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'"
+    (click)="setTab('ALL')"
+  >
+    Tous les paiements
+  </button>
+</div>
+
+@if (loading()) {
+  <div class="flex h-64 items-center justify-center">
+    <app-spinner size="lg" />
+  </div>
+} @else {
+  <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+    <app-table [striped]="true" [hoverable]="true">
+      <thead>
+        <tr>
+          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Élève</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Montant</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Statut</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Prochaine échéance</th>
+          @if (activeTab() === 'ALL') {
+            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Méthode</th>
+            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Date de paiement</th>
+          }
+          <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (billing of billings(); track billing.id) {
+          <tr>
+            <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ billing.studentFullName }}</td>
+            <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ billing.price }} MAD</td>
+            <td class="px-4 py-3">
+              <span [class]="paymentStatusClass(billing.status)">{{ paymentStatusLabel(billing.status) }}</span>
+            </td>
+            <td class="px-4 py-3 text-sm text-gray-600">{{ billing.nextBillDate | date:'dd/MM/yyyy' }}</td>
+            @if (activeTab() === 'ALL') {
+              <td class="px-4 py-3 text-sm text-gray-600">
+                @if (billing.status === 'PAID') {
+                  {{ billing.paymentMethod === 'CASH' ? 'Espèces' : billing.paymentMethod === 'BANK_TRANSFER' ? 'Virement' : '—' }}
+                } @else {
+                  —
+                }
+              </td>
+              <td class="px-4 py-3 text-sm text-gray-600">
+                @if (billing.paidAt) {
+                  {{ billing.paidAt | date:'dd/MM/yyyy' }}
+                } @else {
+                  —
+                }
+              </td>
+            }
+            <td class="px-4 py-3 text-right">
+              @if (billing.status === 'PENDING') {
+                <app-button variant="primary" size="sm" (click)="openConfirm(billing)">
+                  Confirmer
+                </app-button>
+              }
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td [attr.colspan]="activeTab() === 'ALL' ? 7 : 5" class="px-4 py-8 text-center text-sm text-gray-400">
+              Aucun paiement trouvé
+            </td>
+          </tr>
+        }
+      </tbody>
+    </app-table>
+  </div>
+}
+
+<!-- Confirm Payment Modal -->
+<app-modal [isOpen]="confirmModalOpen()" (closed)="closeConfirm()">
+  <div class="modal-header">
+    <h3 class="text-lg font-semibold text-gray-900">Confirmer le paiement</h3>
+  </div>
+
+  <div class="space-y-4 p-1">
+    @if (confirmingBilling()) {
+      <div class="rounded-lg bg-gray-50 p-4">
+        <div class="grid grid-cols-2 gap-3 text-sm">
+          <div>
+            <span class="text-gray-500">Élève</span>
+            <p class="font-medium text-gray-900">{{ confirmingBilling()!.studentFullName }}</p>
+          </div>
+          <div>
+            <span class="text-gray-500">Montant</span>
+            <p class="font-medium text-gray-900">{{ confirmingBilling()!.price }} MAD</p>
+          </div>
+        </div>
+      </div>
+    }
+
+    <form [formGroup]="form">
+      <app-form-field label="Méthode de paiement" [required]="true">
+        <div class="flex flex-col gap-3">
+          <app-radio name="paymentMethod" label="Espèces (CASH)" value="CASH"
+            [checked]="form.controls.paymentMethod.value === 'CASH'"
+            (selected)="form.controls.paymentMethod.setValue('CASH')" />
+          <app-radio name="paymentMethod" label="Virement bancaire" value="BANK_TRANSFER"
+            [checked]="form.controls.paymentMethod.value === 'BANK_TRANSFER'"
+            (selected)="form.controls.paymentMethod.setValue('BANK_TRANSFER')" />
+        </div>
+      </app-form-field>
+    </form>
+  </div>
+
+  <div class="modal-footer">
+    <div class="flex justify-end gap-3">
+      <app-button variant="ghost" (click)="closeConfirm()">Annuler</app-button>
+      <app-button variant="primary" [loading]="saving()" (click)="confirmPayment()">
+        Valider le paiement
+      </app-button>
+    </div>
+  </div>
+</app-modal>
