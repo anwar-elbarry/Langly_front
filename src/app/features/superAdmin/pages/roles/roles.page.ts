@@ -28,7 +28,6 @@ import { RolesService } from '../../services/roles.service';
     CheckboxComponent,
   ],
   templateUrl: './roles.page.html',
-  styleUrl: './roles.page.css',
 })
 export class RolesPage implements OnInit {
   private rolesService = inject(RolesService);
