@@ -25,7 +25,6 @@ import { schoolStatusClass } from '../../utils/status.utils';
     InputComponent,
   ],
   templateUrl: './schools.page.html',
-  styleUrl: './schools.page.css',
 })
 export class SchoolsPage implements OnInit {
   private schoolsService = inject(SchoolsService);
@@ -145,4 +144,3 @@ export class SchoolsPage implements OnInit {
 
   schoolStatusClass = schoolStatusClass;
 }
-
