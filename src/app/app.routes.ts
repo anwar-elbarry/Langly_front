@@ -21,9 +21,9 @@ export const routes: Routes = [
   },
   {
     path: 'teacher',
-    loadComponent: () => import('./features/teacher/components/dashboard-container/dashboard-container').then(m => m.DashboardContainer),
     canActivate: [roleGuard],
-    data: { role: RoleEnum.TEACHER }
+    data: { role: RoleEnum.TEACHER },
+    loadChildren: () => import('./features/teacher/teacher.routes').then(m => m.TEACHER_ROUTES),
   },
   {
     path: 'student',

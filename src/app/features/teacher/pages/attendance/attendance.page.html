@@ -1,0 +1,92 @@
+<!-- Header -->
+<div class="mb-6">
+  <a routerLink="/teacher/courses" class="mb-3 inline-flex items-center gap-1 text-sm text-gray-500 transition hover:text-gray-700">
+    <i class="fa-solid fa-arrow-left text-xs"></i> Retour
+  </a>
+  <h2 class="text-xl font-bold text-gray-900">Présence — Session</h2>
+  <p class="text-sm text-gray-500">Générez un QR code et suivez la présence en temps réel</p>
+</div>
+
+<!-- QR Code Section -->
+<div class="mb-6 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+  <h3 class="mb-4 text-sm font-semibold text-gray-900">
+    <i class="fa-solid fa-qrcode mr-2 text-sky-600"></i>Code QR de présence
+  </h3>
+
+  @if (qrToken()) {
+    <div class="flex flex-col items-center gap-4">
+      <!-- QR display placeholder - token for students to use -->
+      <div class="flex h-48 w-48 items-center justify-center rounded-xl border-2 border-dashed border-sky-300 bg-sky-50">
+        <div class="text-center">
+          <i class="fa-solid fa-qrcode text-5xl text-sky-600"></i>
+          <p class="mt-2 text-xs text-sky-700 font-medium">QR Actif</p>
+        </div>
+      </div>
+
+      <!-- Countdown -->
+      <div class="flex items-center gap-2 rounded-lg bg-amber-50 px-4 py-2">
+        <i class="fa-solid fa-clock text-amber-600"></i>
+        <span class="text-sm font-medium text-amber-700">
+          Expire dans {{ formatTime(remainingSeconds()) }}
+        </span>
+      </div>
+
+      <app-button variant="primary" (click)="generateQr()" [loading]="generatingQr()">
+        <i class="fa-solid fa-rotate-right mr-2"></i>Regénérer
+      </app-button>
+    </div>
+  } @else {
+    <div class="flex flex-col items-center gap-4">
+      <div class="flex h-48 w-48 items-center justify-center rounded-xl border-2 border-dashed border-gray-200 bg-gray-50">
+        <div class="text-center">
+          <i class="fa-solid fa-qrcode text-5xl text-gray-300"></i>
+          <p class="mt-2 text-xs text-gray-400">Aucun QR actif</p>
+        </div>
+      </div>
+      <app-button variant="primary" (click)="generateQr()" [loading]="generatingQr()">
+        <i class="fa-solid fa-qrcode mr-2"></i>Générer QR Code
+      </app-button>
+    </div>
+  }
+</div>
+
+<!-- Attendance List -->
+<div class="rounded-xl border border-gray-200 bg-white shadow-sm">
+  <div class="border-b border-gray-200 px-5 py-4">
+    <h3 class="text-sm font-semibold text-gray-900">
+      <i class="fa-solid fa-list-check mr-2 text-sky-600"></i>Liste de présence
+      <span class="ml-2 text-xs font-normal text-gray-400">({{ attendanceList().length }} élèves)</span>
+    </h3>
+  </div>
+
+  @if (loading()) {
+    <div class="flex h-40 items-center justify-center"><app-spinner size="md" /></div>
+  } @else {
+    <app-table [striped]="true" [hoverable]="true">
+      <thead>
+        <tr>
+          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Nom</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Statut</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Heure</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (record of attendanceList(); track record.id) {
+          <tr>
+            <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ record.studentFullName }}</td>
+            <td class="px-4 py-3">
+              <span [class]="getStatusBadge(record.status)">{{ getStatusLabel(record.status) }}</span>
+            </td>
+            <td class="px-4 py-3 text-sm text-gray-600">{{ record.markedAt | date:'HH:mm' }}</td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="3" class="px-4 py-8 text-center text-sm text-gray-400">
+              Aucune présence enregistrée
+            </td>
+          </tr>
+        }
+      </tbody>
+    </app-table>
+  }
+</div>

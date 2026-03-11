@@ -1,0 +1,66 @@
+@if (loading()) {
+  <div class="flex h-64 items-center justify-center">
+    <app-spinner size="lg" />
+  </div>
+} @else {
+  <!-- KPI Cards -->
+  <div class="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <!-- Mes Cours -->
+    <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+      <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-sky-50">
+        <i class="fa-solid fa-book text-sky-600"></i>
+      </div>
+      <p class="text-2xl font-bold text-gray-900">{{ overview()?.totalCourses ?? 0 }}</p>
+      <p class="mt-1 text-xs text-gray-500">
+        Mes Cours
+        @if ((overview()?.activeCourses ?? 0) > 0) {
+          <span class="ml-1 inline-flex items-center rounded-full bg-green-100 px-2 py-0.5 text-xs font-semibold text-green-700">
+            {{ overview()?.activeCourses }} actifs
+          </span>
+        }
+      </p>
+    </div>
+
+    <!-- Mes Élèves -->
+    <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+      <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50">
+        <i class="fa-solid fa-user-graduate text-blue-600"></i>
+      </div>
+      <p class="text-2xl font-bold text-gray-900">{{ overview()?.totalStudents ?? 0 }}</p>
+      <p class="mt-1 text-xs text-gray-500">Mes Élèves</p>
+    </div>
+
+    <!-- Sessions à venir -->
+    <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+      <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-purple-50">
+        <i class="fa-solid fa-calendar text-purple-600"></i>
+      </div>
+      <p class="text-2xl font-bold text-gray-900">{{ overview()?.upcomingSessions ?? 0 }}</p>
+      <p class="mt-1 text-xs text-gray-500">Sessions à venir</p>
+    </div>
+
+    <!-- À noter -->
+    <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+      <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-amber-50">
+        <i class="fa-solid fa-clipboard-check text-amber-600"></i>
+      </div>
+      <p class="text-2xl font-bold text-gray-900">
+        {{ overview()?.pendingGrading ?? 0 }}
+        @if ((overview()?.pendingGrading ?? 0) > 0) {
+          <span class="ml-2 inline-flex items-center rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-700">En attente</span>
+        }
+      </p>
+      <p class="mt-1 text-xs text-gray-500">À noter</p>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+    <h3 class="mb-4 text-sm font-semibold text-gray-900">Actions rapides</h3>
+    <div class="flex flex-wrap gap-3">
+      <app-button variant="primary" (click)="navigateTo('/teacher/courses')">
+        <i class="fa-solid fa-book-open mr-2"></i>Voir mes cours
+      </app-button>
+    </div>
+  </div>
+}

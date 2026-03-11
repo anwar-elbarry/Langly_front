@@ -1,0 +1,366 @@
+@if (loading()) {
+  <div class="flex h-64 items-center justify-center">
+    <app-spinner size="lg" />
+  </div>
+} @else if (course(); as c) {
+  <!-- Header -->
+  <div class="mb-6">
+    <a routerLink="/teacher/courses" class="mb-3 inline-flex items-center gap-1 text-sm text-gray-500 transition hover:text-gray-700">
+      <i class="fa-solid fa-arrow-left text-xs"></i> Retour aux cours
+    </a>
+    <h2 class="text-xl font-bold text-gray-900">{{ c.name }}</h2>
+    <p class="text-sm text-gray-500">{{ c.code }} · {{ c.language }}</p>
+  </div>
+
+  <!-- Tabs -->
+  <div class="mb-6 flex gap-1 rounded-lg border border-gray-200 bg-white p-1 shadow-sm">
+    @for (tab of [
+      { key: 'overview', label: 'Aperçu', icon: 'fa-solid fa-circle-info' },
+      { key: 'sessions', label: 'Sessions', icon: 'fa-solid fa-calendar' },
+      { key: 'students', label: 'Élèves & Notes', icon: 'fa-solid fa-user-graduate' },
+      { key: 'resources', label: 'Ressources', icon: 'fa-solid fa-folder-open' }
+    ]; track tab.key) {
+      <button
+        class="flex-1 rounded-md px-4 py-2 text-sm font-medium transition-colors"
+        [class.bg-sky-50]="activeTab() === tab.key"
+        [class.text-sky-700]="activeTab() === tab.key"
+        [class.font-semibold]="activeTab() === tab.key"
+        [class.text-gray-500]="activeTab() !== tab.key"
+        [class.hover:bg-gray-50]="activeTab() !== tab.key"
+        (click)="switchTab($any(tab.key))"
+      >
+        <i class="{{ tab.icon }} mr-1.5 text-xs"></i>{{ tab.label }}
+      </button>
+    }
+  </div>
+
+  <!-- Tab Content -->
+
+  <!-- ═══ Overview Tab ═══ -->
+  @if (activeTab() === 'overview') {
+    <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+      <h3 class="mb-4 text-sm font-semibold text-gray-900">Informations du cours</h3>
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div>
+          <p class="text-xs text-gray-400">Nom</p>
+          <p class="text-sm font-medium text-gray-900">{{ c.name }}</p>
+        </div>
+        <div>
+          <p class="text-xs text-gray-400">Code</p>
+          <p class="text-sm font-medium text-gray-900">{{ c.code }}</p>
+        </div>
+        <div>
+          <p class="text-xs text-gray-400">Langue</p>
+          <p class="text-sm font-medium text-gray-900">{{ c.language }}</p>
+        </div>
+        <div>
+          <p class="text-xs text-gray-400">Niveau</p>
+          <p class="mt-1">
+            <span [class]="levelBadgeClass(c.requiredLevel)">{{ c.requiredLevel }}</span>
+            <i class="fa-solid fa-arrow-right mx-1 text-[10px] text-gray-400"></i>
+            <span [class]="levelBadgeClass(c.targetLevel)">{{ c.targetLevel }}</span>
+          </p>
+        </div>
+        <div>
+          <p class="text-xs text-gray-400">Dates</p>
+          <p class="text-sm font-medium text-gray-900">{{ c.startDate | date:'dd/MM/yyyy' }} — {{ c.endDate | date:'dd/MM/yyyy' }}</p>
+        </div>
+        <div>
+          <p class="text-xs text-gray-400">Capacité</p>
+          <p class="text-sm font-medium text-gray-900">{{ c.enrolledCount }} / {{ c.capacity }} élèves</p>
+        </div>
+        <div>
+          <p class="text-xs text-gray-400">Sessions / semaine</p>
+          <p class="text-sm font-medium text-gray-900">{{ c.sessionPerWeek }}</p>
+        </div>
+        <div>
+          <p class="text-xs text-gray-400">Minutes / session</p>
+          <p class="text-sm font-medium text-gray-900">{{ c.minutesPerSession ?? '—' }}</p>
+        </div>
+        <div>
+          <p class="text-xs text-gray-400">Statut</p>
+          @if (c.isActive) {
+            <span class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-semibold text-green-700">Actif</span>
+          } @else {
+            <span class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-semibold text-gray-600">Terminé</span>
+          }
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- ═══ Sessions Tab ═══ -->
+  @if (activeTab() === 'sessions') {
+    <div class="mb-4 flex items-center justify-between">
+      <h3 class="text-sm font-semibold text-gray-900">Sessions</h3>
+      <app-button variant="primary" (click)="openCreateSession()">
+        <i class="fa-solid fa-plus mr-2"></i>Nouvelle session
+      </app-button>
+    </div>
+
+    @if (sessionsLoading()) {
+      <div class="flex h-40 items-center justify-center"><app-spinner size="md" /></div>
+    } @else {
+      <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+        <app-table [striped]="true" [hoverable]="true">
+          <thead>
+            <tr>
+              <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Titre</th>
+              <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Date & Heure</th>
+              <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Durée</th>
+              <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Mode</th>
+              <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Salle / Lien</th>
+              <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (session of sessions(); track session.id) {
+              <tr>
+                <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ session.title }}</td>
+                <td class="px-4 py-3 text-sm text-gray-600">{{ session.scheduledAt | date:'dd/MM/yyyy HH:mm' }}</td>
+                <td class="px-4 py-3 text-sm text-gray-600">{{ session.durationMinutes }} min</td>
+                <td class="px-4 py-3 text-sm text-gray-600">
+                  <i class="{{ getModeIcon(session.mode) }} mr-1 text-xs"></i>{{ getModeLabel(session.mode) }}
+                </td>
+                <td class="px-4 py-3 text-sm text-gray-600">{{ session.room || session.meetingLink || '—' }}</td>
+                <td class="px-4 py-3 text-right">
+                  <div class="flex items-center justify-end gap-1">
+                    <button class="rounded-md px-2 py-1 text-xs font-medium text-sky-600 transition hover:bg-sky-50" (click)="goToAttendance(session.id)" title="Présence & QR">
+                      <i class="fa-solid fa-qrcode mr-1"></i>QR
+                    </button>
+                    <button class="rounded-md px-2 py-1 text-xs font-medium text-blue-600 transition hover:bg-blue-50" (click)="openEditSession(session)">
+                      Modifier
+                    </button>
+                    <button class="rounded-md px-2 py-1 text-xs font-medium text-red-600 transition hover:bg-red-50" (click)="openDeleteSession(session.id)">
+                      Supprimer
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="6" class="px-4 py-8 text-center text-sm text-gray-400">Aucune session</td>
+              </tr>
+            }
+          </tbody>
+        </app-table>
+      </div>
+    }
+  }
+
+  <!-- ═══ Students & Grades Tab ═══ -->
+  @if (activeTab() === 'students') {
+    <div class="mb-4">
+      <h3 class="text-sm font-semibold text-gray-900">Élèves & Notes</h3>
+    </div>
+
+    @if (enrollmentsLoading()) {
+      <div class="flex h-40 items-center justify-center"><app-spinner size="md" /></div>
+    } @else {
+      <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+        <app-table [striped]="true" [hoverable]="true">
+          <thead>
+            <tr>
+              <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Nom</th>
+              <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Niveau</th>
+              <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Inscrit le</th>
+              <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Statut</th>
+              <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (enrollment of enrollments(); track enrollment.id) {
+              <tr>
+                <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ enrollment.studentFullName }}</td>
+                <td class="px-4 py-3">
+                  <span [class]="levelBadgeClass(enrollment.level)">{{ enrollment.level }}</span>
+                </td>
+                <td class="px-4 py-3 text-sm text-gray-600">{{ enrollment.enrolledAt | date:'dd/MM/yyyy' }}</td>
+                <td class="px-4 py-3">
+                  <span [class]="enrollmentStatusClass(enrollment.status)">{{ enrollmentStatusLabel(enrollment.status) }}</span>
+                </td>
+                <td class="px-4 py-3 text-right">
+                  <div class="flex items-center justify-end gap-1">
+                    @if (enrollment.status === 'IN_PROGRESS') {
+                      <button class="rounded-md px-2 py-1 text-xs font-medium text-green-600 transition hover:bg-green-50" (click)="updateEnrollmentStatus(enrollment, 'PASSED')">
+                        <i class="fa-solid fa-check mr-1"></i>Réussi
+                      </button>
+                      <button class="rounded-md px-2 py-1 text-xs font-medium text-red-600 transition hover:bg-red-50" (click)="updateEnrollmentStatus(enrollment, 'FAILED')">
+                        <i class="fa-solid fa-xmark mr-1"></i>Échoué
+                      </button>
+                    }
+                  </div>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="5" class="px-4 py-8 text-center text-sm text-gray-400">Aucun élève inscrit</td>
+              </tr>
+            }
+          </tbody>
+        </app-table>
+      </div>
+    }
+  }
+
+  <!-- ═══ Resources Tab ═══ -->
+  @if (activeTab() === 'resources') {
+    <div class="mb-4 flex items-center justify-between">
+      <h3 class="text-sm font-semibold text-gray-900">Ressources</h3>
+      <app-button variant="primary" (click)="openUploadModal()">
+        <i class="fa-solid fa-upload mr-2"></i>Ajouter ressource
+      </app-button>
+    </div>
+
+    @if (materialsLoading()) {
+      <div class="flex h-40 items-center justify-center"><app-spinner size="md" /></div>
+    } @else {
+      <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+        <app-table [striped]="true" [hoverable]="true">
+          <thead>
+            <tr>
+              <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Nom</th>
+              <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Type</th>
+              <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Date d'ajout</th>
+              <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (material of materials(); track material.id) {
+              <tr>
+                <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ material.name }}</td>
+                <td class="px-4 py-3">
+                  @if (material.type === 'PDF') {
+                    <span class="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-semibold text-red-700">
+                      <i class="fa-solid fa-file-pdf mr-1"></i>PDF
+                    </span>
+                  } @else {
+                    <span class="inline-flex items-center rounded-full bg-purple-100 px-2.5 py-0.5 text-xs font-semibold text-purple-700">
+                      <i class="fa-solid fa-video mr-1"></i>Vidéo
+                    </span>
+                  }
+                </td>
+                <td class="px-4 py-3 text-sm text-gray-600">{{ material.uploadedAt | date:'dd/MM/yyyy' }}</td>
+                <td class="px-4 py-3 text-right">
+                  <button class="rounded-md px-2 py-1 text-xs font-medium text-blue-600 transition hover:bg-blue-50" (click)="downloadMaterial(material)">
+                    <i class="fa-solid fa-download mr-1"></i>Télécharger
+                  </button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="4" class="px-4 py-8 text-center text-sm text-gray-400">Aucune ressource</td>
+              </tr>
+            }
+          </tbody>
+        </app-table>
+      </div>
+    }
+  }
+}
+
+<!-- ═══ Session Create/Edit Modal ═══ -->
+<app-modal [isOpen]="sessionModalOpen()" (closed)="closeSessionModal()">
+  <div class="modal-header">
+    <h3 class="text-lg font-semibold text-gray-900">
+      {{ editingSessionId() ? 'Modifier la session' : 'Nouvelle session' }}
+    </h3>
+  </div>
+
+  <form [formGroup]="sessionForm" (ngSubmit)="saveSession()" class="space-y-4 p-1">
+    <app-form-field label="Titre" [required]="true" [error]="sessionForm.controls.title.touched && sessionForm.controls.title.invalid ? 'Titre requis' : ''">
+      <app-input formControlName="title" placeholder="Session 1 — Introduction" />
+    </app-form-field>
+
+    <app-form-field label="Description">
+      <textarea formControlName="description" rows="2"
+        class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-sky-500 focus:ring-1 focus:ring-sky-500 focus:outline-none"
+        placeholder="Description optionnelle"></textarea>
+    </app-form-field>
+
+    <div class="grid grid-cols-2 gap-4">
+      <app-form-field label="Date & Heure" [required]="true">
+        <app-input type="datetime-local" formControlName="scheduledAt" />
+      </app-form-field>
+      <app-form-field label="Durée (min)" [required]="true">
+        <app-input type="number" formControlName="durationMinutes" placeholder="90" />
+      </app-form-field>
+    </div>
+
+    <app-form-field label="Mode" [required]="true">
+      <select formControlName="mode" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-sky-500 focus:ring-1 focus:ring-sky-500 focus:outline-none">
+        <option value="IN_PERSON">Présentiel</option>
+        <option value="ONLINE">En ligne</option>
+        <option value="HYBRID">Hybride</option>
+      </select>
+    </app-form-field>
+
+    <div class="grid grid-cols-2 gap-4">
+      <app-form-field label="Salle">
+        <app-input formControlName="room" placeholder="Salle A1" />
+      </app-form-field>
+      <app-form-field label="Lien de réunion">
+        <app-input formControlName="meetingLink" placeholder="https://meet.google.com/..." />
+      </app-form-field>
+    </div>
+  </form>
+
+  <div class="modal-footer">
+    <div class="flex justify-end gap-3">
+      <app-button variant="ghost" (click)="closeSessionModal()">Annuler</app-button>
+      <app-button variant="primary" [loading]="savingSession()" (click)="saveSession()">
+        {{ editingSessionId() ? 'Enregistrer' : 'Créer la session' }}
+      </app-button>
+    </div>
+  </div>
+</app-modal>
+
+<!-- Session Delete Confirmation -->
+<app-modal [isOpen]="confirmDeleteSessionOpen()" (closed)="closeDeleteSession()">
+  <div class="modal-header">
+    <h3 class="text-lg font-semibold text-gray-900">Confirmer la suppression</h3>
+  </div>
+  <p class="px-1 py-4 text-sm text-gray-600">
+    Êtes-vous sûr de vouloir supprimer cette session ? Les données de présence associées seront également affectées.
+  </p>
+  <div class="modal-footer">
+    <div class="flex justify-end gap-3">
+      <app-button variant="ghost" (click)="closeDeleteSession()">Annuler</app-button>
+      <app-button variant="danger" (click)="deleteSession()">Supprimer</app-button>
+    </div>
+  </div>
+</app-modal>
+
+<!-- ═══ Upload Material Modal ═══ -->
+<app-modal [isOpen]="uploadModalOpen()" (closed)="closeUploadModal()">
+  <div class="modal-header">
+    <h3 class="text-lg font-semibold text-gray-900">Ajouter une ressource</h3>
+  </div>
+
+  <form [formGroup]="uploadForm" (ngSubmit)="uploadMaterial()" class="space-y-4 p-1">
+    <app-form-field label="Nom de la ressource" [required]="true" [error]="uploadForm.controls.name.touched && uploadForm.controls.name.invalid ? 'Nom requis' : ''">
+      <app-input formControlName="name" placeholder="Chapitre 1 — Grammaire" />
+    </app-form-field>
+
+    <app-form-field label="Type" [required]="true">
+      <select formControlName="type" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-sky-500 focus:ring-1 focus:ring-sky-500 focus:outline-none">
+        <option value="PDF">PDF</option>
+        <option value="VIDEO">Vidéo</option>
+      </select>
+    </app-form-field>
+
+    <app-form-field label="Fichier" [required]="true">
+      <input type="file" (change)="onFileSelected($event)"
+        class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm file:mr-4 file:rounded-md file:border-0 file:bg-sky-50 file:px-3 file:py-1 file:text-xs file:font-semibold file:text-sky-700 hover:file:bg-sky-100" />
+    </app-form-field>
+  </form>
+
+  <div class="modal-footer">
+    <div class="flex justify-end gap-3">
+      <app-button variant="ghost" (click)="closeUploadModal()">Annuler</app-button>
+      <app-button variant="primary" [loading]="uploading()" (click)="uploadMaterial()">
+        Uploader
+      </app-button>
+    </div>
+  </div>
+</app-modal>
