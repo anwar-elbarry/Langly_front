@@ -27,7 +27,7 @@ export class CourseDetailPage implements OnInit {
 
         this.courseService.getActiveCourses().subscribe({
             next: (courses) => {
-                const found = courses.find(c => c.courseId === this.courseId);
+                const found = courses.find(c => c.id === this.courseId);
                 this.course.set(found ?? null);
                 this.loading.set(false);
             },
