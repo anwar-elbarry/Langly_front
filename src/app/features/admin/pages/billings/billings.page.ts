@@ -48,6 +48,8 @@ export class BillingsPage implements OnInit {
   paymentStatusClass = paymentStatusClass;
   paymentStatusLabel = paymentStatusLabel;
 
+  expandedBillingId = signal<string | null>(null);
+
   form = new FormGroup({
     paymentMethod: new FormControl<'CASH' | 'BANK_TRANSFER'>('CASH', Validators.required),
   });
@@ -85,6 +87,22 @@ export class BillingsPage implements OnInit {
   closeConfirm(): void {
     this.confirmModalOpen.set(false);
     this.confirmingBilling.set(null);
+  }
+
+  toggleExpand(billingId: string): void {
+    this.expandedBillingId.update((current) =>
+      current === billingId ? null : billingId
+    );
+  }
+
+  paymentMethodLabel(method: string): string {
+    switch (method) {
+      case 'CASH': return 'Espèces';
+      case 'BANK_TRANSFER': return 'Virement bancaire';
+      case 'ONLINE_GATEWAY':
+      case 'STRIPE': return 'Paiement en ligne';
+      default: return method || '—';
+    }
   }
 
   confirmPayment(): void {
