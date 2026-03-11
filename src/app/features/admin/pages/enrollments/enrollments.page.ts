@@ -70,6 +70,12 @@ export class EnrollmentsPage implements OnInit {
   ];
 
   pendingCount = computed(() => this.enrollments().filter(e => e.status === 'PENDING_APPROVAL').length);
+  approvedCount = computed(() => this.enrollments().filter(e => e.status === 'APPROVED').length);
+  inProgressCount = computed(() => this.enrollments().filter(e => e.status === 'IN_PROGRESS').length);
+  passedCount = computed(() => this.enrollments().filter(e => e.status === 'PASSED').length);
+  failedCount = computed(() => this.enrollments().filter(e => e.status === 'FAILED').length);
+  rejectedCount = computed(() => this.enrollments().filter(e => e.status === 'REJECTED').length);
+  totalCount = computed(() => this.enrollments().length);
 
   filteredEnrollments = computed(() => {
     const tab = this.activeTab();
