@@ -1,10 +1,9 @@
-import { Level } from '../../admin/models/enums';
 
 // Active courses
 export interface ActiveCourseResponse {
-    courseId: string;
-    courseName: string;
-    courseCode: string;
+    id: string;
+    name: string;
+    code: string;
     language: string;
     teacherFullName: string;
     upcomingSessions: UpcomingSession[];
