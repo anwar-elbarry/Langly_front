@@ -1,0 +1,121 @@
+<!-- Header -->
+<div class="mb-6">
+  <h2 class="m-0 text-xl font-bold text-gray-900">Mes Paiements</h2>
+  <p class="m-0 mt-1 text-sm text-gray-500">Consultez l'historique de vos paiements</p>
+</div>
+
+@if (loading()) {
+<div class="flex items-center justify-center py-20">
+  <app-spinner size="lg" />
+</div>
+}
+
+@if (!loading() && billings().length === 0) {
+<div class="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-200 bg-white py-16">
+  <i class="fa-solid fa-receipt text-3xl text-gray-300"></i>
+  <p class="mt-2 text-sm text-gray-500">Aucun paiement pour le moment</p>
+</div>
+}
+
+@if (!loading() && billings().length > 0) {
+<div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+  <app-table [striped]="true" [hoverable]="true">
+    <thead>
+      <tr>
+        <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Cours</th>
+        <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Montant</th>
+        <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Statut</th>
+        <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Méthode</th>
+        <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Date de paiement</th>
+        <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Prochaine échéance</th>
+        <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">Détails</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (billing of billings(); track billing.id) {
+      <!-- Main billing row -->
+      <tr class="cursor-pointer" (click)="toggleExpand(billing.id)">
+        <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ billing.courseName || '—' }}</td>
+        <td class="px-4 py-3 text-sm font-semibold text-gray-900">{{ billing.price }} MAD</td>
+        <td class="px-4 py-3">
+          <span [class]="paymentStatusClass(billing.status)">{{ paymentStatusLabel(billing.status) }}</span>
+        </td>
+        <td class="px-4 py-3 text-sm text-gray-600">
+          {{ billing.paymentMethod ? paymentMethodLabel(billing.paymentMethod) : '—' }}
+        </td>
+        <td class="px-4 py-3 text-sm text-gray-600">
+          {{ billing.paidAt ? (billing.paidAt | date:'dd/MM/yyyy HH:mm') : '—' }}
+        </td>
+        <td class="px-4 py-3 text-sm text-gray-600">
+          {{ billing.nextBillDate ? (billing.nextBillDate | date:'dd/MM/yyyy') : '—' }}
+        </td>
+        <td class="px-4 py-3 text-right">
+          @if (billing.histories && billing.histories.length > 0) {
+          <button class="inline-flex items-center gap-1 rounded-md border-0 bg-transparent px-2 py-1 text-xs font-medium text-emerald-600 transition hover:bg-emerald-50"
+            type="button">
+            <i class="fa-solid fa-clock-rotate-left text-[11px]"></i>
+            {{ billing.histories.length }}
+            <i class="fa-solid text-[10px] transition-transform"
+              [class.fa-chevron-down]="expandedBillingId() !== billing.id"
+              [class.fa-chevron-up]="expandedBillingId() === billing.id"></i>
+          </button>
+          } @else {
+          <span class="text-xs text-gray-400">—</span>
+          }
+        </td>
+      </tr>
+
+      <!-- Expanded history rows -->
+      @if (expandedBillingId() === billing.id && billing.histories && billing.histories.length > 0) {
+      <tr>
+        <td colspan="7" class="bg-gray-50 px-0 py-0">
+          <div class="px-6 py-4">
+            <p class="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-500">
+              <i class="fa-solid fa-clock-rotate-left mr-1"></i>Historique des transactions
+            </p>
+            <div class="space-y-2">
+              @for (entry of billing.histories; track entry.id) {
+              <div class="flex items-center justify-between rounded-lg border border-gray-200 bg-white px-4 py-3">
+                <div class="flex items-center gap-4">
+                  <div class="flex h-8 w-8 items-center justify-center rounded-full"
+                    [class]="entry.status === 'PAID'
+                      ? 'bg-green-100 text-green-600'
+                      : entry.status === 'PENDING'
+                        ? 'bg-amber-100 text-amber-600'
+                        : 'bg-gray-100 text-gray-500'">
+                    <i class="text-xs"
+                      [class]="entry.status === 'PAID'
+                        ? 'fa-solid fa-check'
+                        : entry.status === 'PENDING'
+                          ? 'fa-solid fa-clock'
+                          : 'fa-solid fa-circle-info'"></i>
+                  </div>
+                  <div>
+                    <p class="m-0 text-sm font-medium text-gray-900">{{ entry.price }} MAD</p>
+                    <p class="m-0 text-xs text-gray-500">{{ paymentMethodLabel(entry.paymentMethod) }}</p>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <span [class]="paymentStatusClass(entry.status)">{{ paymentStatusLabel(entry.status) }}</span>
+                  <p class="m-0 mt-1 text-xs text-gray-400">
+                    {{ entry.paidAt ? (entry.paidAt | date:'dd/MM/yyyy HH:mm') : '—' }}
+                  </p>
+                </div>
+              </div>
+              }
+            </div>
+          </div>
+        </td>
+      </tr>
+      }
+      } @empty {
+      <tr>
+        <td colspan="7" class="px-4 py-8 text-center text-sm text-gray-400">
+          Aucun paiement trouvé
+        </td>
+      </tr>
+      }
+    </tbody>
+  </app-table>
+</div>
+}
