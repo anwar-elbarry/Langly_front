@@ -49,9 +49,42 @@ export const SCHOOL_ADMIN_ROUTES: Routes = [
       },
       {
         path: 'billings',
+        redirectTo: 'invoices',
+        pathMatch: 'full',
+      },
+      {
+        path: 'invoices',
         loadComponent: () =>
-          import('./pages/billings/billings.page').then(
-            (m) => m.BillingsPage
+          import('./pages/invoices/invoices.page').then(
+            (m) => m.InvoicesPage
+          ),
+      },
+      {
+        path: 'invoices/:id',
+        loadComponent: () =>
+          import('./pages/invoices/invoice-detail.page').then(
+            (m) => m.InvoiceDetailPage
+          ),
+      },
+      {
+        path: 'discounts',
+        loadComponent: () =>
+          import('./pages/discounts/discounts.page').then(
+            (m) => m.DiscountsPage
+          ),
+      },
+      {
+        path: 'fee-templates',
+        loadComponent: () =>
+          import('./pages/fee-templates/fee-templates.page').then(
+            (m) => m.FeeTemplatesPage
+          ),
+      },
+      {
+        path: 'billing-settings',
+        loadComponent: () =>
+          import('./pages/billing-settings/billing-settings.page').then(
+            (m) => m.BillingSettingsPage
           ),
       },
       {
