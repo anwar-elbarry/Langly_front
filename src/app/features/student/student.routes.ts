@@ -39,6 +39,11 @@ export const STUDENT_ROUTES: Routes = [
                     import('./pages/certifications/certifications.page').then((m) => m.CertificationsPage),
             },
             {
+                path: 'billings',
+                loadComponent: () =>
+                    import('./pages/billings/billings.page').then((m) => m.BillingsPage),
+            },
+            {
                 path: 'settings',
                 loadComponent: () =>
                     import('./pages/settings/student-settings.page').then((m) => m.StudentSettingsPage),
