@@ -204,13 +204,22 @@
                 class="mt-0.5 accent-emerald-600" />
             <div>
                 <p class="m-0 text-sm font-semibold text-gray-900">
-                    <i class="fa-solid fa-globe mr-2 text-purple-600"></i>Paiement en ligne
+                    <i class="fa-solid fa-credit-card mr-2 text-purple-600"></i>Paiement en ligne
                 </p>
                 <p class="m-0 mt-1 text-xs text-gray-500">
-                    Paiement sécurisé par carte bancaire. Validation instantanée.
+                    Paiement sécurisé par carte bancaire via Stripe. Validation instantanée.
                 </p>
             </div>
         </label>
+
+        @if (selectedPaymentMethod() === 'ONLINE_GATEWAY') {
+        <div class="flex items-start gap-2 rounded-lg bg-purple-50 px-4 py-3">
+            <i class="fa-solid fa-circle-info mt-0.5 text-sm text-purple-500"></i>
+            <p class="m-0 text-xs text-purple-700">
+                Vous serez redirigé vers la page de paiement sécurisée Stripe.
+            </p>
+        </div>
+        }
     </div>
     <div class="modal-footer">
         <div class="flex justify-end gap-3">
@@ -219,7 +228,11 @@
                 [disabled]="!selectedPaymentMethod()"
                 [loading]="processingPayment()"
                 (click)="confirmPayment()">
-                Confirmer le paiement
+                @if (selectedPaymentMethod() === 'ONLINE_GATEWAY') {
+                    <i class="fa-solid fa-credit-card mr-2"></i>Procéder au paiement en ligne
+                } @else {
+                    Confirmer le paiement
+                }
             </app-button>
         </div>
     </div>

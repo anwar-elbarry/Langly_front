@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { forkJoin } from 'rxjs';
 import { selectCurrentUser } from '../../../../core/store/selectors/auth.selectors';
@@ -32,6 +33,7 @@ export interface EnrichedCourse extends CourseResponse {
 })
 export class EnrollPage implements OnInit {
     private store = inject(Store);
+    private route = inject(ActivatedRoute);
     private courseService = inject(StudentCourseService);
     private profileService = inject(StudentProfileService);
     private billingService = inject(StudentBillingService);
@@ -95,6 +97,14 @@ export class EnrollPage implements OnInit {
     });
 
     ngOnInit(): void {
+        // Handle Stripe return
+        const payment = this.route.snapshot.queryParamMap.get('payment');
+        if (payment === 'success') {
+            this.toast.success('Paiement effectué avec succès !');
+        } else if (payment === 'cancelled') {
+            this.toast.error('Paiement annulé. Vous pouvez réessayer.');
+        }
+
         const schoolId = this.user()?.schoolId;
         if (!schoolId) return;
 
