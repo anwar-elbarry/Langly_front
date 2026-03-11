@@ -4,11 +4,12 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AuthPage } from '../../../../core/store/actions/auth.actions';
 import { selectCurrentUser } from '../../../../core/store/selectors/auth.selectors';
+import { NotificationBellComponent } from '../../../../shared/components/notification-bell/notification-bell';
 
 @Component({
   selector: 'app-dashboard-container',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive, NotificationBellComponent],
   templateUrl: './dashboard-container.html',
   styleUrl: './dashboard-container.css',
 })
@@ -38,6 +39,7 @@ export class DashboardContainer {
     { label: "S'inscrire", route: '/student/enroll', icon: 'fa-solid fa-plus-circle' },
     { label: 'Présence', route: '/student/attendance', icon: 'fa-solid fa-qrcode' },
     { label: 'Certificats', route: '/student/certifications', icon: 'fa-solid fa-certificate' },
+    { label: 'Paiements', route: '/student/billings', icon: 'fa-solid fa-receipt' },
   ];
 
   bottomNavItems = [
