@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
 import { NotificationResponse } from '../models/notification.model';
 
@@ -18,7 +18,9 @@ export class NotificationService {
   }
 
   getUnreadCount(): Observable<number> {
-    return this.http.get<number>(`${this.apiUrl}/unread/count`);
+    return this.http.get<{ count: number }>(`${this.apiUrl}/unread/count`).pipe(
+      map((res) => res.count)
+    );
   }
 
   markAsRead(id: string): Observable<void> {

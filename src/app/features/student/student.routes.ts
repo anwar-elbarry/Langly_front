@@ -40,8 +40,18 @@ export const STUDENT_ROUTES: Routes = [
             },
             {
                 path: 'billings',
+                redirectTo: 'invoices',
+                pathMatch: 'full',
+            },
+            {
+                path: 'invoices',
                 loadComponent: () =>
-                    import('./pages/billings/billings.page').then((m) => m.BillingsPage),
+                    import('./pages/invoices/invoices.page').then((m) => m.StudentInvoicesPage),
+            },
+            {
+                path: 'invoices/:id',
+                loadComponent: () =>
+                    import('./pages/invoices/invoice-detail.page').then((m) => m.StudentInvoiceDetailPage),
             },
             {
                 path: 'settings',

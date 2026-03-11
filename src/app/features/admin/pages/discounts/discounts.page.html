@@ -1,0 +1,116 @@
+<!-- Header -->
+<div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+  <div>
+    <h2 class="text-xl font-bold text-gray-900">Remises</h2>
+    <p class="text-sm text-gray-500">Gérez les remises applicables aux factures de votre école</p>
+  </div>
+  <app-button variant="primary" (click)="openCreate()">
+    <i class="fa-solid fa-plus mr-2"></i>Nouvelle remise
+  </app-button>
+</div>
+
+@if (loading()) {
+  <div class="flex h-64 items-center justify-center">
+    <app-spinner size="lg" />
+  </div>
+} @else {
+  <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+    <app-table [striped]="true" [hoverable]="true">
+      <thead>
+        <tr>
+          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Nom</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Type</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Valeur</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Statut</th>
+          <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (discount of discounts(); track discount.id) {
+          <tr>
+            <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ discount.name }}</td>
+            <td class="px-4 py-3 text-sm text-gray-600">{{ discountTypeLabel(discount.type) }}</td>
+            <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ formatValue(discount) }}</td>
+            <td class="px-4 py-3">
+              @if (discount.isActive) {
+                <span class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-semibold text-green-700">Actif</span>
+              } @else {
+                <span class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-semibold text-gray-600">Inactif</span>
+              }
+            </td>
+            <td class="px-4 py-3 text-right">
+              <div class="flex items-center justify-end gap-2">
+                <button class="rounded-md px-2 py-1 text-xs font-medium text-blue-600 transition hover:bg-blue-50" (click)="openEdit(discount)">
+                  Modifier
+                </button>
+                <button class="rounded-md px-2 py-1 text-xs font-medium text-red-600 transition hover:bg-red-50" (click)="openDelete(discount.id)">
+                  Supprimer
+                </button>
+              </div>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="5" class="px-4 py-8 text-center text-sm text-gray-400">Aucune remise configurée</td>
+          </tr>
+        }
+      </tbody>
+    </app-table>
+  </div>
+}
+
+<!-- Create / Edit Modal -->
+<app-modal [isOpen]="modalOpen()" (closed)="closeModal()">
+  <div modal-header>
+    <h3 class="text-lg font-semibold text-gray-900">
+      {{ editingId() ? 'Modifier la remise' : 'Nouvelle remise' }}
+    </h3>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="saveDiscount()" class="space-y-4">
+    <app-form-field label="Nom" [required]="true"
+      [error]="form.controls.name.touched && form.controls.name.invalid ? 'Nom requis' : ''">
+      <app-input formControlName="name" placeholder="Ex: Réduction fratrie" />
+    </app-form-field>
+
+    <app-form-field label="Type" [required]="true">
+      <select formControlName="type"
+        class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none">
+        @for (t of discountTypes; track t.value) {
+          <option [value]="t.value">{{ t.label }}</option>
+        }
+      </select>
+    </app-form-field>
+
+    <app-form-field label="Valeur" [required]="true"
+      [hint]="form.value.type === 'PERCENTAGE' ? 'En pourcentage (ex: 10 pour 10%)' : 'En MAD'"
+      [error]="form.controls.value.touched && form.controls.value.invalid ? 'Valeur requise' : ''">
+      <app-input type="number" formControlName="value" placeholder="10" />
+    </app-form-field>
+
+    <label class="flex items-center gap-2 cursor-pointer">
+      <input type="checkbox" formControlName="isActive"
+        class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+      <span class="text-sm text-gray-700">Actif</span>
+    </label>
+  </form>
+
+  <div modal-footer>
+    <app-button variant="secondary" (click)="closeModal()">Annuler</app-button>
+    <app-button variant="primary" [loading]="saving()" (click)="saveDiscount()">
+      {{ editingId() ? 'Modifier' : 'Créer' }}
+    </app-button>
+  </div>
+</app-modal>
+
+<!-- Delete Confirmation Modal -->
+<app-modal [isOpen]="confirmDeleteOpen()" (closed)="closeDelete()">
+  <div modal-header>
+    <h3 class="text-lg font-semibold text-gray-900">Confirmer la suppression</h3>
+  </div>
+  <p class="text-sm text-gray-600">Êtes-vous sûr de vouloir supprimer cette remise ? Cette action est irréversible.</p>
+  <div modal-footer>
+    <app-button variant="secondary" (click)="closeDelete()">Annuler</app-button>
+    <app-button variant="danger" (click)="deleteDiscount()">Supprimer</app-button>
+  </div>
+</app-modal>

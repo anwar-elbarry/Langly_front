@@ -39,7 +39,7 @@ export class DashboardContainer {
     { label: "S'inscrire", route: '/student/enroll', icon: 'fa-solid fa-plus-circle' },
     { label: 'Présence', route: '/student/attendance', icon: 'fa-solid fa-qrcode' },
     { label: 'Certificats', route: '/student/certifications', icon: 'fa-solid fa-certificate' },
-    { label: 'Paiements', route: '/student/billings', icon: 'fa-solid fa-receipt' },
+    { label: 'Factures', route: '/student/invoices', icon: 'fa-solid fa-file-invoice' },
   ];
 
   bottomNavItems = [

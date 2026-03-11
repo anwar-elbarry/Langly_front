@@ -1,0 +1,193 @@
+@if (loading()) {
+  <div class="flex h-64 items-center justify-center">
+    <app-spinner size="lg" />
+  </div>
+} @else if (invoice(); as inv) {
+  <!-- Back button & Header -->
+  <div class="mb-6">
+    <button class="mb-4 flex items-center gap-1 text-sm text-gray-500 transition hover:text-gray-700" (click)="goBack()">
+      <i class="fa-solid fa-arrow-left text-xs"></i> Retour aux factures
+    </button>
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        <h2 class="text-xl font-bold text-gray-900">Facture {{ inv.invoiceNumber }}</h2>
+        <p class="text-sm text-gray-500">{{ inv.studentFullName }} — {{ inv.courseName }}</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <span [class]="invoiceStatusClass(inv.status)">{{ invoiceStatusLabel(inv.status) }}</span>
+        @if (inv.status !== 'PAID') {
+          <app-button variant="primary" (click)="openPaymentModal()">
+            <i class="fa-solid fa-plus mr-2"></i>Enregistrer un paiement
+          </app-button>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="grid gap-6 lg:grid-cols-3">
+    <!-- Left: Invoice details -->
+    <div class="lg:col-span-2 space-y-6">
+      <!-- Line Items -->
+      <div class="rounded-xl border border-gray-200 bg-white shadow-sm">
+        <div class="border-b border-gray-100 px-6 py-4">
+          <h3 class="text-sm font-semibold text-gray-900">Détail de la facture</h3>
+        </div>
+        <app-table>
+          <thead>
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Description</th>
+              <th class="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">Montant</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (line of inv.lines; track line.id) {
+              <tr>
+                <td class="px-6 py-3 text-sm text-gray-900">{{ line.description }}</td>
+                <td class="px-6 py-3 text-right text-sm font-medium"
+                  [class]="line.amount < 0 ? 'text-green-600' : 'text-gray-900'">
+                  {{ line.amount | number:'1.2-2' }} MAD
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="2" class="px-6 py-4 text-center text-sm text-gray-400">Aucune ligne</td>
+              </tr>
+            }
+          </tbody>
+        </app-table>
+
+        <!-- Totals -->
+        <div class="border-t border-gray-100 px-6 py-4 space-y-2">
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-500">Sous-total HT</span>
+            <span class="font-medium text-gray-900">{{ inv.subtotal | number:'1.2-2' }} MAD</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-500">TVA ({{ inv.tvaRate }}%)</span>
+            <span class="font-medium text-gray-900">{{ inv.tvaAmount | number:'1.2-2' }} MAD</span>
+          </div>
+          <div class="flex justify-between border-t border-gray-100 pt-2 text-base">
+            <span class="font-semibold text-gray-900">Total TTC</span>
+            <span class="font-bold text-gray-900">{{ inv.totalTtc | number:'1.2-2' }} MAD</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment Schedule -->
+      @if (inv.schedules.length) {
+        <div class="rounded-xl border border-gray-200 bg-white shadow-sm">
+          <div class="border-b border-gray-100 px-6 py-4">
+            <h3 class="text-sm font-semibold text-gray-900">Échéancier de paiement</h3>
+          </div>
+          <app-table>
+            <thead>
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Versement</th>
+                <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Montant</th>
+                <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Échéance</th>
+                <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Statut</th>
+                <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Payé le</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (schedule of inv.schedules; track schedule.id) {
+                <tr>
+                  <td class="px-6 py-3 text-sm text-gray-900">Versement {{ schedule.installment }}</td>
+                  <td class="px-6 py-3 text-sm font-medium text-gray-900">{{ schedule.amount | number:'1.2-2' }} MAD</td>
+                  <td class="px-6 py-3 text-sm text-gray-600">{{ schedule.dueDate | date:'dd/MM/yyyy' }}</td>
+                  <td class="px-6 py-3">
+                    <span [class]="scheduleStatusClass(schedule.status)">{{ scheduleStatusLabel(schedule.status) }}</span>
+                  </td>
+                  <td class="px-6 py-3 text-sm text-gray-600">
+                    {{ schedule.paidAt ? (schedule.paidAt | date:'dd/MM/yyyy') : '—' }}
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </app-table>
+        </div>
+      }
+    </div>
+
+    <!-- Right: Summary card -->
+    <div class="space-y-6">
+      <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+        <h3 class="mb-4 text-sm font-semibold text-gray-900">Résumé</h3>
+        <div class="space-y-3">
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-500">Émise le</span>
+            <span class="text-gray-900">{{ inv.issuedAt | date:'dd/MM/yyyy' }}</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-500">Échéance</span>
+            <span class="text-gray-900">{{ inv.dueDate | date:'dd/MM/yyyy' }}</span>
+          </div>
+          <hr class="border-gray-100" />
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-500">Total TTC</span>
+            <span class="font-semibold text-gray-900">{{ inv.totalTtc | number:'1.2-2' }} MAD</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-500">Payé</span>
+            <span class="font-medium text-green-600">{{ paidAmount() | number:'1.2-2' }} MAD</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-500">Restant</span>
+            <span class="font-semibold" [class]="remainingAmount() > 0 ? 'text-red-600' : 'text-green-600'">
+              {{ remainingAmount() | number:'1.2-2' }} MAD
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+        <h3 class="mb-4 text-sm font-semibold text-gray-900">Informations</h3>
+        <div class="space-y-3">
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-500">Élève</span>
+            <span class="text-gray-900">{{ inv.studentFullName }}</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-500">Cours</span>
+            <span class="text-gray-900">{{ inv.courseName }}</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-500">TVA</span>
+            <span class="text-gray-900">{{ inv.tvaRate }}%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Record Payment Modal -->
+  <app-modal [isOpen]="paymentModalOpen()" (closed)="closePaymentModal()">
+    <div modal-header>
+      <h3 class="text-lg font-semibold text-gray-900">Enregistrer un paiement</h3>
+    </div>
+
+    <form [formGroup]="paymentForm" (ngSubmit)="recordPayment()" class="space-y-4">
+      <app-form-field label="Montant (MAD)" [required]="true"
+        [hint]="'Restant dû : ' + (remainingAmount() | number:'1.2-2') + ' MAD'"
+        [error]="paymentForm.controls.amount.touched && paymentForm.controls.amount.invalid ? 'Montant requis' : ''">
+        <app-input type="number" formControlName="amount" placeholder="0.00" />
+      </app-form-field>
+
+      <app-form-field label="Méthode de paiement" [required]="true">
+        <select formControlName="paymentMethod"
+          class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none">
+          <option value="CASH">Espèces</option>
+          <option value="BANK_TRANSFER">Virement bancaire</option>
+          <option value="STRIPE">Stripe</option>
+        </select>
+      </app-form-field>
+    </form>
+
+    <div modal-footer>
+      <app-button variant="secondary" (click)="closePaymentModal()">Annuler</app-button>
+      <app-button variant="primary" [loading]="recording()" (click)="recordPayment()">
+        Enregistrer
+      </app-button>
+    </div>
+  </app-modal>
+}

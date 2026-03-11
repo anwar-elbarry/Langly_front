@@ -42,7 +42,10 @@ export class DashboardContainer implements OnInit {
     { label: 'Cours', route: '/schoolAdmin/courses', icon: 'fa-solid fa-book', badge: false },
     { label: 'Élèves', route: '/schoolAdmin/students', icon: 'fa-solid fa-user-graduate', badge: false },
     { label: 'Inscriptions', route: '/schoolAdmin/enrollments', icon: 'fa-solid fa-clipboard-list', badge: false },
-    { label: 'Paiements', route: '/schoolAdmin/billings', icon: 'fa-solid fa-credit-card', badge: false },
+    { label: 'Factures', route: '/schoolAdmin/invoices', icon: 'fa-solid fa-file-invoice', badge: false },
+    { label: 'Remises', route: '/schoolAdmin/discounts', icon: 'fa-solid fa-tags', badge: false },
+    { label: 'Catalogue de frais', route: '/schoolAdmin/fee-templates', icon: 'fa-solid fa-list-check', badge: false },
+    { label: 'Param. facturation', route: '/schoolAdmin/billing-settings', icon: 'fa-solid fa-sliders', badge: false },
     { label: 'Alertes', route: '/schoolAdmin/alerts', icon: 'fa-solid fa-triangle-exclamation', badge: true },
   ];
 

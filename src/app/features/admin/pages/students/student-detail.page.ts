@@ -8,7 +8,7 @@ import { ToastService } from '../../../../shared/ui/toast/toast.service';
 import { StudentResponse } from '../../models/student.model';
 import { EnrollmentResponse } from '../../models/enrollment.model';
 import { BillingResponse } from '../../models/billing.model';
-import { Gender, Level } from '../../models/enums';
+import { Gender, Level, PaymentMethod } from '../../models/enums';
 import { StudentService } from '../../services/student.service';
 import { EnrollmentService } from '../../services/enrollment.service';
 import { BillingService } from '../../services/billing.service';
@@ -103,5 +103,19 @@ export class StudentDetailPage implements OnInit {
           this.toast.error('Erreur lors de la mise à jour');
         },
       });
+  }
+
+  paymentMethodLabel(method: PaymentMethod | string): string {
+    switch (method) {
+      case 'CASH':
+        return 'Espèces';
+      case 'BANK_TRANSFER':
+        return 'Virement bancaire';
+      case 'ONLINE_GATEWAY':
+      case 'STRIPE':
+        return 'Paiement en ligne';
+      default:
+        return method || '—';
+    }
   }
 }

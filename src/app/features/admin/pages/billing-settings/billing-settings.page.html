@@ -1,0 +1,67 @@
+@if (loading()) {
+  <div class="flex h-64 items-center justify-center">
+    <app-spinner size="lg" />
+  </div>
+} @else {
+  <div class="mx-auto max-w-2xl">
+    <!-- Header -->
+    <div class="mb-6">
+      <h2 class="text-xl font-bold text-gray-900">Paramètres de facturation</h2>
+      <p class="text-sm text-gray-500">Configurez la TVA, les échéances et les options de paiement de votre école</p>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="save()" class="space-y-6 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+
+      <!-- TVA Rate -->
+      <app-form-field label="Taux de TVA (%)" [required]="true"
+        hint="20% par défaut au Maroc. Mettez 0 si votre école est exonérée."
+        [error]="form.controls.tvaRate.touched && form.controls.tvaRate.invalid ? 'Taux requis (0-100)' : ''">
+        <app-input type="number" formControlName="tvaRate" placeholder="20" />
+      </app-form-field>
+
+      <!-- Due Date Days -->
+      <app-form-field label="Échéance de paiement (jours)" [required]="true"
+        hint="Relatif à la date de début du cours. 0 = jour du début, -3 = 3 jours avant, +7 = 7 jours après.">
+        <app-input type="number" formControlName="dueDateDays" placeholder="0" />
+      </app-form-field>
+
+      <!-- Default Installment Plan -->
+      <app-form-field label="Plan de versement par défaut" [required]="true">
+        <select formControlName="defaultInstallmentPlan"
+          class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none">
+          @for (plan of installmentPlans; track plan.value) {
+            <option [value]="plan.value">{{ plan.label }}</option>
+          }
+        </select>
+      </app-form-field>
+
+      <!-- Toggles -->
+      <div class="space-y-4 rounded-lg border border-gray-100 bg-gray-50 p-4">
+        <label class="flex items-center gap-3 cursor-pointer">
+          <input type="checkbox" formControlName="blockOnUnpaid"
+            class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+          <div>
+            <span class="text-sm font-medium text-gray-900">Bloquer la présence si impayé</span>
+            <p class="text-xs text-gray-500">Si activé, les élèves ne pourront pas être marqués présents tant que leur facture est impayée. Sinon, un avertissement sera affiché.</p>
+          </div>
+        </label>
+
+        <label class="flex items-center gap-3 cursor-pointer">
+          <input type="checkbox" formControlName="discountEnabled"
+            class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+          <div>
+            <span class="text-sm font-medium text-gray-900">Activer les remises</span>
+            <p class="text-xs text-gray-500">Permet d'appliquer des remises aux factures des élèves.</p>
+          </div>
+        </label>
+      </div>
+
+      <!-- Save -->
+      <div class="flex justify-end pt-2">
+        <app-button type="submit" variant="primary" [loading]="saving()">
+          Enregistrer
+        </app-button>
+      </div>
+    </form>
+  </div>
+}

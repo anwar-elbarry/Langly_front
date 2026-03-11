@@ -193,7 +193,7 @@
               <td class="px-4 py-3"><span [class]="paymentStatusClass(b.status)">{{ paymentStatusLabel(b.status) }}</span></td>
               <td class="px-4 py-3 text-sm text-gray-600">
                 @if (b.status === 'PAID') {
-                  {{ b.paymentMethod === 'CASH' ? 'Espèces' : b.paymentMethod === 'BANK_TRANSFER' ? 'Virement' : '—' }}
+                  {{ paymentMethodLabel(b.paymentMethod) }}
                 } @else { — }
               </td>
               <td class="px-4 py-3 text-sm text-gray-600">{{ b.nextBillDate | date:'dd/MM/yyyy' }}</td>
