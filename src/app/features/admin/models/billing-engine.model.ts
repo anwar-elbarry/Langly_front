@@ -104,3 +104,19 @@ export interface RecordPaymentRequest {
   amount: number;
   paymentMethod: string;
 }
+
+// ── Financial Summary (TVA tracking) ──
+
+export interface FinancialSummaryResponse {
+  totalRevenue: number;
+  totalTva: number;
+  totalTtc: number;
+  paidRevenue: number;
+  paidTva: number;
+  pendingRevenue: number;
+  pendingTva: number;
+  invoiceCount: number;
+  paidCount: number;
+  unpaidCount: number;
+  tvaRate: number;
+}
