@@ -17,6 +17,8 @@ export class InputComponent implements ControlValueAccessor {
     @Input() placeholder = '';
     @Input() disabled = false;
     @Input() error = false;
+    @Input() min = '';
+    @Input() max = '';
 
     value = '';
     onChange: (val: string) => void = () => { };
