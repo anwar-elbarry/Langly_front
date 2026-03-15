@@ -20,6 +20,8 @@ export interface SessionResponse {
   room: string;
   meetingLink: string;
   courseId: string;
+  presentCount: number;
+  totalEnrolled: number;
 }
 
 export interface SessionRequest {
@@ -34,19 +36,19 @@ export interface SessionRequest {
 }
 
 // QR code
-export interface QrCodeResponse {
-  qrToken: string;
-  expiresAt: string;
-}
-
 // Attendance
 export interface AttendanceResponse {
-  id: string;
+  id: string | null;
   studentId: string;
   studentFullName: string;
-  status: 'PRESENT' | 'ABSENT' | 'LATE' | 'EXCUSED';
-  markedAt: string;
+  status: 'PRESENT' | 'ABSENT' | 'LATE' | 'EXCUSED' | 'UNMARKED';
+  markedAt: string | null;
   sessionId: string;
+}
+
+export interface ManualAttendanceRequest {
+  studentId: string;
+  status: 'PRESENT' | 'ABSENT' | 'LATE' | 'EXCUSED';
 }
 
 // Course material
