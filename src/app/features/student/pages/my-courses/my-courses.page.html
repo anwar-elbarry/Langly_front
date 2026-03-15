@@ -63,12 +63,12 @@
         </div>
 
         <!-- Next session -->
-        <div class="mt-auto pt-4 border-t border-gray-100 mt-4">
+        <div class="pt-4 border-t border-gray-100 mt-4">
             <div class="flex items-center gap-2 text-[12px] text-gray-500">
                 <i class="fa-regular fa-calendar text-gray-400"></i>
                 <span>{{ getNextSession(course) }}</span>
             </div>
-            @if (course.upcomingSessions?.length) {
+            @if (course.upcomingSessions && course.upcomingSessions.length) {
             <div class="mt-1 flex items-center gap-2 text-[12px] text-gray-500">
                 <i [class]="getModeIcon(course.upcomingSessions[0].mode) + ' text-gray-400'"></i>
                 <span>{{ course.upcomingSessions[0].mode }}</span>
