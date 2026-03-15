@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
@@ -90,6 +90,17 @@ export class CourseDetailPage implements OnInit {
   enrollmentStatusClass = enrollmentStatusClass;
   enrollmentStatusLabel = enrollmentStatusLabel;
 
+  // Computed: session date constraints from course dates
+  sessionMinDate = computed(() => {
+    const c = this.course();
+    return c?.startDate ? c.startDate + 'T00:00' : '';
+  });
+
+  sessionMaxDate = computed(() => {
+    const c = this.course();
+    return c?.endDate ? c.endDate + 'T23:59' : '';
+  });
+
   ngOnInit(): void {
     this.courseId = this.route.snapshot.params['id'];
     this.courseService
@@ -143,6 +154,21 @@ export class CourseDetailPage implements OnInit {
   saveSession(): void {
     this.sessionForm.markAllAsTouched();
     if (this.sessionForm.invalid) return;
+
+    // Validate session date is within course date range
+    const scheduledAt = this.sessionForm.value.scheduledAt || '';
+    const c = this.course();
+    if (c && scheduledAt) {
+      const sessionDate = scheduledAt.slice(0, 10);
+      if (c.startDate && sessionDate < c.startDate) {
+        this.toast.error(`La session ne peut pas être avant le début du cours (${c.startDate})`);
+        return;
+      }
+      if (c.endDate && sessionDate > c.endDate) {
+        this.toast.error(`La session ne peut pas être après la fin du cours (${c.endDate})`);
+        return;
+      }
+    }
 
     const payload: SessionRequest = {
       title: this.sessionForm.value.title || '',

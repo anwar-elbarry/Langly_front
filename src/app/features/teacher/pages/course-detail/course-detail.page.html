@@ -75,7 +75,7 @@
         </div>
         <div>
           <p class="text-xs text-gray-400">Minutes / session</p>
-          <p class="text-sm font-medium text-gray-900">{{ c.minutesPerSession ?? '—' }}</p>
+          <p class="text-sm font-medium text-gray-900">{{ c.minutesPerSession }}</p>
         </div>
         <div>
           <p class="text-xs text-gray-400">Statut</p>
@@ -110,6 +110,7 @@
               <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Durée</th>
               <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Mode</th>
               <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Salle / Lien</th>
+              <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Présences</th>
               <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">Actions</th>
             </tr>
           </thead>
@@ -123,6 +124,16 @@
                   <i class="{{ getModeIcon(session.mode) }} mr-1 text-xs"></i>{{ getModeLabel(session.mode) }}
                 </td>
                 <td class="px-4 py-3 text-sm text-gray-600">{{ session.room || session.meetingLink || '—' }}</td>
+                <td class="px-4 py-3 text-sm">
+                  <span class="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold"
+                    [class.bg-green-100]="session.presentCount > 0"
+                    [class.text-green-700]="session.presentCount > 0"
+                    [class.bg-gray-100]="session.presentCount === 0"
+                    [class.text-gray-500]="session.presentCount === 0">
+                    <i class="fa-solid fa-users text-[10px]"></i>
+                    {{ session.presentCount }} / {{ session.totalEnrolled }}
+                  </span>
+                </td>
                 <td class="px-4 py-3 text-right">
                   <div class="flex items-center justify-end gap-1">
                     <button class="rounded-md px-2 py-1 text-xs font-medium text-sky-600 transition hover:bg-sky-50" (click)="goToAttendance(session.id)" title="Présence & QR">
@@ -139,7 +150,7 @@
               </tr>
             } @empty {
               <tr>
-                <td colspan="6" class="px-4 py-8 text-center text-sm text-gray-400">Aucune session</td>
+                <td colspan="7" class="px-4 py-8 text-center text-sm text-gray-400">Aucune session</td>
               </tr>
             }
           </tbody>
@@ -280,7 +291,12 @@
 
     <div class="grid grid-cols-2 gap-4">
       <app-form-field label="Date & Heure" [required]="true">
-        <app-input type="datetime-local" formControlName="scheduledAt" />
+        <app-input type="datetime-local" formControlName="scheduledAt" [min]="sessionMinDate()" [max]="sessionMaxDate()" />
+        @if (course(); as c) {
+          <p class="mt-1 text-[11px] text-gray-400">
+            Période du cours : {{ c.startDate | date:'dd/MM/yyyy' }} — {{ c.endDate | date:'dd/MM/yyyy' }}
+          </p>
+        }
       </app-form-field>
       <app-form-field label="Durée (min)" [required]="true">
         <app-input type="number" formControlName="durationMinutes" placeholder="90" />
