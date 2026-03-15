@@ -1,109 +1,88 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal, computed } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 import { SpinnerComponent } from '../../../../shared/ui/spinner/spinner';
-import { ButtonComponent } from '../../../../shared/ui/button/button';
 import { TableComponent } from '../../../../shared/ui/table/table';
+import { ToastService } from '../../../../shared/ui/toast/toast.service';
 import { TeacherAttendanceService } from '../../services/teacher-attendance.service';
-import { AttendanceResponse, QrCodeResponse } from '../../models/teacher.model';
+import { AttendanceResponse } from '../../models/teacher.model';
 
 @Component({
   selector: 'app-attendance-page',
   standalone: true,
-  imports: [CommonModule, RouterLink, SpinnerComponent, ButtonComponent, TableComponent],
+  imports: [CommonModule, RouterLink, SpinnerComponent, TableComponent],
   templateUrl: './attendance.page.html',
 })
-export class AttendancePage implements OnInit, OnDestroy {
+export class AttendancePage implements OnInit {
   private route = inject(ActivatedRoute);
   private attendanceService = inject(TeacherAttendanceService);
+  private toast = inject(ToastService);
+
+  constructor() {}
 
   sessionId = '';
   loading = signal(true);
   attendanceList = signal<AttendanceResponse[]>([]);
 
-  // QR state
-  generatingQr = signal(false);
-  qrToken = signal<string | null>(null);
-  qrExpiresAt = signal<Date | null>(null);
-  remainingSeconds = signal(0);
+  // Manual marking state
+  updatingStudentId = signal<string | null>(null);
 
-  private refreshInterval: ReturnType<typeof setInterval> | null = null;
-  private countdownInterval: ReturnType<typeof setInterval> | null = null;
+  // Stats computed from attendance list
+  stats = computed(() => {
+    const list = this.attendanceList();
+    return {
+      total: list.length,
+      present: list.filter(a => a.status === 'PRESENT').length,
+      late: list.filter(a => a.status === 'LATE').length,
+      absent: list.filter(a => a.status === 'ABSENT').length,
+      excused: list.filter(a => a.status === 'EXCUSED').length,
+      unmarked: list.filter(a => a.status === 'UNMARKED').length,
+    };
+  });
 
   ngOnInit(): void {
     this.sessionId = this.route.snapshot.params['sessionId'];
-    this.loadAttendance();
+    this.loadFullAttendance();
   }
 
-  ngOnDestroy(): void {
-    this.clearIntervals();
-  }
-
-  loadAttendance(): void {
+  loadFullAttendance(): void {
     this.attendanceService
-      .getAttendance(this.sessionId)
+      .getFullAttendance(this.sessionId)
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({ next: (data) => this.attendanceList.set(data) });
   }
 
-  generateQr(): void {
-    this.generatingQr.set(true);
+  markStudent(studentId: string, status: 'PRESENT' | 'ABSENT' | 'LATE' | 'EXCUSED'): void {
+    this.updatingStudentId.set(studentId);
     this.attendanceService
-      .generateQrCode(this.sessionId)
-      .pipe(finalize(() => this.generatingQr.set(false)))
+      .markManual(this.sessionId, { studentId, status })
+      .pipe(finalize(() => this.updatingStudentId.set(null)))
       .subscribe({
-        next: (data: QrCodeResponse) => {
-          this.qrToken.set(data.qrToken);
-          this.qrExpiresAt.set(new Date(data.expiresAt));
-          this.startCountdown();
-          this.startAutoRefresh();
+        next: () => {
+          this.toast.success('Présence mise à jour');
+          this.loadFullAttendance();
         },
       });
   }
 
-  private startCountdown(): void {
-    if (this.countdownInterval) clearInterval(this.countdownInterval);
-    this.updateRemaining();
-    this.countdownInterval = setInterval(() => {
-      this.updateRemaining();
-      if (this.remainingSeconds() <= 0) {
-        this.qrToken.set(null);
-        this.clearIntervals();
-      }
-    }, 1000);
-  }
-
-  private updateRemaining(): void {
-    const expires = this.qrExpiresAt();
-    if (!expires) {
-      this.remainingSeconds.set(0);
-      return;
-    }
-    const diff = Math.max(0, Math.floor((expires.getTime() - Date.now()) / 1000));
-    this.remainingSeconds.set(diff);
-  }
-
-  private startAutoRefresh(): void {
-    if (this.refreshInterval) clearInterval(this.refreshInterval);
-    this.refreshInterval = setInterval(() => {
-      if (this.qrToken()) {
-        this.attendanceService.getAttendance(this.sessionId).subscribe({
-          next: (data) => this.attendanceList.set(data),
+  markAllAs(status: 'PRESENT' | 'ABSENT'): void {
+    const unmarked = this.attendanceList().filter(a => a.status === 'UNMARKED');
+    if (unmarked.length === 0) return;
+    let completed = 0;
+    for (const record of unmarked) {
+      this.attendanceService
+        .markManual(this.sessionId, { studentId: record.studentId, status })
+        .subscribe({
+          next: () => {
+            completed++;
+            if (completed === unmarked.length) {
+              this.toast.success(`${unmarked.length} élèves marqués comme ${status === 'PRESENT' ? 'présents' : 'absents'}`);
+              this.loadFullAttendance();
+            }
+          },
         });
-      }
-    }, 10000);
-  }
-
-  private clearIntervals(): void {
-    if (this.refreshInterval) { clearInterval(this.refreshInterval); this.refreshInterval = null; }
-    if (this.countdownInterval) { clearInterval(this.countdownInterval); this.countdownInterval = null; }
-  }
-
-  formatTime(seconds: number): string {
-    const m = Math.floor(seconds / 60);
-    const s = seconds % 60;
-    return `${m}:${s.toString().padStart(2, '0')}`;
+    }
   }
 
   getStatusBadge(status: string): string {
@@ -122,6 +101,7 @@ export class AttendancePage implements OnInit, OnDestroy {
       case 'LATE': return 'En retard';
       case 'ABSENT': return 'Absent';
       case 'EXCUSED': return 'Excusé';
+      case 'UNMARKED': return 'Non marqué';
       default: return status;
     }
   }

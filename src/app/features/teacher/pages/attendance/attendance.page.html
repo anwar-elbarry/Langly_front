@@ -4,89 +4,135 @@
     <i class="fa-solid fa-arrow-left text-xs"></i> Retour
   </a>
   <h2 class="text-xl font-bold text-gray-900">Présence — Session</h2>
-  <p class="text-sm text-gray-500">Générez un QR code et suivez la présence en temps réel</p>
+  <p class="text-sm text-gray-500">Gérez la présence manuellement</p>
 </div>
 
-<!-- QR Code Section -->
-<div class="mb-6 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-  <h3 class="mb-4 text-sm font-semibold text-gray-900">
-    <i class="fa-solid fa-qrcode mr-2 text-sky-600"></i>Code QR de présence
-  </h3>
-
-  @if (qrToken()) {
-    <div class="flex flex-col items-center gap-4">
-      <!-- QR display placeholder - token for students to use -->
-      <div class="flex h-48 w-48 items-center justify-center rounded-xl border-2 border-dashed border-sky-300 bg-sky-50">
-        <div class="text-center">
-          <i class="fa-solid fa-qrcode text-5xl text-sky-600"></i>
-          <p class="mt-2 text-xs text-sky-700 font-medium">QR Actif</p>
-        </div>
-      </div>
-
-      <!-- Countdown -->
-      <div class="flex items-center gap-2 rounded-lg bg-amber-50 px-4 py-2">
-        <i class="fa-solid fa-clock text-amber-600"></i>
-        <span class="text-sm font-medium text-amber-700">
-          Expire dans {{ formatTime(remainingSeconds()) }}
-        </span>
-      </div>
-
-      <app-button variant="primary" (click)="generateQr()" [loading]="generatingQr()">
-        <i class="fa-solid fa-rotate-right mr-2"></i>Regénérer
-      </app-button>
+<!-- Stats cards -->
+@if (!loading()) {
+  <div class="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+    <div class="rounded-xl border border-gray-200 bg-white p-4 text-center shadow-sm">
+      <p class="text-2xl font-bold text-gray-900">{{ stats().total }}</p>
+      <p class="text-xs text-gray-500">Total inscrits</p>
     </div>
-  } @else {
-    <div class="flex flex-col items-center gap-4">
-      <div class="flex h-48 w-48 items-center justify-center rounded-xl border-2 border-dashed border-gray-200 bg-gray-50">
-        <div class="text-center">
-          <i class="fa-solid fa-qrcode text-5xl text-gray-300"></i>
-          <p class="mt-2 text-xs text-gray-400">Aucun QR actif</p>
-        </div>
-      </div>
-      <app-button variant="primary" (click)="generateQr()" [loading]="generatingQr()">
-        <i class="fa-solid fa-qrcode mr-2"></i>Générer QR Code
-      </app-button>
+    <div class="rounded-xl border border-green-200 bg-green-50 p-4 text-center shadow-sm">
+      <p class="text-2xl font-bold text-green-700">{{ stats().present }}</p>
+      <p class="text-xs text-green-600">Présents</p>
     </div>
-  }
-</div>
-
-<!-- Attendance List -->
-<div class="rounded-xl border border-gray-200 bg-white shadow-sm">
-  <div class="border-b border-gray-200 px-5 py-4">
-    <h3 class="text-sm font-semibold text-gray-900">
-      <i class="fa-solid fa-list-check mr-2 text-sky-600"></i>Liste de présence
-      <span class="ml-2 text-xs font-normal text-gray-400">({{ attendanceList().length }} élèves)</span>
-    </h3>
+    <div class="rounded-xl border border-amber-200 bg-amber-50 p-4 text-center shadow-sm">
+      <p class="text-2xl font-bold text-amber-700">{{ stats().late }}</p>
+      <p class="text-xs text-amber-600">En retard</p>
+    </div>
+    <div class="rounded-xl border border-red-200 bg-red-50 p-4 text-center shadow-sm">
+      <p class="text-2xl font-bold text-red-700">{{ stats().absent }}</p>
+      <p class="text-xs text-red-600">Absents</p>
+    </div>
+    <div class="rounded-xl border border-blue-200 bg-blue-50 p-4 text-center shadow-sm">
+      <p class="text-2xl font-bold text-blue-700">{{ stats().excused }}</p>
+      <p class="text-xs text-blue-600">Excusés</p>
+    </div>
+    <div class="rounded-xl border border-gray-200 bg-gray-50 p-4 text-center shadow-sm">
+      <p class="text-2xl font-bold text-gray-500">{{ stats().unmarked }}</p>
+      <p class="text-xs text-gray-400">Non marqués</p>
+    </div>
   </div>
+}
+<!-- Manual Marking Section -->
+  <div class="mb-6 rounded-xl border border-gray-200 bg-white shadow-sm">
+    <div class="flex items-center justify-between border-b border-gray-200 px-5 py-4">
+      <h3 class="text-sm font-semibold text-gray-900">
+        <i class="fa-solid fa-pen-to-square mr-2 text-sky-600"></i>Marquage manuel
+      </h3>
+      <div class="flex gap-2">
+        <button
+          class="rounded-md border border-green-200 bg-green-50 px-3 py-1.5 text-xs font-medium text-green-700 transition hover:bg-green-100"
+          (click)="markAllAs('PRESENT')">
+          <i class="fa-solid fa-check-double mr-1"></i>Tous présents
+        </button>
+        <button
+          class="rounded-md border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-medium text-red-700 transition hover:bg-red-100"
+          (click)="markAllAs('ABSENT')">
+          <i class="fa-solid fa-xmark mr-1"></i>Tous absents
+        </button>
+      </div>
+    </div>
 
-  @if (loading()) {
-    <div class="flex h-40 items-center justify-center"><app-spinner size="md" /></div>
-  } @else {
-    <app-table [striped]="true" [hoverable]="true">
-      <thead>
-        <tr>
-          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Nom</th>
-          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Statut</th>
-          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Heure</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (record of attendanceList(); track record.id) {
+    @if (loading()) {
+      <div class="flex h-40 items-center justify-center"><app-spinner size="md" /></div>
+    } @else {
+      <app-table [striped]="true" [hoverable]="true">
+        <thead>
           <tr>
-            <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ record.studentFullName }}</td>
-            <td class="px-4 py-3">
-              <span [class]="getStatusBadge(record.status)">{{ getStatusLabel(record.status) }}</span>
-            </td>
-            <td class="px-4 py-3 text-sm text-gray-600">{{ record.markedAt | date:'HH:mm' }}</td>
+            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Nom</th>
+            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Statut actuel</th>
+            <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">Marquer comme</th>
           </tr>
-        } @empty {
-          <tr>
-            <td colspan="3" class="px-4 py-8 text-center text-sm text-gray-400">
-              Aucune présence enregistrée
-            </td>
-          </tr>
-        }
-      </tbody>
-    </app-table>
-  }
-</div>
+        </thead>
+        <tbody>
+          @for (record of attendanceList(); track record.studentId) {
+            <tr>
+              <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ record.studentFullName }}</td>
+              <td class="px-4 py-3">
+                <span [class]="getStatusBadge(record.status)">{{ getStatusLabel(record.status) }}</span>
+              </td>
+              <td class="px-4 py-3 text-right">
+                @if (updatingStudentId() === record.studentId) {
+                  <div class="inline-flex items-center gap-2 text-xs text-gray-400">
+                    <div class="h-3.5 w-3.5 animate-spin rounded-full border-2 border-gray-300 border-t-sky-500"></div>
+                  </div>
+                } @else {
+                  <div class="inline-flex gap-1">
+                    <button
+                      class="rounded-md px-2 py-1 text-xs font-medium transition"
+                      [class.bg-green-600]="record.status === 'PRESENT'"
+                      [class.text-white]="record.status === 'PRESENT'"
+                      [class.text-green-600]="record.status !== 'PRESENT'"
+                      [class.hover:bg-green-50]="record.status !== 'PRESENT'"
+                      (click)="markStudent(record.studentId, 'PRESENT')"
+                      title="Présent">
+                      <i class="fa-solid fa-check"></i>
+                    </button>
+                    <button
+                      class="rounded-md px-2 py-1 text-xs font-medium transition"
+                      [class.bg-amber-600]="record.status === 'LATE'"
+                      [class.text-white]="record.status === 'LATE'"
+                      [class.text-amber-600]="record.status !== 'LATE'"
+                      [class.hover:bg-amber-50]="record.status !== 'LATE'"
+                      (click)="markStudent(record.studentId, 'LATE')"
+                      title="En retard">
+                      <i class="fa-solid fa-clock"></i>
+                    </button>
+                    <button
+                      class="rounded-md px-2 py-1 text-xs font-medium transition"
+                      [class.bg-red-600]="record.status === 'ABSENT'"
+                      [class.text-white]="record.status === 'ABSENT'"
+                      [class.text-red-600]="record.status !== 'ABSENT'"
+                      [class.hover:bg-red-50]="record.status !== 'ABSENT'"
+                      (click)="markStudent(record.studentId, 'ABSENT')"
+                      title="Absent">
+                      <i class="fa-solid fa-xmark"></i>
+                    </button>
+                    <button
+                      class="rounded-md px-2 py-1 text-xs font-medium transition"
+                      [class.bg-blue-600]="record.status === 'EXCUSED'"
+                      [class.text-white]="record.status === 'EXCUSED'"
+                      [class.text-blue-600]="record.status !== 'EXCUSED'"
+                      [class.hover:bg-blue-50]="record.status !== 'EXCUSED'"
+                      (click)="markStudent(record.studentId, 'EXCUSED')"
+                      title="Excusé">
+                      <i class="fa-solid fa-hand"></i>
+                    </button>
+                  </div>
+                }
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="3" class="px-4 py-8 text-center text-sm text-gray-400">
+                Aucun élève inscrit
+              </td>
+            </tr>
+          }
+        </tbody>
+      </app-table>
+    }
+  </div>
