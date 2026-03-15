@@ -30,7 +30,7 @@
         </div>
         <div class="flex items-center gap-2">
             <i class="fa-solid fa-calendar text-gray-400"></i>
-            {{ course()!.upcomingSessions?.length || 0 }} sessions à venir
+            {{ course()!.upcomingSessions && course()!.upcomingSessions.length ? course()!.upcomingSessions.length : 0 }} sessions à venir
         </div>
     </div>
 </div>
@@ -53,7 +53,7 @@
 
 <!-- Sessions tab -->
 @if (activeTab() === 'sessions') {
-@if (!course()!.upcomingSessions?.length) {
+@if (!course()!.upcomingSessions || course()!.upcomingSessions.length === 0) {
 <div class="rounded-xl border-2 border-dashed border-gray-200 bg-white py-12 text-center">
     <i class="fa-regular fa-calendar-xmark text-3xl text-gray-300"></i>
     <p class="mt-2 text-sm text-gray-500">Aucune session prévue</p>
