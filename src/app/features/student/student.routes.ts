@@ -29,11 +29,6 @@ export const STUDENT_ROUTES: Routes = [
                     import('./pages/enroll/enroll.page').then((m) => m.EnrollPage),
             },
             {
-                path: 'attendance',
-                loadComponent: () =>
-                    import('./pages/attendance/attendance.page').then((m) => m.AttendancePage),
-            },
-            {
                 path: 'certifications',
                 loadComponent: () =>
                     import('./pages/certifications/certifications.page').then((m) => m.CertificationsPage),
