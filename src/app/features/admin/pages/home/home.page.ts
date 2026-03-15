@@ -12,9 +12,11 @@ import { SchoolOverviewService, SchoolOverview } from '../../services/school-ove
 import { StudentService } from '../../services/student.service';
 import { EnrollmentService } from '../../services/enrollment.service';
 import { BillingService } from '../../services/billing.service';
+import { InvoiceService } from '../../services/invoice.service';
 import { StudentResponse } from '../../models/student.model';
 import { EnrollmentResponse } from '../../models/enrollment.model';
 import { BillingResponse } from '../../models/billing.model';
+import { FinancialSummaryResponse } from '../../models/billing-engine.model';
 import { Level, LEVELS } from '../../models/enums';
 
 @Component({
@@ -30,10 +32,13 @@ export class HomePage implements OnInit {
   private studentService = inject(StudentService);
   private enrollmentService = inject(EnrollmentService);
   private billingService = inject(BillingService);
+  private invoiceService = inject(InvoiceService);
 
   user = this.store.selectSignal(selectCurrentUser);
   loading = signal(true);
   overview = signal<SchoolOverview | null>(null);
+  financialSummary = signal<FinancialSummaryResponse | null>(null);
+  earningsView = signal<'before_tva' | 'after_tva'>('before_tva');
 
   // Chart data
   studentsByLevelChart = signal<ChartConfiguration<'bar'>['data'] | null>(null);
@@ -60,11 +65,13 @@ export class HomePage implements OnInit {
       students: this.studentService.getAllBySchool(schoolId),
       enrollments: this.enrollmentService.getAllBySchool(schoolId),
       billings: this.billingService.getAllBySchool(schoolId),
+      financialSummary: this.invoiceService.getFinancialSummary(schoolId),
     })
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
-        next: ({ overview, students, enrollments, billings }) => {
+        next: ({ overview, students, enrollments, billings, financialSummary }) => {
           this.overview.set(overview);
+          this.financialSummary.set(financialSummary);
           this.buildStudentsByLevelChart(students);
           this.buildEnrollmentStatusChart(enrollments);
           this.buildBillingStatusChart(billings);
@@ -124,5 +131,33 @@ export class HomePage implements OnInit {
 
   navigateTo(path: string): void {
     this.router.navigate([path]);
+  }
+
+  setEarningsView(view: 'before_tva' | 'after_tva'): void {
+    this.earningsView.set(view);
+  }
+
+  displayedPaidRevenue(): number {
+    const fs = this.financialSummary();
+    if (!fs) return 0;
+    return this.earningsView() === 'after_tva'
+      ? Number(fs.paidRevenue) - Number(fs.paidTva)
+      : Number(fs.paidRevenue);
+  }
+
+  displayedTotalRevenue(): number {
+    const fs = this.financialSummary();
+    if (!fs) return 0;
+    return this.earningsView() === 'after_tva'
+      ? Number(fs.totalRevenue) - Number(fs.totalTva)
+      : Number(fs.totalRevenue);
+  }
+
+  displayedPendingRevenue(): number {
+    const fs = this.financialSummary();
+    if (!fs) return 0;
+    return this.earningsView() === 'after_tva'
+      ? Number(fs.pendingRevenue) - Number(fs.pendingTva)
+      : Number(fs.pendingRevenue);
   }
 }
