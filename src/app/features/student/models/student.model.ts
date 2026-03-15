@@ -35,11 +35,6 @@ export interface PaymentResponse {
 }
 
 // Attendance
-export interface MarkAttendanceRequest {
-    sessionId: string;
-    qrToken: string;
-}
-
 export interface AttendanceResponse {
     id: string;
     studentId: string;
@@ -68,4 +63,25 @@ export interface CertificationResponse {
     pdfUrl: string;
     courseName: string;
     schoolName: string;
+}
+
+// Attendance Summary
+export interface StudentAttendanceSummaryResponse {
+    totalSessions: number;
+    present: number;
+    absent: number;
+    late: number;
+    excused: number;
+    unmarked: number;
+}
+
+export interface CourseAttendanceSummaryResponse {
+    courseId: string;
+    courseName: string;
+    totalSessions: number;
+    present: number;
+    absent: number;
+    late: number;
+    excused: number;
+    unmarked: number;
 }
