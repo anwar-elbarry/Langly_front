@@ -37,7 +37,6 @@ export class DashboardContainer {
   navItems = [
     { label: 'Mes Cours', route: '/student/courses', icon: 'fa-solid fa-book-open' },
     { label: "S'inscrire", route: '/student/enroll', icon: 'fa-solid fa-plus-circle' },
-    { label: 'Présence', route: '/student/attendance', icon: 'fa-solid fa-qrcode' },
     { label: 'Certificats', route: '/student/certifications', icon: 'fa-solid fa-certificate' },
     { label: 'Factures', route: '/student/invoices', icon: 'fa-solid fa-file-invoice' },
   ];
