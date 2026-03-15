@@ -13,7 +13,7 @@ import { ToastService } from '../../../../shared/ui/toast/toast.service';
 import { EnrollmentRequest, EnrollmentResponse } from '../../models/enrollment.model';
 import { StudentResponse } from '../../models/student.model';
 import { CourseResponse } from '../../models/course.model';
-import { LEVELS, EnrollmentStatus } from '../../models/enums';
+import { EnrollmentStatus } from '../../models/enums';
 import { EnrollmentService } from '../../services/enrollment.service';
 import { StudentService } from '../../services/student.service';
 import { CourseService } from '../../services/course.service';
@@ -51,7 +51,6 @@ export class EnrollmentsPage implements OnInit {
   modalOpen = signal(false);
   activeTab = signal<StatusFilter>('ALL');
 
-  levels = LEVELS;
   enrollmentStatusClass = enrollmentStatusClass;
   enrollmentStatusLabel = enrollmentStatusLabel;
   levelBadgeClass = levelBadgeClass;
@@ -87,7 +86,6 @@ export class EnrollmentsPage implements OnInit {
   form = new FormGroup({
     studentId: new FormControl('', Validators.required),
     courseId: new FormControl('', Validators.required),
-    level: new FormControl('', Validators.required),
   });
 
   selectedCourse = computed(() => {
@@ -167,7 +165,6 @@ export class EnrollmentsPage implements OnInit {
     const payload: EnrollmentRequest = {
       studentId: this.form.value.studentId || '',
       courseId: this.form.value.courseId || '',
-      level: this.form.value.level as any,
     };
 
     this.saving.set(true);

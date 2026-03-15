@@ -166,15 +166,6 @@
         Ce cours est complet. Impossible d'inscrire un étudiant.
       </div>
     }
-
-    <app-form-field label="Niveau" [required]="true">
-      <select formControlName="level" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none">
-        <option value="">Sélectionner un niveau</option>
-        @for (level of levels; track level) {
-          <option [value]="level">{{ level }}</option>
-        }
-      </select>
-    </app-form-field>
   </form>
 
   <div class="modal-footer">
