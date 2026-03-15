@@ -71,6 +71,7 @@ export class StudentSettingsPage implements OnInit {
       });
   }
 
+
   get passwordMismatch(): boolean {
     const { newPassword, confirmPassword } = this.passwordForm.value;
     return !!newPassword && !!confirmPassword && newPassword !== confirmPassword;
