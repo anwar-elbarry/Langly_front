@@ -55,6 +55,6 @@ export class StudentInvoiceDetailPage implements OnInit {
   remainingAmount(): number {
     const inv = this.invoice();
     if (!inv) return 0;
-    return inv.totalTtc - this.paidAmount();
+    return inv.subtotal - this.paidAmount();
   }
 }

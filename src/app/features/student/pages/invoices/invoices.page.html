@@ -15,7 +15,7 @@
         <tr>
           <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">N° Facture</th>
           <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Cours</th>
-          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Montant TTC</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Montant</th>
           <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Statut</th>
           <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Échéance</th>
           <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">Actions</th>
@@ -26,7 +26,7 @@
           <tr class="cursor-pointer" (click)="viewDetail(invoice)">
             <td class="px-4 py-3 text-sm font-medium text-blue-600">{{ invoice.invoiceNumber }}</td>
             <td class="px-4 py-3 text-sm text-gray-600">{{ invoice.courseName }}</td>
-            <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ invoice.totalTtc | number:'1.2-2' }} MAD</td>
+            <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ invoice.subtotal | number:'1.2-2' }} MAD</td>
             <td class="px-4 py-3">
               <span [class]="invoiceStatusClass(invoice.status)">{{ invoiceStatusLabel(invoice.status) }}</span>
             </td>
