@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment.development';
-import { InvoiceResponse, RecordPaymentRequest } from '../models/billing-engine.model';
+import { InvoiceResponse, RecordPaymentRequest, FinancialSummaryResponse } from '../models/billing-engine.model';
 
 @Injectable({ providedIn: 'root' })
 export class InvoiceService {
@@ -27,5 +27,9 @@ export class InvoiceService {
 
   createSchedule(id: string, plan: string): Observable<InvoiceResponse> {
     return this.http.post<InvoiceResponse>(`${this.baseUrl}/invoices/${id}/schedule`, { plan });
+  }
+
+  getFinancialSummary(schoolId: string): Observable<FinancialSummaryResponse> {
+    return this.http.get<FinancialSummaryResponse>(`${this.baseUrl}/schools/${schoolId}/financial-summary`);
   }
 }

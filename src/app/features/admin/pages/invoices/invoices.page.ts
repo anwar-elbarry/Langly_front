@@ -20,7 +20,6 @@ type TabFilter = 'ALL' | InvoiceStatus;
   imports: [
     CommonModule,
     TableComponent,
-    ButtonComponent,
     SpinnerComponent,
   ],
   templateUrl: './invoices.page.html',
