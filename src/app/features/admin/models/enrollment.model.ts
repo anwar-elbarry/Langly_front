@@ -16,5 +16,4 @@ export interface EnrollmentResponse {
 export interface EnrollmentRequest {
   studentId: string;
   courseId: string;
-  level: Level;
 }
