@@ -12,6 +12,7 @@ import { Gender, Level, PaymentMethod } from '../../models/enums';
 import { StudentService } from '../../services/student.service';
 import { EnrollmentService } from '../../services/enrollment.service';
 import { BillingService } from '../../services/billing.service';
+import { CertificationService } from '../../../student/services/certification.service';
 import { enrollmentStatusClass, enrollmentStatusLabel, levelBadgeClass, paymentStatusClass, paymentStatusLabel } from '../../utils/status.utils';
 
 type Tab = 'enrollments' | 'billings';
@@ -28,6 +29,7 @@ export class StudentDetailPage implements OnInit {
   private studentService = inject(StudentService);
   private enrollmentService = inject(EnrollmentService);
   private billingService = inject(BillingService);
+  private certificationService = inject(CertificationService);
   private toast = inject(ToastService);
 
   loading = signal(true);
@@ -39,6 +41,7 @@ export class StudentDetailPage implements OnInit {
   editLevel = signal<string>('');
   editGender = signal<string>('');
   savingAdmin = signal(false);
+  uploadingCertificateId = signal<string | null>(null);
 
   levelBadgeClass = levelBadgeClass;
   enrollmentStatusClass = enrollmentStatusClass;
@@ -116,6 +119,43 @@ export class StudentDetailPage implements OnInit {
         return 'Paiement en ligne';
       default:
         return method || '—';
+    }
+  }
+
+  onUploadCertificate(event: Event, enrollmentId: string): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      if (file.type !== 'application/pdf') {
+        this.toast.error('Veuillez sélectionner un fichier PDF.');
+        input.value = '';
+        return;
+      }
+      
+      this.uploadingCertificateId.set(enrollmentId);
+      this.certificationService.uploadCertificate(file, enrollmentId)
+        .pipe(finalize(() => {
+          this.uploadingCertificateId.set(null);
+          input.value = ''; // reset input
+        }))
+        .subscribe({
+          next: () => {
+            this.toast.success('Certificat uploadé avec succès');
+            // Refresh enrollments to update certificateIssued status
+            const id = this.route.snapshot.paramMap.get('id');
+            if (id) {
+              this.enrollmentService.getAllByStudent(id).subscribe(e => this.enrollments.set(e));
+            }
+          },
+          error: () => this.toast.error("Erreur")
+        });
+    }
+  }
+
+  triggerFileInput(id: string): void {
+    const el = document.getElementById('cert-upload-' + id);
+    if (el) {
+      el.click();
     }
   }
 }
