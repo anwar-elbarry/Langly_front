@@ -20,4 +20,12 @@ export class CertificationService {
             responseType: 'blob'
         });
     }
+
+    /** Upload certification (Admin) */
+    uploadCertificate(file: File, enrollmentId: string): Observable<CertificationResponse> {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('enrollmentId', enrollmentId);
+        return this.http.post<CertificationResponse>(`${this.apiUrl}/v1/student/certifications/upload`, formData);
+    }
 }
