@@ -88,6 +88,13 @@ export const SCHOOL_ADMIN_ROUTES: Routes = [
           ),
       },
       {
+        path: 'subscription',
+        loadComponent: () =>
+          import('./pages/subscription/subscription.page').then(
+            (m) => m.SubscriptionPage
+          ),
+      },
+      {
         path: 'alerts',
         loadComponent: () =>
           import('./pages/alerts/alerts.page').then((m) => m.AlertsPage),
