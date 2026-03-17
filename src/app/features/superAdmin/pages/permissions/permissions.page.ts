@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
+import { SpinnerComponent } from '../../../../shared/ui/spinner/spinner';
 import { ButtonComponent } from '../../../../shared/ui/button/button';
 import { FormFieldComponent } from '../../../../shared/ui/form-field/form-field';
 import { InputComponent } from '../../../../shared/ui/input/input';
@@ -22,6 +23,7 @@ import { PermissionsService } from '../../services/permissions.service';
     ModalComponent,
     FormFieldComponent,
     InputComponent,
+    SpinnerComponent,
   ],
   templateUrl: './permissions.page.html',
 })
