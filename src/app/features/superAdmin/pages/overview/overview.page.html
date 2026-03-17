@@ -1,125 +1,113 @@
-<section class="space-y-4 text-slate-900">
-  <div
-    class="flex flex-col items-start justify-between gap-3 rounded-2xl border border-sky-200/50 bg-linear-to-br from-sky-100/60 to-slate-100/60 p-4 md:flex-row md:items-center"
-  >
-    <h1 class="m-0 text-2xl font-bold tracking-tight">Overview</h1>
-    <app-button variant="outline" size="sm" (click)="loadData()">Refresh</app-button>
+@if (loading()) {
+  <div class="flex h-64 items-center justify-center">
+    <app-spinner size="lg" />
+  </div>
+} @else {
+  <!-- KPI Cards -->
+  <div class="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <!-- Total Schools -->
+    <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+      <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50">
+        <i class="fa-solid fa-school text-blue-600"></i>
+      </div>
+      <p class="text-2xl font-bold text-gray-900">{{ data().totalSchools }}</p>
+      <p class="mt-1 text-xs text-gray-500">Total Écoles</p>
+    </div>
+
+    <!-- Total Users -->
+    <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+      <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-green-50">
+        <i class="fa-solid fa-users text-green-600"></i>
+      </div>
+      <p class="text-2xl font-bold text-gray-900">{{ data().totalUsers }}</p>
+      <p class="mt-1 text-xs text-gray-500">Total Utilisateurs</p>
+    </div>
+
+    <!-- Active Subscriptions -->
+    <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+      <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-purple-50">
+        <i class="fa-solid fa-credit-card text-purple-600"></i>
+      </div>
+      <p class="text-2xl font-bold text-gray-900">{{ data().activeSubscriptions }}</p>
+      <p class="mt-1 text-xs text-gray-500">Abonnements Actifs</p>
+    </div>
+
+    <!-- Overdue Subscriptions -->
+    <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+      <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-red-50">
+        <i class="fa-solid fa-triangle-exclamation text-red-600"></i>
+      </div>
+      <p class="text-2xl font-bold text-gray-900">
+        {{ data().overdueSubscriptions }}
+        @if (data().overdueSubscriptions > 0) {
+          <span class="ml-2 inline-flex items-center rounded-full bg-red-100 px-2 py-0.5 text-xs font-semibold text-red-700">En retard</span>
+        }
+      </p>
+      <p class="mt-1 text-xs text-gray-500">Abonnements En Retard</p>
+    </div>
   </div>
 
-  <section
-    class="rounded-2xl bg-[radial-gradient(circle_at_100%_0%,rgba(14,165,233,0.45),transparent_30%),linear-gradient(145deg,#0f172a,#1e293b_55%,#1d4ed8)] p-5 text-slate-100"
-  >
-    <p class="text-[11px] uppercase text-sky-300">Realtime Snapshot</p>
-    <h2 class="m-0 mt-2 text-2xl font-bold tracking-tight md:text-[26px]">Platform Health At A Glance</h2>
-    <p class="m-0 mt-2 text-slate-300">
-      Track schools, users, and payment risk instantly from one command surface.
-    </p>
-  </section>
-
-  <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-    <article class="relative overflow-hidden rounded-2xl border border-slate-900/10 bg-white p-4 shadow-lg">
-      <div class="absolute inset-x-0 top-0 h-1 bg-linear-to-r from-sky-500 to-blue-700"></div>
-      <div class="text-xs uppercase tracking-[0.08em] text-slate-500">Total Schools</div>
-      <div class="mt-2 text-3xl font-bold tracking-tight">{{ data().totalSchools }}</div>
-    </article>
-    <article class="relative overflow-hidden rounded-2xl border border-slate-900/10 bg-white p-4 shadow-lg">
-      <div class="absolute inset-x-0 top-0 h-1 bg-linear-to-r from-sky-500 to-blue-700"></div>
-      <div class="text-xs uppercase tracking-[0.08em] text-slate-500">Total Users</div>
-      <div class="mt-2 text-3xl font-bold tracking-tight">{{ data().totalUsers }}</div>
-    </article>
-    <article class="relative overflow-hidden rounded-2xl border border-slate-900/10 bg-white p-4 shadow-lg">
-      <div class="absolute inset-x-0 top-0 h-1 bg-linear-to-r from-sky-500 to-blue-700"></div>
-      <div class="text-xs uppercase tracking-[0.08em] text-slate-500">Active Subscriptions</div>
-      <div class="mt-2 text-3xl font-bold tracking-tight">{{ data().activeSubscriptions }}</div>
-    </article>
-    <article class="relative overflow-hidden rounded-2xl border border-slate-900/10 bg-white p-4 shadow-lg">
-      <div class="absolute inset-x-0 top-0 h-1 bg-linear-to-r from-sky-500 to-blue-700"></div>
-      <div class="text-xs uppercase tracking-[0.08em] text-slate-500">Overdue Subscriptions</div>
-      <div class="mt-2 text-3xl font-bold tracking-tight">{{ data().overdueSubscriptions }}</div>
-    </article>
+  <!-- Recent Subscriptions -->
+  <div class="mb-6 flex items-center justify-between">
+    <h3 class="text-sm font-semibold text-gray-900">
+      <i class="fa-solid fa-clock-rotate-left mr-2 text-indigo-600"></i>Abonnements Récents
+    </h3>
+    <app-button variant="outline" size="sm" (click)="loadData()">
+      <i class="fa-solid fa-arrows-rotate mr-1"></i>Actualiser
+    </app-button>
   </div>
 
-  <section class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-    <div class="flex flex-wrap items-center justify-between gap-3">
-      <div>
-        <p class="m-0 text-xs uppercase tracking-[0.08em] text-slate-500">Earnings</p>
-        <h2 class="m-0 mt-1 text-lg font-semibold text-slate-900">Before / After TVA</h2>
-      </div>
-      <div class="inline-flex rounded-lg border border-slate-200 bg-slate-50 p-1 text-xs">
-        <button
-          type="button"
-          class="rounded-md px-3 py-1.5 font-medium transition"
-          [class]="earningsView() === 'before_tva' ? 'bg-blue-700 text-white' : 'text-slate-600 hover:bg-white'"
-          (click)="setEarningsView('before_tva')">
-          Before TVA
-        </button>
-        <button
-          type="button"
-          class="rounded-md px-3 py-1.5 font-medium transition"
-          [class]="earningsView() === 'after_tva' ? 'bg-blue-700 text-white' : 'text-slate-600 hover:bg-white'"
-          (click)="setEarningsView('after_tva')">
-          After TVA
-        </button>
-      </div>
-    </div>
-
-    <div class="mt-4 grid gap-3 md:grid-cols-3">
-      <article class="rounded-xl border border-emerald-200 bg-emerald-50/40 p-4">
-        <p class="m-0 text-xs uppercase tracking-[0.08em] text-emerald-700">Paid Revenue</p>
-        <p class="m-0 mt-2 text-2xl font-bold text-emerald-900">{{ displayedRevenue() | number: '1.2-2' }} MAD</p>
-        <p class="m-0 mt-1 text-xs text-emerald-700">
-          {{ earningsView() === 'after_tva' ? 'Net gain (after TVA)' : 'Gross gain (before TVA)' }}
-        </p>
-      </article>
-
-      <article class="rounded-xl border border-indigo-200 bg-indigo-50/50 p-4">
-        <p class="m-0 text-xs uppercase tracking-[0.08em] text-indigo-700">TVA Deducted</p>
-        <p class="m-0 mt-2 text-2xl font-bold text-indigo-900">{{ data().paidTvaAmount | number: '1.2-2' }} MAD</p>
-        <p class="m-0 mt-1 text-xs text-indigo-700">Avg. Rate: {{ averageTvaRate | number: '1.2-2' }}%</p>
-      </article>
-
-      <article class="rounded-xl border border-slate-200 bg-slate-50 p-4">
-        <p class="m-0 text-xs uppercase tracking-[0.08em] text-slate-600">Formula</p>
-        <p class="m-0 mt-2 text-sm font-semibold text-slate-900">
-          Net = {{ data().paidRevenueBeforeTva | number: '1.2-2' }} - {{ data().paidTvaAmount | number: '1.2-2' }}
-        </p>
-        <p class="m-0 mt-1 text-xs text-slate-600">Based on paid subscriptions only</p>
-      </article>
-    </div>
-  </section>
-
-  <h2 class="m-0 text-lg font-semibold">Recent Subscriptions</h2>
-
-  @if (loading()) {
-    <div class="rounded-2xl border border-dashed border-slate-400/50 bg-white p-8 text-center text-slate-500">
-      Loading overview data...
-    </div>
-  } @else if (data().recentSubscriptions.length === 0) {
-    <div class="rounded-2xl border border-dashed border-slate-400/50 bg-white p-8 text-center text-slate-500">
-      No recent subscriptions found.
+  @if (data().recentSubscriptions.length === 0) {
+    <div class="rounded-xl border border-gray-200 bg-white p-8 text-center text-sm text-gray-400 shadow-sm">
+      Aucun abonnement récent trouvé.
     </div>
   } @else {
-    <app-table [striped]="true">
-      <thead>
-        <tr>
-          <th>School</th>
-          <th>Amount</th>
-          <th>Cycle</th>
-          <th>Status</th>
-          <th>Next Payment</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (item of data().recentSubscriptions; track item.id) {
+    <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+      <app-table [striped]="true" [hoverable]="true">
+        <thead>
           <tr>
-            <td>{{ item.schoolName || item.schoolId }}</td>
-            <td>{{ item.amount | number: '1.2-2' }} {{ item.currency }}</td>
-            <td>{{ item.billingCycle }}</td>
-            <td><span [class]="paymentStatusClass(item.status)">{{ item.status }}</span></td>
-            <td>{{ item.nextPaymentDate ? (item.nextPaymentDate | date: 'mediumDate') : '-' }}</td>
+            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">École</th>
+            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Montant</th>
+            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Cycle</th>
+            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Statut</th>
+            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Prochain Paiement</th>
           </tr>
-        }
-      </tbody>
-    </app-table>
+        </thead>
+        <tbody>
+          @for (item of data().recentSubscriptions; track item.id) {
+            <tr>
+              <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ item.schoolName || item.schoolId }}</td>
+              <td class="px-4 py-3 text-sm text-gray-600">{{ item.amount | number: '1.2-2' }} {{ item.currency }}</td>
+              <td class="px-4 py-3 text-sm text-gray-600">{{ item.billingCycle }}</td>
+              <td class="px-4 py-3"><span [class]="paymentStatusClass(item.status)">{{ item.status }}</span></td>
+              <td class="px-4 py-3 text-sm text-gray-600">{{ item.nextPaymentDate ? (item.nextPaymentDate | date: 'mediumDate') : '—' }}</td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="5" class="px-4 py-8 text-center text-sm text-gray-400">Aucun abonnement récent</td>
+            </tr>
+          }
+        </tbody>
+      </app-table>
+    </div>
   }
-</section>
+
+  <!-- Quick Actions -->
+  <div class="mt-8 rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+    <h3 class="mb-4 text-sm font-semibold text-gray-900">Actions rapides</h3>
+    <div class="flex flex-wrap gap-3">
+      <app-button variant="primary" (click)="navigateTo('/superAdmin/schools')">
+        <i class="fa-solid fa-school mr-2"></i>Gérer les Écoles
+      </app-button>
+      <app-button variant="outline" (click)="navigateTo('/superAdmin/users')">
+        <i class="fa-solid fa-users mr-2"></i>Gérer les Utilisateurs
+      </app-button>
+      <app-button variant="outline" (click)="navigateTo('/superAdmin/subscriptions')">
+        <i class="fa-solid fa-credit-card mr-2"></i>Voir les Abonnements
+      </app-button>
+      <app-button variant="ghost" (click)="navigateTo('/superAdmin/roles-permissions')">
+        <i class="fa-solid fa-lock mr-2"></i>Rôles & Permissions
+      </app-button>
+    </div>
+  </div>
+}
