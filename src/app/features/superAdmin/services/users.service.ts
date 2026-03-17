@@ -50,5 +50,11 @@ export class UsersService {
   updatePassword(id: string, payload: UpdatePasswordRequest): Observable<void> {
     return this.http.patch<void>(`${this.apiUrl}/${id}/password`, payload);
   }
+
+  uploadProfileImage(id: string, file: File): Observable<UserResponse> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post<UserResponse>(`${this.apiUrl}/${id}/profile-image`, formData);
+  }
 }
 
