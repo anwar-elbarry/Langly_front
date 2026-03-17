@@ -4,12 +4,12 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AuthPage } from '../../../../core/store/actions/auth.actions';
 import { selectCurrentUser } from '../../../../core/store/selectors/auth.selectors';
-import { NotificationBellComponent } from '../../../../shared/components/notification-bell/notification-bell';
+import { DashboardHeaderComponent } from '../../../../shared/components/dashboard-header/dashboard-header';
 
 @Component({
   selector: 'app-dashboard-container',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive, NotificationBellComponent],
+  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive, DashboardHeaderComponent],
   templateUrl: './dashboard-container.html',
   styleUrl: './dashboard-container.css',
 })
