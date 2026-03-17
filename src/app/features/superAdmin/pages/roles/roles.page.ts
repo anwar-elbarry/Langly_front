@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { forkJoin, finalize, of } from 'rxjs';
+import { SpinnerComponent } from '../../../../shared/ui/spinner/spinner';
 import { ButtonComponent } from '../../../../shared/ui/button/button';
 import { CheckboxComponent } from '../../../../shared/ui/checkbox/checkbox';
 import { FormFieldComponent } from '../../../../shared/ui/form-field/form-field';
@@ -26,6 +27,7 @@ import { RolesService } from '../../services/roles.service';
     FormFieldComponent,
     InputComponent,
     CheckboxComponent,
+    SpinnerComponent,
   ],
   templateUrl: './roles.page.html',
 })
