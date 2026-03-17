@@ -18,6 +18,34 @@
     </div>
 
     <form class="space-y-3" [formGroup]="profileForm">
+      <!-- Profile Image Upload -->
+      <div class="mb-5 flex flex-col items-center gap-4 sm:flex-row sm:items-start">
+        <label for="profileUpload" class="group relative cursor-pointer overflow-hidden rounded-full border border-gray-200 bg-gray-50 transition-all hover:border-blue-400">
+          @if (profileForm.value.profile) {
+            <img [src]="profileForm.value.profile" alt="Profile avatar" class="h-20 w-20 object-cover" />
+          } @else {
+            <div class="flex h-20 w-20 items-center justify-center text-gray-400">
+              <i class="fa-solid fa-camera text-2xl"></i>
+            </div>
+          }
+          <div class="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
+            <i class="fa-solid fa-pen text-white"></i>
+          </div>
+        </label>
+        <div class="flex flex-col text-center sm:text-left">
+          <label for="profileUpload" class="cursor-pointer text-sm font-medium text-blue-600 hover:text-blue-700 hover:underline">
+            Change profile photo
+          </label>
+          <p class="mt-1 m-0 text-xs text-gray-400">JPG, GIF or PNG. 1MB max.</p>
+          <input 
+            type="file" 
+            id="profileUpload" 
+            class="hidden" 
+            accept="image/png, image/jpeg, image/gif"
+            (change)="onProfileImageChange($event)" 
+          />
+        </div>
+      </div>
       <div class="grid gap-3 md:grid-cols-2">
         <app-form-field label="First Name" [required]="true"
           [error]="profileForm.controls.firstName.touched && profileForm.controls.firstName.invalid ? 'First name is required' : ''">

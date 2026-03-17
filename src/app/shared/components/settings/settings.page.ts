@@ -9,6 +9,7 @@ import { ButtonComponent } from '../../ui/button/button';
 import { ToastService } from '../../ui/toast/toast.service';
 import { UsersService } from '../../../features/superAdmin/services/users.service';
 import { selectCurrentUser } from '../../../core/store/selectors/auth.selectors';
+import { AuthApi } from '../../../core/store/actions/auth.actions';
 
 @Component({
   selector: 'app-settings-page',
@@ -37,6 +38,7 @@ export class SettingsPage implements OnInit {
     lastName: new FormControl('', [Validators.required]),
     email: new FormControl('', [Validators.required, Validators.email]),
     phoneNumber: new FormControl(''),
+    profile: new FormControl(''),
   });
 
   passwordForm = new FormGroup({
@@ -53,6 +55,7 @@ export class SettingsPage implements OnInit {
         lastName: current.lastName ?? '',
         email: current.email ?? '',
         phoneNumber: current.phoneNumber ?? '',
+        profile: current.profile ?? '',
       });
     }
   }
@@ -60,6 +63,28 @@ export class SettingsPage implements OnInit {
   get passwordMismatch(): boolean {
     const { newPassword, confirmPassword } = this.passwordForm.value;
     return !!newPassword && !!confirmPassword && newPassword !== confirmPassword;
+  }
+
+  onProfileImageChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      const current = this.user();
+      if (!current) return;
+
+      this.savingProfile.set(true);
+      this.usersService.uploadProfileImage(current.id, file)
+        .pipe(finalize(() => this.savingProfile.set(false)))
+        .subscribe({
+          next: (updatedUser) => {
+            this.toast.success('Profile photo updated successfully');
+            // Update the global store so the new image reflects in sidebar/header
+            this.store.dispatch(AuthApi.loginSuccess({ user: updatedUser }));
+            this.profileForm.patchValue({ profile: updatedUser.profile });
+          },
+          error: () => this.toast.error('Failed to upload profile photo'),
+        });
+    }
   }
 
   saveProfile(): void {
@@ -76,6 +101,7 @@ export class SettingsPage implements OnInit {
         lastName: this.profileForm.value.lastName ?? undefined,
         email: this.profileForm.value.email ?? undefined,
         phoneNumber: this.profileForm.value.phoneNumber ?? undefined,
+        profile: this.profileForm.value.profile ?? undefined,
       })
       .pipe(finalize(() => this.savingProfile.set(false)))
       .subscribe({
