@@ -1,10 +1,16 @@
 import { Routes } from '@angular/router';
 import { roleGuard } from './core/guards/role/role-guard';
 import { RoleEnum } from './core/constants/role.enum';
+import { noAuthGuard } from './core/guards/no-auth/no-auth.guard';
 
 export const routes: Routes = [
   {
+    path: '',
+    loadComponent: () => import('./features/home/home.page').then(m => m.HomePage)
+  },
+  {
     path: 'login',
+    canActivate: [noAuthGuard],
     loadComponent: () => import('./features/auth/components/login/login').then(m => m.Login)
   },
   {
