@@ -4,11 +4,12 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AuthPage } from '../../../../core/store/actions/auth.actions';
 import { selectCurrentUser } from '../../../../core/store/selectors/auth.selectors';
+import { DashboardHeaderComponent } from '../../../../shared/components/dashboard-header/dashboard-header';
 
 @Component({
   selector: 'app-dashboard-container',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive, DashboardHeaderComponent],
   templateUrl: './dashboard-container.html',
 })
 export class DashboardContainer {
@@ -35,24 +36,24 @@ export class DashboardContainer {
   });
 
   navItems = [
-    { label: 'Overview', route: '/superAdmin/overview', icon: 'fa-solid fa-house' },
-    { label: 'Schools', route: '/superAdmin/schools', icon: 'fa-solid fa-school' },
-    { label: 'Users', route: '/superAdmin/users', icon: 'fa-solid fa-users' },
+    { label: 'Vue d\'ensemble', route: '/superAdmin/overview', icon: 'fa-solid fa-house' },
+    { label: 'Écoles', route: '/superAdmin/schools', icon: 'fa-solid fa-school' },
+    { label: 'Utilisateurs', route: '/superAdmin/users', icon: 'fa-solid fa-users' },
     { label: 'Super Admins', route: '/superAdmin/super-admins', icon: 'fa-solid fa-user-shield' },
     {
-      label: 'Roles & Permissions',
+      label: 'Rôles & Permissions',
       route: '/superAdmin/roles-permissions',
       icon: 'fa-solid fa-lock',
     },
     {
-      label: 'Subscriptions',
+      label: 'Abonnements',
       route: '/superAdmin/subscriptions',
       icon: 'fa-solid fa-credit-card',
     },
   ];
 
   bottomNavItems = [
-    { label: 'Settings', route: '/superAdmin/settings', icon: 'fa-solid fa-gear' },
+    { label: 'Paramètres', route: '/superAdmin/settings', icon: 'fa-solid fa-gear' },
   ];
 
   toggleSidebar(): void {

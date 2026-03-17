@@ -46,7 +46,7 @@
   <div class="flex flex-1 flex-col overflow-y-auto px-3 pt-5">
     @if (!isSidebarCollapsed()) {
       <p class="mb-2 px-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">
-        Main Menu
+        Menu Principal
       </p>
     }
 
@@ -110,7 +110,7 @@
           <i class="fa-solid fa-angles-right w-5 text-center text-[15px]"></i>
         } @else {
           <i class="fa-solid fa-angles-left w-5 text-center text-[15px]"></i>
-          <span>Collapse</span>
+          <span>Réduire</span>
         }
       </button>
     </div>
@@ -122,21 +122,29 @@
       class="flex items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-gray-50"
       [class.justify-center]="isSidebarCollapsed()"
     >
-      <div
-        class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-blue-600 to-sky-500 text-xs font-bold text-white"
-      >
-        {{ initials() }}
-      </div>
+      @if (user()?.profile) {
+        <img
+          [src]="user()?.profile"
+          alt="Avatar"
+          class="h-9 w-9 shrink-0 rounded-full object-cover"
+        />
+      } @else {
+        <div
+          class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-blue-600 to-sky-500 text-xs font-bold text-white"
+        >
+          {{ initials() }}
+        </div>
+      }
       @if (!isSidebarCollapsed()) {
         <div class="min-w-0 flex-1">
           <p class="m-0 truncate text-[13px] font-semibold text-gray-900">{{ fullName() }}</p>
-          <p class="m-0 text-[11px] text-gray-400">Super Admin</p>
+          <p class="m-0 text-[11px] text-gray-400">Super Administrateur</p>
         </div>
         <button
           class="shrink-0 cursor-pointer rounded-md border-0 bg-transparent p-1.5 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600"
           type="button"
           (click)="logout()"
-          title="Logout"
+          title="Déconnexion"
         >
           <i class="fa-solid fa-right-from-bracket text-[14px]"></i>
         </button>
@@ -151,7 +159,7 @@
     class="fixed inset-0 z-30 border-0 bg-black/30 backdrop-blur-[2px] lg:hidden"
     type="button"
     (click)="closeSidebar()"
-    aria-label="Close sidebar"
+    aria-label="Fermer le menu"
   ></button>
 }
 
@@ -162,42 +170,14 @@
   [class.lg:ml-[72px]]="isSidebarCollapsed()"
 >
   <!-- Header -->
-  <header
-    class="sticky top-0 z-20 flex items-center justify-between gap-3 border-b border-gray-200 bg-white/90 px-5 py-3 backdrop-blur"
-  >
-    <div class="flex items-center gap-3">
-      <button
-        class="inline-flex cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white p-2 text-gray-500 hover:bg-gray-50 lg:hidden"
-        type="button"
-        (click)="toggleSidebar()"
-      >
-        <i class="fa-solid fa-bars text-sm"></i>
-      </button>
-      <div>
-        <h1 class="m-0 text-lg font-bold text-gray-900">Command Center</h1>
-        <p class="m-0 text-[12px] text-gray-400">Super Admin Dashboard</p>
-      </div>
-    </div>
-
-    <div class="flex items-center gap-3">
-      <button
-        class="relative inline-flex cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white p-2.5 text-gray-500 transition hover:bg-gray-50"
-        type="button"
-      >
-        <i class="fa-regular fa-bell text-[15px]"></i>
-      </button>
-      <div
-        class="hidden items-center gap-2.5 rounded-full border border-gray-200 py-1.5 pr-1.5 pl-3 md:flex"
-      >
-        <span class="text-[13px] font-medium text-gray-700">{{ fullName() }}</span>
-        <div
-          class="flex h-8 w-8 items-center justify-center rounded-full bg-linear-to-br from-blue-600 to-sky-500 text-xs font-bold text-white"
-        >
-          {{ initials() }}
-        </div>
-      </div>
-    </div>
-  </header>
+  <app-dashboard-header
+    title="Centre de Commande"
+    subtitle="Tableau de Bord Super Admin"
+    [fullName]="fullName()"
+    [initials]="initials()"
+    [profileImage]="user()?.profile"
+    (toggleSidebar)="toggleSidebar()"
+  />
 
   <!-- Page content -->
   <main class="flex-1 p-4 md:p-6">
