@@ -100,6 +100,15 @@ export class NotificationBellComponent implements OnInit, OnDestroy {
     });
   }
 
+  deleteAll(): void {
+    this.notificationService.deleteAll().subscribe({
+      next: () => {
+        this.notifications.set([]);
+        this.unreadCount.set(0);
+      },
+    });
+  }
+
   getNotificationIcon(type: string): string {
     switch (type) {
       case 'PAYMENT_SUCCESS':

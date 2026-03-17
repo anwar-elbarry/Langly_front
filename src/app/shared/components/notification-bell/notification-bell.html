@@ -20,13 +20,23 @@
     <!-- Header -->
     <div class="flex items-center justify-between border-b border-gray-200 px-4 py-3">
       <h4 class="m-0 text-sm font-semibold text-gray-900">Notifications</h4>
-      @if (unreadCount() > 0) {
-      <button
-        class="cursor-pointer rounded-md border-0 bg-transparent px-2 py-1 text-xs font-medium text-emerald-600 transition hover:bg-emerald-50"
-        type="button"
-        (click)="markAllAsRead()">
-        Tout marquer comme lu
-      </button>
+      @if (notifications().length > 0) {
+      <div class="flex gap-2">
+        <button
+          class="cursor-pointer rounded-md border-0 bg-transparent px-2 py-1 text-xs font-medium text-gray-500 transition hover:bg-red-50 hover:text-red-600"
+          type="button"
+          (click)="deleteAll()">
+          Vider
+        </button>
+        @if (unreadCount() > 0) {
+        <button
+          class="cursor-pointer rounded-md border-0 bg-transparent px-2 py-1 text-xs font-medium text-emerald-600 transition hover:bg-emerald-50"
+          type="button"
+          (click)="markAllAsRead()">
+          Tout marquer comme lu
+        </button>
+        }
+      </div>
       }
     </div>
 
