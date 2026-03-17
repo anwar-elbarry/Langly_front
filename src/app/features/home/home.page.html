@@ -1,0 +1,71 @@
+<section class="hero">
+  <nav class="nav">
+    <span class="nav-logo">Langly.com</span>
+    <a routerLink="/login" class="nav-cta">Sign In →</a>
+  </nav>
+
+  <div class="hero-body">
+    <div class="hero-badge">🌍 Education Platform of the Future</div>
+    <h1 class="hero-title">
+      Learn Without<br />
+      <span class="hero-title-accent">Boundaries</span>
+    </h1>
+    <p class="hero-subtitle">
+      Langly empowers schools, teachers and students with a unified platform
+      for modern, multilingual education — from enrollment to certification.
+    </p>
+    <div class="hero-actions">
+      <a routerLink="/login" class="btn-primary">Get Started Free</a>
+      <a href="#features" class="btn-ghost">Explore Features ↓</a>
+    </div>
+  </div>
+
+  <!-- Animated floating orbs -->
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</section>
+
+<!-- Stats Bar -->
+<section class="stats-bar">
+  @for (stat of stats; track stat.label) {
+    <div class="stat-item">
+      <span class="stat-value">{{ stat.value }}</span>
+      <span class="stat-label">{{ stat.label }}</span>
+    </div>
+  }
+</section>
+
+<!-- Features -->
+<section class="features-section" id="features">
+  <div class="section-header">
+    <span class="section-tag">Features</span>
+    <h2 class="section-title">Everything your institution needs</h2>
+    <p class="section-subtitle">One platform to manage your entire educational ecosystem.</p>
+  </div>
+  <div class="features-grid">
+    @for (f of features; track f.title) {
+      <div class="feature-card">
+        <div class="feature-icon">{{ f.icon }}</div>
+        <h3 class="feature-title">{{ f.title }}</h3>
+        <p class="feature-desc">{{ f.desc }}</p>
+      </div>
+    }
+  </div>
+</section>
+
+<!-- CTA Banner -->
+<section class="cta-section">
+  <div class="cta-inner">
+    <h2 class="cta-title">Ready to transform your school?</h2>
+    <p class="cta-subtitle">Join hundreds of institutions already using Langly.</p>
+    <a routerLink="/login" class="btn-primary btn-lg">Start Now — It's Free</a>
+  </div>
+  <div class="cta-orb"></div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <span class="footer-logo">Langly.com</span>
+  <span class="footer-copy">© {{ year }} Langly Inc. All rights reserved.</span>
+</footer>
