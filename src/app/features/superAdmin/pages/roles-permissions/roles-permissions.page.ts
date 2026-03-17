@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { forkJoin, finalize } from 'rxjs';
+import { SpinnerComponent } from '../../../../shared/ui/spinner/spinner';
 import { ButtonComponent } from '../../../../shared/ui/button/button';
 import { CheckboxComponent } from '../../../../shared/ui/checkbox/checkbox';
 import { FormFieldComponent } from '../../../../shared/ui/form-field/form-field';
@@ -36,6 +37,7 @@ interface PermissionGroup {
     ModalComponent,
     FormFieldComponent,
     InputComponent,
+    SpinnerComponent,
   ],
   templateUrl: './roles-permissions.page.html',
 })
@@ -144,7 +146,7 @@ export class RolesPermissionsPage implements OnInit {
   private loadRolePermissions(roleId: string): void {
     this.loadingPermissions.set(true);
     this.rolesService.getById(roleId).subscribe({
-      next: detail => {
+      next: (detail: any) => {
         const ids = this.extractPermissionIds(detail.permissions);
         this.originalPermissionIds.set(new Set(ids));
         this.selectedPermissionIds.set(new Set(ids));
@@ -179,7 +181,7 @@ export class RolesPermissionsPage implements OnInit {
         if (obj['permission'] && typeof obj['permission'] === 'object') {
           const nested = obj['permission'] as Record<string, unknown>;
           if (typeof nested['id'] === 'string' && validIds.has(nested['id'])) {
-            resolved = nested['id'];
+            resolved = nested['id'] as string;
           } else if (typeof nested['name'] === 'string') {
             resolved = nameMap.get((nested['name'] as string).toUpperCase());
           }
@@ -187,10 +189,10 @@ export class RolesPermissionsPage implements OnInit {
 
         // Then try direct id
         if (!resolved && typeof obj['id'] === 'string') {
-          resolved = validIds.has(obj['id']) ? obj['id'] : undefined;
+          resolved = validIds.has(obj['id'] as string) ? (obj['id'] as string) : undefined;
         }
         if (!resolved && typeof obj['permissionId'] === 'string') {
-          resolved = validIds.has(obj['permissionId']) ? obj['permissionId'] : undefined;
+          resolved = validIds.has(obj['permissionId'] as string) ? (obj['permissionId'] as string) : undefined;
         }
         // Fall back to name matching
         if (!resolved && typeof obj['name'] === 'string') {
