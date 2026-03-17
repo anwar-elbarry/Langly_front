@@ -2,12 +2,15 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
+import { SpinnerComponent } from '../../../../shared/ui/spinner/spinner';
 import { ButtonComponent } from '../../../../shared/ui/button/button';
 import { FormFieldComponent } from '../../../../shared/ui/form-field/form-field';
 import { InputComponent } from '../../../../shared/ui/input/input';
 import { ModalComponent } from '../../../../shared/ui/modal/modal';
 import { TableComponent } from '../../../../shared/ui/table/table';
 import { ToastService } from '../../../../shared/ui/toast/toast.service';
+import { Store } from '@ngrx/store';
+import { selectCurrentUser } from '../../../../core/store/selectors/auth.selectors';
 import { RoleResponse } from '../../models/role.model';
 import { SchoolResponse } from '../../models/school.model';
 import { EmailPreview, UserRequest, UserResponse, UserUpdateRequest } from '../../models/user.model';
@@ -27,6 +30,7 @@ import { userStatusClass } from '../../utils/status.utils';
     ModalComponent,
     FormFieldComponent,
     InputComponent,
+    SpinnerComponent,
   ],
   templateUrl: './users.page.html',
 })
@@ -35,7 +39,10 @@ export class UsersPage implements OnInit {
   private schoolsService = inject(SchoolsService);
   private rolesService = inject(RolesService);
   private toast = inject(ToastService);
+  private store = inject(Store);
 
+  currentUser = this.store.selectSignal(selectCurrentUser);
+  
   loading = signal(false);
   saving = signal(false);
   users = signal<UserResponse[]>([]);
