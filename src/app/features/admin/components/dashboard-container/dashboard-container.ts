@@ -4,13 +4,13 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AuthPage } from '../../../../core/store/actions/auth.actions';
 import { selectCurrentUser } from '../../../../core/store/selectors/auth.selectors';
-import { NotificationBellComponent } from '../../../../shared/components/notification-bell/notification-bell';
+import { DashboardHeaderComponent } from '../../../../shared/components/dashboard-header/dashboard-header';
 import { StudentService } from '../../services/student.service';
 
 @Component({
   selector: 'app-dashboard-container',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive, NotificationBellComponent],
+  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive, DashboardHeaderComponent],
   templateUrl: './dashboard-container.html',
 })
 export class DashboardContainer implements OnInit {
@@ -46,6 +46,7 @@ export class DashboardContainer implements OnInit {
     { label: 'Remises', route: '/schoolAdmin/discounts', icon: 'fa-solid fa-tags', badge: false },
     { label: 'Catalogue de frais', route: '/schoolAdmin/fee-templates', icon: 'fa-solid fa-list-check', badge: false },
     { label: 'Param. facturation', route: '/schoolAdmin/billing-settings', icon: 'fa-solid fa-sliders', badge: false },
+    { label: 'Abonnement', route: '/schoolAdmin/subscription', icon: 'fa-solid fa-credit-card', badge: false },
     { label: 'Alertes', route: '/schoolAdmin/alerts', icon: 'fa-solid fa-triangle-exclamation', badge: true },
   ];
 
