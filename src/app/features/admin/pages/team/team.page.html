@@ -54,18 +54,22 @@
             </td>
             <td class="px-4 py-3 text-right">
               <div class="flex items-center justify-end gap-2">
-                <button
-                  class="rounded-md px-2 py-1 text-xs font-medium text-blue-600 transition hover:bg-blue-50"
-                  (click)="toggleStatus(u)"
-                >
-                  {{ $any(u).status === 'ACTIVE' ? 'Suspendre' : 'Activer' }}
-                </button>
-                <button
-                  class="rounded-md px-2 py-1 text-xs font-medium text-red-600 transition hover:bg-red-50"
-                  (click)="openDelete(u.id)"
-                >
-                  Supprimer
-                </button>
+                @if (u.id !== currentUser()?.id) {
+                  <button
+                    class="rounded-md px-2 py-1 text-xs font-medium text-blue-600 transition hover:bg-blue-50"
+                    (click)="toggleStatus(u)"
+                  >
+                    {{ $any(u).status === 'ACTIVE' ? 'Suspendre' : 'Activer' }}
+                  </button>
+                  <button
+                    class="rounded-md px-2 py-1 text-xs font-medium text-red-600 transition hover:bg-red-50"
+                    (click)="openDelete(u.id)"
+                  >
+                    Supprimer
+                  </button>
+                } @else {
+                  <span class="text-xs italic text-gray-400">Vous (Action non autorisée)</span>
+                }
               </div>
             </td>
           </tr>
@@ -104,6 +108,9 @@
         <app-radio name="roleName" label="Étudiant" value="STUDENT"
           [checked]="form.controls.roleName.value === 'STUDENT'"
           (selected)="form.controls.roleName.setValue('STUDENT')" />
+        <app-radio name="roleName" label="Administrateur" value="SCHOOL_ADMIN"
+          [checked]="form.controls.roleName.value === 'SCHOOL_ADMIN'"
+          (selected)="form.controls.roleName.setValue('SCHOOL_ADMIN')" />
         <app-radio name="roleName" label="Professeur" value="TEACHER"
           [checked]="form.controls.roleName.value === 'TEACHER'"
           (selected)="form.controls.roleName.setValue('TEACHER')" />
@@ -135,6 +142,40 @@
     <div class="flex justify-end gap-3">
       <app-button variant="ghost" (click)="closeDelete()">Annuler</app-button>
       <app-button variant="danger" (click)="deleteUser()">Supprimer</app-button>
+    </div>
+  </div>
+</app-modal>
+
+<!-- Email Preview -->
+<app-modal [isOpen]="emailPreviewOpen()" (closed)="closeEmailPreview()">
+  <div class="modal-header">
+    <h3 class="text-lg font-semibold text-gray-900">Aperçu de l'Email</h3>
+  </div>
+  @if (emailPreview(); as preview) {
+    <div class="space-y-3 p-1">
+      <div>
+        <p class="text-xs font-semibold uppercase text-gray-500">Destinataire</p>
+        <p class="text-sm text-gray-900">{{ preview.to }}</p>
+      </div>
+      <div>
+        <p class="text-xs font-semibold uppercase text-gray-500">Sujet</p>
+        <p class="text-sm text-gray-900">{{ preview.subject }}</p>
+      </div>
+      @if (preview.temporaryPassword) {
+        <div>
+          <p class="text-xs font-semibold uppercase text-gray-500">Mot de passe temporaire</p>
+          <p class="text-sm text-gray-900 font-mono bg-gray-100 px-2 py-0.5 mt-1 rounded inline-block">{{ preview.temporaryPassword }}</p>
+        </div>
+      }
+      <div>
+        <p class="text-xs font-semibold uppercase text-gray-500">Corps</p>
+        <div class="rounded-lg border border-gray-200 bg-gray-50 p-3 text-sm text-gray-700 whitespace-pre-wrap">{{ preview.message }}</div>
+      </div>
+    </div>
+  }
+  <div class="modal-footer">
+    <div class="flex justify-end">
+      <app-button variant="ghost" (click)="closeEmailPreview()">Fermer</app-button>
     </div>
   </div>
 </app-modal>

@@ -12,11 +12,11 @@ import { RadioComponent } from '../../../../shared/ui/radio/radio';
 import { SpinnerComponent } from '../../../../shared/ui/spinner/spinner';
 import { TableComponent } from '../../../../shared/ui/table/table';
 import { ToastService } from '../../../../shared/ui/toast/toast.service';
-import { UserResponse } from '../../../auth/models/User.response';
+import { UserResponse, EmailPreview } from '../../../auth/models/User.response';
 import { SchoolUserService, InviteRequest } from '../../services/school-user.service';
 import { roleBadgeClass, userStatusClass } from '../../utils/status.utils';
 
-type TabFilter = 'ALL' | 'TEACHER' | 'STUDENT';
+type TabFilter = 'ALL' | 'TEACHER' | 'STUDENT' | 'SCHOOL_ADMIN';
 
 @Component({
   selector: 'app-team-page',
@@ -39,7 +39,7 @@ export class TeamPage implements OnInit {
   private userService = inject(SchoolUserService);
   private toast = inject(ToastService);
 
-  user = this.store.selectSignal(selectCurrentUser);
+  currentUser = this.store.selectSignal(selectCurrentUser);
   loading = signal(false);
   saving = signal(false);
   users = signal<UserResponse[]>([]);
@@ -47,6 +47,8 @@ export class TeamPage implements OnInit {
   modalOpen = signal(false);
   confirmDeleteOpen = signal(false);
   deletingUserId = signal<string | null>(null);
+  emailPreviewOpen = signal(false);
+  emailPreview = signal<EmailPreview | null>(null);
 
   filteredUsers = computed(() => {
     const tab = this.activeTab();
@@ -59,12 +61,13 @@ export class TeamPage implements OnInit {
     email: new FormControl('', [Validators.required, Validators.email]),
     firstName: new FormControl('', [Validators.required, Validators.maxLength(25)]),
     lastName: new FormControl('', [Validators.required, Validators.maxLength(50)]),
-    roleName: new FormControl<'STUDENT' | 'TEACHER'>('STUDENT', Validators.required),
+    roleName: new FormControl<'STUDENT' | 'TEACHER' | 'SCHOOL_ADMIN'>('STUDENT', Validators.required),
     phoneNumber: new FormControl(''),
   });
 
   tabs: { label: string; value: TabFilter }[] = [
     { label: 'Tous', value: 'ALL' },
+    { label: 'Administrateurs', value: 'SCHOOL_ADMIN' },
     { label: 'Professeurs', value: 'TEACHER' },
     { label: 'Étudiants', value: 'STUDENT' },
   ];
@@ -77,7 +80,7 @@ export class TeamPage implements OnInit {
   }
 
   loadUsers(): void {
-    const schoolId = this.user()?.schoolId;
+    const schoolId = this.currentUser()?.schoolId;
     if (!schoolId) return;
     this.loading.set(true);
     this.userService
@@ -103,7 +106,7 @@ export class TeamPage implements OnInit {
     this.form.markAllAsTouched();
     if (this.form.invalid) return;
 
-    const schoolId = this.user()?.schoolId;
+    const schoolId = this.currentUser()?.schoolId;
     if (!schoolId) return;
 
     const payload: InviteRequest = {
@@ -120,10 +123,14 @@ export class TeamPage implements OnInit {
       .invite(payload)
       .pipe(finalize(() => this.saving.set(false)))
       .subscribe({
-        next: () => {
+        next: (response) => {
           this.toast.success(`Un email avec les identifiants a été envoyé à ${payload.email}`);
           this.closeModal();
           this.loadUsers();
+          if (response.emailPreview) {
+            this.emailPreview.set(response.emailPreview);
+            this.emailPreviewOpen.set(true);
+          }
         },
       });
   }
@@ -161,5 +168,10 @@ export class TeamPage implements OnInit {
         this.loadUsers();
       },
     });
+  }
+
+  closeEmailPreview(): void {
+    this.emailPreviewOpen.set(false);
+    this.emailPreview.set(null);
   }
 }
