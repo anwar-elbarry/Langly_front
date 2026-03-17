@@ -30,4 +30,8 @@ export class NotificationService {
   markAllAsRead(): Observable<void> {
     return this.http.patch<void>(`${this.apiUrl}/read-all`, {});
   }
+
+  deleteAll(): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/all`);
+  }
 }
