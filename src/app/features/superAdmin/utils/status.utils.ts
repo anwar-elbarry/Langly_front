@@ -3,7 +3,7 @@ import { SchoolStatus } from '../models/school.model';
 import { UserStatus } from '../models/user.model';
 
 const SUCCESS = new Set(['PAID', 'ACTIVE']);
-const WARNING = new Set(['PENDING']);
+const WARNING = new Set(['PENDING', 'PENDING_TRANSFER']);
 const DANGER = new Set(['OVERDUE', 'SUSPENDED']);
 
 export function getBadgeClass(status?: string): string {
