@@ -1,5 +1,5 @@
 export type BillingCycle = 'MONTHLY' | 'YEARLY';
-export type PaymentStatus = 'PAID' | 'PENDING' | 'OVERDUE' | string;
+export type PaymentStatus = 'PAID' | 'PENDING' | 'PENDING_TRANSFER' | 'OVERDUE' | string;
 
 export interface SubscriptionResponse {
   id: string;
