@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
+import { SpinnerComponent } from '../../../../shared/ui/spinner/spinner';
 import { ButtonComponent } from '../../../../shared/ui/button/button';
 import { FormFieldComponent } from '../../../../shared/ui/form-field/form-field';
 import { InputComponent } from '../../../../shared/ui/input/input';
@@ -31,6 +32,7 @@ import { paymentStatusClass } from '../../utils/status.utils';
     ModalComponent,
     FormFieldComponent,
     InputComponent,
+    SpinnerComponent,
   ],
   templateUrl: './subscriptions.page.html',
 })
@@ -62,6 +64,20 @@ export class SubscriptionsPage implements OnInit {
     })
   );
 
+  schoolSearchTerm = signal('');
+
+  filteredAvailableSchools = computed(() => {
+    const term = this.schoolSearchTerm().toLowerCase().trim();
+    // Get list of school IDs that already have a subscription
+    const subscribedSchoolIds = new Set(this.subscriptions().map((sub) => sub.schoolId));
+
+    return this.schools().filter((school) => {
+      if (subscribedSchoolIds.has(school.id)) return false;
+      if (term && !school.name.toLowerCase().includes(term)) return false;
+      return true;
+    });
+  });
+
   form = new FormGroup({
     schoolId: new FormControl('', Validators.required),
     amount: new FormControl<number | null>(null, Validators.required),
@@ -92,6 +108,7 @@ export class SubscriptionsPage implements OnInit {
 
   openCreate(): void {
     this.editingId.set(null);
+    this.schoolSearchTerm.set('');
     this.form.reset({
       schoolId: '',
       amount: null,
@@ -199,6 +216,15 @@ export class SubscriptionsPage implements OnInit {
       next: () => {
         this.toast.success('Payment status updated');
         this.closePaymentModal();
+        this.loadSubscriptions();
+      },
+    });
+  }
+
+  validateTransfer(id: string): void {
+    this.subscriptionsService.updatePaymentStatus(id, { status: 'PAID' }).subscribe({
+      next: () => {
+        this.toast.success('Transfer validated and subscription activated');
         this.loadSubscriptions();
       },
     });
