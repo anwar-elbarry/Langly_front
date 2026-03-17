@@ -14,10 +14,15 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
       let type: Toast['type'] = 'error';
 
       if (error.status === 401) {
-        message = 'Session expired. Please login again.';
-        type = 'warning';
-        localStorage.removeItem('accessToken');
-        router.navigate(['/login']);
+        if (req.url.includes('/auth/login')) {
+          message = error.error?.message || 'Invalid email or password.';
+          type = 'error';
+        } else {
+          message = 'Session expired. Please login again.';
+          type = 'warning';
+          localStorage.removeItem('accessToken');
+          router.navigate(['/login']);
+        }
       } else if (error.status === 403) {
         message = 'You do not have permission to perform this action.';
         type = 'warning';
