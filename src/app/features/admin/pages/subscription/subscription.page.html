@@ -1,0 +1,173 @@
+<div class="mx-auto max-w-4xl">
+  <div class="mb-6 flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold tracking-tight text-slate-900">Mon Abonnement</h1>
+      <p class="mt-1 text-sm text-slate-500">
+        Gérez votre abonnement SaaS et vos méthodes de paiement.
+      </p>
+    </div>
+  </div>
+
+  @if (isLoading()) {
+    <div class="flex py-12 items-center justify-center">
+      <div class="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent"></div>
+    </div>
+  } @else if (subscription()) {
+    <div class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+      <div class="border-b border-slate-200 bg-slate-50/50 px-6 py-5">
+        <div class="flex items-center justify-between">
+          <h2 class="text-base font-semibold text-slate-900">Détails de l'abonnement</h2>
+          <span 
+            class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold"
+            [ngClass]="getStatusBadgeClass(subscription()?.status)">
+            {{ subscription()?.status === 'PAID' ? 'Actif' : 
+               subscription()?.status === 'OVERDUE' ? 'En retard' : 
+               subscription()?.status === 'PENDING' ? 'En attente' : subscription()?.status }}
+          </span>
+        </div>
+      </div>
+      
+      <div class="grid grid-cols-1 gap-6 p-6 sm:grid-cols-2">
+        <div class="rounded-lg border border-slate-100 bg-slate-50 p-4">
+          <div class="text-sm font-medium text-slate-500">Plan actuel</div>
+          <div class="mt-2 flex items-baseline gap-2">
+            <span class="text-3xl font-bold tracking-tight text-slate-900">{{ subscription()?.amount }}</span>
+            <span class="text-sm font-medium text-slate-500">{{ subscription()?.currency | uppercase }} / {{ subscription()?.billingCycle === 'MONTHLY' ? 'Mois' : 'An' }}</span>
+          </div>
+        </div>
+
+        <div class="rounded-lg border border-slate-100 bg-slate-50 p-4">
+          <div class="text-sm font-medium text-slate-500">Prochain paiement</div>
+          <div class="mt-2 flex items-baseline gap-2">
+            <span class="text-xl font-semibold text-slate-900">
+              {{ subscription()?.nextPaymentDate ? (subscription()?.nextPaymentDate | date:'longDate':'':'fr') : 'Non défini' }}
+            </span>
+          </div>
+          <div class="mt-1 text-xs text-slate-500">
+            Période actuelle: {{ subscription()?.currentPeriodStart | date:'shortDate' }} - {{ subscription()?.currentPeriodEnd | date:'shortDate' }}
+          </div>
+        </div>
+      </div>
+
+      <div class="border-t border-slate-200 bg-slate-50 px-6 py-4 flex items-center justify-between">
+        <p class="text-sm text-slate-600">
+          @if (isActive()) {
+            Votre abonnement est à jour.
+          } @else if (isOverdue()) {
+            <span class="font-medium text-red-600">Votre paiement est en retard. Votre accès pourra être suspendu.</span>
+          } @else {
+            <span class="font-medium text-yellow-600">En attente de paiement.</span>
+          }
+        </p>
+        @if (!isActive()) {
+          <app-button variant="primary" (click)="openPaymentModal()">
+            <i class="fa-solid fa-credit-card mr-2"></i> Payer maintenant
+          </app-button>
+        }
+      </div>
+    </div>
+  } @else {
+    <div class="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-12 text-center">
+      <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-slate-100">
+        <i class="fa-solid fa-file-invoice text-xl text-slate-400"></i>
+      </div>
+      <h3 class="mt-4 text-sm font-semibold text-slate-900">Aucun abonnement trouvé</h3>
+      <p class="mt-2 text-sm text-slate-500">Veuillez contacter l'administrateur système pour configurer votre abonnement.</p>
+    </div>
+  }
+</div>
+
+<!-- Payment Modal -->
+<app-modal [isOpen]="isPaymentModalOpen()" (closed)="closePaymentModal()">
+  <span modal-header>Choisir une méthode de paiement</span>
+  
+  <div class="space-y-4 py-2">
+    <!-- Stripe Option -->
+    <label 
+      class="flex cursor-pointer items-start gap-4 rounded-xl border p-4 transition-colors"
+      [ngClass]="paymentMethod() === 'STRIPE' ? 'border-blue-600 bg-blue-50/50' : 'border-slate-200 hover:border-blue-300 hover:bg-slate-50'">
+      <div class="flex h-5 items-center pt-0.5">
+        <input 
+          type="radio" 
+          name="payment_method" 
+          value="STRIPE" 
+          [checked]="paymentMethod() === 'STRIPE'"
+          (change)="selectPaymentMethod('STRIPE')"
+          class="h-4 w-4 border-slate-300 text-blue-600 focus:ring-blue-600">
+      </div>
+      <div class="flex-1">
+        <div class="flex items-center gap-2">
+          <i class="fa-brands fa-stripe text-2xl text-[#635BFF]"></i>
+          <span class="font-medium text-slate-900">Carte Bancaire (Stripe)</span>
+        </div>
+        <p class="mt-1 text-sm text-slate-500">Paiement sécurisé et activation immédiate.</p>
+      </div>
+    </label>
+
+    <!-- Bank Transfer Option -->
+    <label 
+      class="flex cursor-pointer items-start gap-4 rounded-xl border p-4 transition-colors"
+      [ngClass]="paymentMethod() === 'BANK_TRANSFER' ? 'border-blue-600 bg-blue-50/50' : 'border-slate-200 hover:border-blue-300 hover:bg-slate-50'">
+      <div class="flex h-5 items-center pt-0.5">
+        <input 
+          type="radio" 
+          name="payment_method" 
+          value="BANK_TRANSFER" 
+          [checked]="paymentMethod() === 'BANK_TRANSFER'"
+          (change)="selectPaymentMethod('BANK_TRANSFER')"
+          class="h-4 w-4 border-slate-300 text-blue-600 focus:ring-blue-600">
+      </div>
+      <div class="flex-1">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-building-columns text-slate-600"></i>
+          <span class="font-medium text-slate-900">Virement Bancaire</span>
+        </div>
+        <p class="mt-1 text-sm text-slate-500">Activation sous 2 à 3 jours ouvrables après réception des fonds.</p>
+        
+        @if (paymentMethod() === 'BANK_TRANSFER') {
+          <div class="mt-4 rounded-lg bg-white p-4 border border-slate-200">
+            <h4 class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Informations Bancaires</h4>
+            <div class="space-y-2 text-sm text-slate-700">
+              <div class="flex justify-between">
+                <span class="text-slate-500">Banque:</span>
+                <span class="font-medium">Bank of Africa</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-500">Titulaire:</span>
+                <span class="font-medium">Langly SaaS Inc.</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-500">IBAN:</span>
+                <span class="font-medium font-mono">MA64 0110 0100 0000 0000 0000</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-500">Motif:</span>
+                <span class="font-medium font-mono">Abonnement {{ subscription()?.id?.substring(0, 8) }}</span>
+              </div>
+            </div>
+            <div class="mt-3 bg-blue-50 text-blue-800 p-2 rounded text-xs">
+              <i class="fa-solid fa-circle-info mr-1"></i>
+              Veuillez inclure le motif dans votre virement pour un traitement rapide.
+            </div>
+          </div>
+        }
+      </div>
+    </label>
+  </div>
+
+  <div modal-footer class="flex justify-end gap-3">
+    <app-button variant="outline" (click)="closePaymentModal()">Annuler</app-button>
+    <app-button 
+      variant="primary" 
+      [disabled]="!paymentMethod() || isProcessing()" 
+      (click)="proceedPayment()">
+      @if (isProcessing()) {
+        <i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Traitement...
+      } @else if (paymentMethod() === 'BANK_TRANSFER') {
+        J'ai effectué le virement
+      } @else {
+        Continuer
+      }
+    </app-button>
+  </div>
+</app-modal>
