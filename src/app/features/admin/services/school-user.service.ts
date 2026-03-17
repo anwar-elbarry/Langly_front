@@ -9,7 +9,7 @@ export interface InviteRequest {
   lastName: string;
   email: string;
   phoneNumber?: string;
-  roleName: 'STUDENT' | 'TEACHER';
+  roleName: 'STUDENT' | 'TEACHER' | 'SCHOOL_ADMIN';
   schoolId: string;
 }
 
