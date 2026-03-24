@@ -14,7 +14,6 @@ import { selectCurrentUser } from '../../../../core/store/selectors/auth.selecto
 import { RoleResponse } from '../../models/role.model';
 import { SchoolResponse } from '../../models/school.model';
 import { EmailPreview, UserRequest, UserResponse, UserUpdateRequest } from '../../models/user.model';
-import { RolesService } from '../../services/roles.service';
 import { SchoolsService } from '../../services/schools.service';
 import { UsersService } from '../../services/users.service';
 import { userStatusClass } from '../../utils/status.utils';
@@ -37,7 +36,6 @@ import { userStatusClass } from '../../utils/status.utils';
 export class UsersPage implements OnInit {
   private usersService = inject(UsersService);
   private schoolsService = inject(SchoolsService);
-  private rolesService = inject(RolesService);
   private toast = inject(ToastService);
   private store = inject(Store);
 
@@ -82,7 +80,6 @@ export class UsersPage implements OnInit {
 
   loadDictionaries(): void {
     this.schoolsService.getAll().subscribe({ next: (schools) => this.schools.set(schools) });
-    this.rolesService.getAll().subscribe({ next: (roles) => this.roles.set(roles) });
   }
 
   loadUsers(): void {
