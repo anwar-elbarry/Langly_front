@@ -119,6 +119,10 @@ export class NotificationBellComponent implements OnInit, OnDestroy {
         return 'fa-solid fa-circle-check text-green-500';
       case 'ENROLLMENT_REJECTED':
         return 'fa-solid fa-circle-xmark text-red-500';
+      case 'INSTALLMENT_REMINDER':
+        return 'fa-solid fa-clock text-amber-500';
+      case 'INSTALLMENT_OVERDUE':
+        return 'fa-solid fa-triangle-exclamation text-red-500';
       default:
         return 'fa-solid fa-bell text-gray-400';
     }
