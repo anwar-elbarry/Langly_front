@@ -36,4 +36,8 @@ export class EnrollmentService {
   rejectEnrollment(id: string): Observable<EnrollmentResponse> {
     return this.http.patch<EnrollmentResponse>(`${this.apiUrl}/${id}/reject`, {});
   }
+
+  updateStatus(id: string, status: string): Observable<EnrollmentResponse> {
+    return this.http.patch<EnrollmentResponse>(`${this.apiUrl}/${id}/status`, { status });
+  }
 }
