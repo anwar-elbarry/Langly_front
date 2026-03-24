@@ -180,9 +180,7 @@ export class EnrollPage implements OnInit {
         const course = this.paymentCourse();
         const method = this.selectedPaymentMethod();
         if (!course?.billing || !method) return;
-
         this.processingPayment.set(true);
-
         this.billingService.selectPaymentMethod(course.billing.id, method).subscribe({
             next: (res) => {
                 this.processingPayment.set(false);
