@@ -12,6 +12,7 @@ import { InputComponent } from '../../../../shared/ui/input/input';
 import { ToastService } from '../../../../shared/ui/toast/toast.service';
 import { CourseResponse } from '../../../admin/models/course.model';
 import { EnrollmentResponse } from '../../../admin/models/enrollment.model';
+import { getLanguageFlagUrl } from '../../../admin/models/enums';
 import { levelBadgeClass, enrollmentStatusClass, enrollmentStatusLabel } from '../../../admin/utils/status.utils';
 import { TeacherCourseService } from '../../services/teacher-course.service';
 import { TeacherSessionService } from '../../services/teacher-session.service';
@@ -89,6 +90,7 @@ export class CourseDetailPage implements OnInit {
   levelBadgeClass = levelBadgeClass;
   enrollmentStatusClass = enrollmentStatusClass;
   enrollmentStatusLabel = enrollmentStatusLabel;
+  getLanguageFlagUrl = getLanguageFlagUrl;
 
   // Computed: session date constraints from course dates
   sessionMinDate = computed(() => {

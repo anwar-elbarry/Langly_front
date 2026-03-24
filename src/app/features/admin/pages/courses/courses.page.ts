@@ -13,7 +13,7 @@ import { TableComponent } from '../../../../shared/ui/table/table';
 import { ToastService } from '../../../../shared/ui/toast/toast.service';
 import { UserResponse } from '../../../auth/models/User.response';
 import { CourseRequest, CourseResponse } from '../../models/course.model';
-import { LANGUAGES, LEVELS } from '../../models/enums';
+import { getLanguageFlagUrl, LANGUAGES, LEVELS } from '../../models/enums';
 import { CourseService } from '../../services/course.service';
 import { SchoolUserService } from '../../services/school-user.service';
 import { levelBadgeClass } from '../../utils/status.utils';
@@ -52,6 +52,7 @@ export class CoursesPage implements OnInit {
   levels = LEVELS;
   languages = LANGUAGES;
   levelBadgeClass = levelBadgeClass;
+  getLanguageFlagUrl = getLanguageFlagUrl;
 
   form = new FormGroup({
     name: new FormControl('', Validators.required),

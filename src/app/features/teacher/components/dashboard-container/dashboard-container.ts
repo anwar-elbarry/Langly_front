@@ -42,7 +42,6 @@ export class DashboardContainer {
 
   bottomNavItems = [
     { label: 'Paramètres', route: '/teacher/settings', icon: 'fa-solid fa-gear' },
-    { label: 'Aide', route: '/teacher/help', icon: 'fa-solid fa-circle-question' },
   ];
 
   toggleSidebar(): void {

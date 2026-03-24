@@ -29,16 +29,6 @@ export const SUPER_ADMIN_ROUTES: Routes = [
           import('./pages/super-admins/super-admins.page').then((m) => m.SuperAdminsPage),
       },
       {
-        path: 'roles',
-        redirectTo: 'roles-permissions',
-        pathMatch: 'full',
-      },
-      {
-        path: 'permissions',
-        redirectTo: 'roles-permissions',
-        pathMatch: 'full',
-      },
-      {
         path: 'subscriptions',
         loadComponent: () =>
           import('./pages/subscriptions/subscriptions.page').then((m) => m.SubscriptionsPage),

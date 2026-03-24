@@ -9,7 +9,13 @@
       <i class="fa-solid fa-arrow-left text-xs"></i> Retour aux cours
     </a>
     <h2 class="text-xl font-bold text-gray-900">{{ c.name }}</h2>
-    <p class="text-sm text-gray-500">{{ c.code }} · {{ c.language }}</p>
+    <p class="text-sm text-gray-500 flex items-center gap-1">
+      {{ c.code }} ·
+      @if (getLanguageFlagUrl(c.language); as flagUrl) {
+        <img [src]="flagUrl" alt="" class="h-3 w-4 rounded-sm object-cover" />
+      }
+      {{ c.language }}
+    </p>
   </div>
 
   <!-- Tabs -->
@@ -51,7 +57,12 @@
         </div>
         <div>
           <p class="text-xs text-gray-400">Langue</p>
-          <p class="text-sm font-medium text-gray-900">{{ c.language }}</p>
+          <p class="text-sm font-medium text-gray-900 flex items-center gap-1.5">
+            @if (getLanguageFlagUrl(c.language); as flagUrl) {
+              <img [src]="flagUrl" alt="" class="h-3 w-4 rounded-sm object-cover" />
+            }
+            {{ c.language }}
+          </p>
         </div>
         <div>
           <p class="text-xs text-gray-400">Niveau</p>

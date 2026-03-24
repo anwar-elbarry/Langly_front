@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { getLanguageFlagUrl } from '../../../admin/models/enums';
 import { StudentCourseService } from '../../services/student-course.service';
 import { ActiveCourseResponse } from '../../models/student.model';
 
@@ -16,6 +17,7 @@ export class MyCoursesPage implements OnInit {
     courses = signal<ActiveCourseResponse[]>([]);
     loading = signal(true);
     error = signal('');
+    getLanguageFlagUrl = getLanguageFlagUrl;
 
     ngOnInit(): void {
         this.courseService.getActiveCourses().subscribe({

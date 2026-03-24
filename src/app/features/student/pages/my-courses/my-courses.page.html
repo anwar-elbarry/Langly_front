@@ -45,7 +45,10 @@
             <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
                 <i class="fa-solid fa-book text-lg"></i>
             </div>
-            <span class="rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
+                @if (getLanguageFlagUrl(course.language); as flagUrl) {
+                  <img [src]="flagUrl" alt="" class="h-3 w-4 rounded-sm object-cover" />
+                }
                 {{ course.language }}
             </span>
         </div>

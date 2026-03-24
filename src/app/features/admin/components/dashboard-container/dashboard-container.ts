@@ -53,7 +53,6 @@ export class DashboardContainer implements OnInit {
 
   bottomNavItems = [
     { label: 'Paramètres', route: '/schoolAdmin/settings', icon: 'fa-solid fa-gear' },
-    { label: 'Aide', route: '/schoolAdmin/help', icon: 'fa-solid fa-circle-question' },
   ];
 
   ngOnInit(): void {

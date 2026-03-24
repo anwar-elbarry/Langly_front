@@ -27,7 +27,14 @@
           <tr class="cursor-pointer" (click)="openCourse(course)">
             <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ course.name }}</td>
             <td class="px-4 py-3 text-sm text-gray-600">{{ course.code }}</td>
-            <td class="px-4 py-3 text-sm text-gray-600">{{ course.language }}</td>
+            <td class="px-4 py-3 text-sm text-gray-600">
+              <span class="inline-flex items-center gap-1.5">
+                @if (getLanguageFlagUrl(course.language); as flagUrl) {
+                  <img [src]="flagUrl" alt="" class="h-3 w-4 rounded-sm object-cover" />
+                }
+                {{ course.language }}
+              </span>
+            </td>
             <td class="px-4 py-3">
               <span [class]="levelBadgeClass(course.requiredLevel)">{{ course.requiredLevel }}</span>
               <i class="fa-solid fa-arrow-right mx-1 text-[10px] text-gray-400"></i>

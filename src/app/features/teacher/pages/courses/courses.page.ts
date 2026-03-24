@@ -5,6 +5,7 @@ import { finalize } from 'rxjs';
 import { SpinnerComponent } from '../../../../shared/ui/spinner/spinner';
 import { TableComponent } from '../../../../shared/ui/table/table';
 import { CourseResponse } from '../../../admin/models/course.model';
+import { getLanguageFlagUrl } from '../../../admin/models/enums';
 import { levelBadgeClass } from '../../../admin/utils/status.utils';
 import { TeacherCourseService } from '../../services/teacher-course.service';
 
@@ -22,6 +23,7 @@ export class CoursesPage implements OnInit {
   courses = signal<CourseResponse[]>([]);
 
   levelBadgeClass = levelBadgeClass;
+  getLanguageFlagUrl = getLanguageFlagUrl;
 
   ngOnInit(): void {
     this.courseService

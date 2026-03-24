@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
+import { getLanguageFlagUrl } from '../../../admin/models/enums';
 import { CertificationService } from '../../services/certification.service';
 import { CertificationResponse } from '../../models/student.model';
 
@@ -14,6 +15,7 @@ export class CertificationsPage implements OnInit {
 
     certifications = signal<CertificationResponse[]>([]);
     loading = signal(true);
+    getLanguageFlagUrl = getLanguageFlagUrl;
 
     ngOnInit(): void {
         this.certService.getMyCertifications().subscribe({
