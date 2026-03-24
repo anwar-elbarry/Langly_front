@@ -1,176 +1,22 @@
-<!-- Sidebar -->
-<aside
-  class="fixed inset-y-0 left-0 z-40 flex flex-col border-r border-gray-200 bg-white transition-all duration-300 lg:translate-x-0"
-  [class.-translate-x-full]="!isSidebarOpen()"
-  [class.translate-x-0]="isSidebarOpen()"
-  [class.w-72]="!isSidebarCollapsed()"
-  [class.w-[72px]]="isSidebarCollapsed()"
->
-  <!-- Logo area -->
-  <div
-    class="flex items-center border-b border-gray-200 px-5 py-5"
-    [class.justify-between]="!isSidebarCollapsed()"
-    [class.justify-center]="isSidebarCollapsed()"
-  >
-    @if (!isSidebarCollapsed()) {
-      <div class="flex items-center gap-2.5">
-        <div
-          class="flex h-9 w-9 items-center justify-center rounded-lg bg-linear-to-br from-blue-600 to-sky-500"
-        >
-          <i class="fa-solid fa-language text-base text-white"></i>
-        </div>
-        <div>
-          <span class="text-[15px] font-bold tracking-tight text-gray-900">Langly</span>
-          <span class="ml-1 text-[10px] font-medium uppercase tracking-wider text-gray-400">École</span>
-        </div>
-      </div>
-      <button
-        class="inline-flex cursor-pointer items-center justify-center rounded-md border-0 bg-transparent p-1 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600 lg:hidden"
-        type="button"
-        (click)="closeSidebar()"
-      >
-        <i class="fa-solid fa-xmark text-lg"></i>
-      </button>
-    } @else {
-      <div
-        class="flex h-9 w-9 items-center justify-center rounded-lg bg-linear-to-br from-blue-600 to-sky-500"
-      >
-        <i class="fa-solid fa-language text-base text-white"></i>
-      </div>
-    }
-  </div>
-
-  <!-- Main nav -->
-  <div class="flex flex-1 flex-col overflow-y-auto px-3 pt-5">
-    @if (!isSidebarCollapsed()) {
-      <p class="mb-2 px-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">
-        Menu Principal
-      </p>
-    }
-
-    <nav class="flex flex-col gap-1">
-      @for (item of navItems; track item.route) {
-        <a
-          [routerLink]="item.route"
-          routerLinkActive="!bg-blue-50 !text-blue-600 !font-semibold"
-          class="group relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] font-medium text-gray-600 transition-colors duration-150 hover:bg-gray-100 hover:text-gray-900"
-          [class.justify-center]="isSidebarCollapsed()"
-          [title]="isSidebarCollapsed() ? item.label : ''"
-          (click)="closeSidebar()"
-        >
-          <i
-            class="{{ item.icon }} w-5 text-center text-[15px] text-gray-400 transition-colors group-hover:text-gray-600"
-            routerLinkActive="!text-blue-600"
-          ></i>
-          @if (!isSidebarCollapsed()) {
-            <span>{{ item.label }}</span>
-            @if (item.badge && incompleteCount() > 0) {
-              <span class="ml-auto inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1.5 text-[10px] font-bold text-white">
-                {{ incompleteCount() }}
-              </span>
-            }
-          } @else {
-            @if (item.badge && incompleteCount() > 0) {
-              <span class="absolute -top-1 -right-1 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[9px] font-bold text-white">
-                {{ incompleteCount() }}
-              </span>
-            }
-          }
-        </a>
-      }
-    </nav>
-
-    <!-- Bottom nav section -->
-    <div class="mt-auto border-t border-gray-200 pt-4 pb-3">
-      @if (!isSidebarCollapsed()) {
-        <p class="mb-2 px-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">
-          Support
-        </p>
-      }
-      <nav class="flex flex-col gap-1">
-        @for (item of bottomNavItems; track item.route) {
-          <a
-            [routerLink]="item.route"
-            routerLinkActive="!bg-blue-50 !text-blue-600 !font-semibold"
-            class="group flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] font-medium text-gray-600 transition-colors duration-150 hover:bg-gray-100 hover:text-gray-900"
-            [class.justify-center]="isSidebarCollapsed()"
-            [title]="isSidebarCollapsed() ? item.label : ''"
-            (click)="closeSidebar()"
-          >
-            <i
-              class="{{ item.icon }} w-5 text-center text-[15px] text-gray-400 transition-colors group-hover:text-gray-600"
-              routerLinkActive="!text-blue-600"
-            ></i>
-            @if (!isSidebarCollapsed()) {
-              <span>{{ item.label }}</span>
-            }
-          </a>
-        }
-      </nav>
-
-      <!-- Collapse button (desktop only) -->
-      <button
-        class="mt-3 hidden w-full cursor-pointer items-center gap-3 rounded-lg border-0 bg-transparent px-3 py-2.5 text-[13px] font-medium text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 lg:flex"
-        [class.justify-center]="isSidebarCollapsed()"
-        type="button"
-        (click)="toggleCollapse()"
-      >
-        @if (isSidebarCollapsed()) {
-          <i class="fa-solid fa-angles-right w-5 text-center text-[15px]"></i>
-        } @else {
-          <i class="fa-solid fa-angles-left w-5 text-center text-[15px]"></i>
-          <span>Réduire</span>
-        }
-      </button>
-    </div>
-  </div>
-
-  <!-- User section at bottom -->
-  <div class="border-t border-gray-200 px-3 py-3">
-    <div
-      class="flex items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-gray-50"
-      [class.justify-center]="isSidebarCollapsed()"
-    >
-      @if (user()?.profile) {
-        <img
-          [src]="user()?.profile"
-          alt="Avatar"
-          class="h-9 w-9 shrink-0 rounded-full object-cover"
-        />
-      } @else {
-        <div
-          class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-blue-600 to-sky-500 text-xs font-bold text-white"
-        >
-          {{ initials() }}
-        </div>
-      }
-      @if (!isSidebarCollapsed()) {
-        <div class="min-w-0 flex-1">
-          <p class="m-0 truncate text-[13px] font-semibold text-gray-900">{{ fullName() }}</p>
-          <p class="m-0 text-[11px] text-gray-400">Directeur</p>
-        </div>
-        <button
-          class="shrink-0 cursor-pointer rounded-md border-0 bg-transparent p-1.5 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600"
-          type="button"
-          (click)="logout()"
-          title="Déconnexion"
-        >
-          <i class="fa-solid fa-right-from-bracket text-[14px]"></i>
-        </button>
-      }
-    </div>
-  </div>
-</aside>
-
-<!-- Overlay for mobile -->
-@if (isSidebarOpen()) {
-  <button
-    class="fixed inset-0 z-30 border-0 bg-black/30 backdrop-blur-[2px] lg:hidden"
-    type="button"
-    (click)="closeSidebar()"
-    aria-label="Fermer le menu"
-  ></button>
-}
+<app-dashboard-aside
+  [isSidebarOpen]="isSidebarOpen()"
+  [isSidebarCollapsed]="isSidebarCollapsed()"
+  [navItems]="navItems"
+  [bottomNavItems]="bottomNavItems"
+  logoIcon="fa-solid fa-language"
+  badgeLabel="École"
+  roleLabel="Directeur"
+  accentBg="bg-blue-50"
+  accentText="text-blue-600"
+  gradientFrom="from-blue-600"
+  gradientTo="to-sky-500"
+  [fullName]="fullName()"
+  [initials]="initials()"
+  [profileImage]="user()?.profile"
+  (closeSidebar)="closeSidebar()"
+  (toggleCollapse)="toggleCollapse()"
+  (logout)="logout()"
+/>
 
 <!-- Main content -->
 <section

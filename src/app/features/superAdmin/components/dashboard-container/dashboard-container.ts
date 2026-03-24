@@ -1,15 +1,16 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AuthPage } from '../../../../core/store/actions/auth.actions';
 import { selectCurrentUser } from '../../../../core/store/selectors/auth.selectors';
+import { DashboardAsideComponent } from '../../../../layouts/aside/aside';
 import { DashboardHeaderComponent } from '../../../../shared/components/dashboard-header/dashboard-header';
 
 @Component({
   selector: 'app-dashboard-container',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive, DashboardHeaderComponent],
+  imports: [CommonModule, RouterOutlet, DashboardAsideComponent, DashboardHeaderComponent],
   templateUrl: './dashboard-container.html',
 })
 export class DashboardContainer {
@@ -40,11 +41,6 @@ export class DashboardContainer {
     { label: 'Écoles', route: '/superAdmin/schools', icon: 'fa-solid fa-school' },
     { label: 'Utilisateurs', route: '/superAdmin/users', icon: 'fa-solid fa-users' },
     { label: 'Super Admins', route: '/superAdmin/super-admins', icon: 'fa-solid fa-user-shield' },
-    {
-      label: 'Rôles & Permissions',
-      route: '/superAdmin/roles-permissions',
-      icon: 'fa-solid fa-lock',
-    },
     {
       label: 'Abonnements',
       route: '/superAdmin/subscriptions',

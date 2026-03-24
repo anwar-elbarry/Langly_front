@@ -1,16 +1,16 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AuthPage } from '../../../../core/store/actions/auth.actions';
 import { selectCurrentUser } from '../../../../core/store/selectors/auth.selectors';
-
+import { DashboardAsideComponent } from '../../../../layouts/aside/aside';
 import { DashboardHeaderComponent } from '../../../../shared/components/dashboard-header/dashboard-header';
 
 @Component({
   selector: 'app-dashboard-container',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive, DashboardHeaderComponent],
+  imports: [CommonModule, RouterOutlet, DashboardAsideComponent, DashboardHeaderComponent],
   templateUrl: './dashboard-container.html',
   styleUrl: './dashboard-container.css',
 })
