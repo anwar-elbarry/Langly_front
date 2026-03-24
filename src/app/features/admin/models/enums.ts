@@ -22,7 +22,21 @@ export const LEVELS: Level[] = ['A0', 'A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
 
 export const GENDERS: Gender[] = ['MALE', 'FEMALE'];
 
-export const LANGUAGES = ['Français', 'Anglais', 'Espagnol', 'Arabe', 'Allemand', 'Italien', 'Portugais'];
+export const LANGUAGES: { label: string; value: string; countryCode: string }[] = [
+  { label: 'Français', value: 'Français', countryCode: 'fr' },
+  { label: 'Anglais', value: 'Anglais', countryCode: 'gb' },
+  { label: 'Espagnol', value: 'Espagnol', countryCode: 'es' },
+  { label: 'Arabe', value: 'Arabe', countryCode: 'sa' },
+  { label: 'Allemand', value: 'Allemand', countryCode: 'de' },
+  { label: 'Italien', value: 'Italien', countryCode: 'it' },
+  { label: 'Portugais', value: 'Portugais', countryCode: 'pt' },
+];
+
+export function getLanguageFlagUrl(language: string): string | null {
+  const lang = LANGUAGES.find(l => l.value === language);
+  if (!lang) return null;
+  return `https://cdn.jsdelivr.net/gh/lipis/flag-icons@main/flags/4x3/${lang.countryCode}.svg`;
+}
 
 export const INSTALLMENT_PLANS: { value: InstallmentPlan; label: string }[] = [
   { value: 'FULL', label: 'Paiement intégral' },
