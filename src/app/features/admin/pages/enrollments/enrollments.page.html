@@ -105,22 +105,21 @@
             </td>
             <td class="px-4 py-3 text-sm text-gray-600">{{ enrollment.enrolledAt | date:'dd/MM/yyyy' }}</td>
             <td class="px-4 py-3">
-              @if (enrollment.status === 'PENDING_APPROVAL') {
-                <div class="flex gap-2">
-                  <app-button variant="success" size="sm"
-                    [loading]="approvingId() === enrollment.id"
-                    [disabled]="rejectingId() === enrollment.id"
-                    (click)="approveEnrollment(enrollment.id)">
-                    <i class="fa-solid fa-check mr-1"></i>Accepter
-                  </app-button>
-                  <app-button variant="danger" size="sm"
-                    [loading]="rejectingId() === enrollment.id"
-                    [disabled]="approvingId() === enrollment.id"
-                    (click)="rejectEnrollment(enrollment.id)">
-                    <i class="fa-solid fa-xmark mr-1"></i>Rejeter
-                  </app-button>
-                </div>
-              }
+              <div class="flex items-center gap-2">
+                <select
+                  class="rounded-md border border-gray-300 bg-white px-2 py-1 text-sm focus:border-sky-500 focus:outline-none"
+                  [value]="enrollment.status"
+                  [disabled]="statusChangeId() === enrollment.id || loading()"
+                  (change)="changeEnrollmentStatus(enrollment, $any($event.target).value)"
+                >
+                  @for (status of statusOptions; track status) {
+                    <option [value]="status">{{ enrollmentStatusLabel(status) }}</option>
+                  }
+                </select>
+                @if (statusChangeId() === enrollment.id) {
+                  <app-spinner size="sm" />
+                }
+              </div>
             </td>
           </tr>
         } @empty {

@@ -55,8 +55,18 @@ export class EnrollmentsPage implements OnInit {
   enrollmentStatusLabel = enrollmentStatusLabel;
   levelBadgeClass = levelBadgeClass;
 
-  approvingId = signal<string | null>(null);
-  rejectingId = signal<string | null>(null);
+  statusChangeId = signal<string | null>(null);
+
+  statusOptions: EnrollmentStatus[] = [
+    'PENDING_APPROVAL',
+    'APPROVED',
+    'REJECTED',
+    'IN_PROGRESS',
+    'PASSED',
+    'FAILED',
+    'WITHDRAWN',
+    'TRANSFERRED',
+  ];
 
   tabs: { label: string; value: StatusFilter }[] = [
     { label: 'Tous', value: 'ALL' },
@@ -133,9 +143,9 @@ export class EnrollmentsPage implements OnInit {
   }
 
   approveEnrollment(id: string): void {
-    this.approvingId.set(id);
+    this.statusChangeId.set(id);
     this.enrollmentService.approveEnrollment(id)
-      .pipe(finalize(() => this.approvingId.set(null)))
+      .pipe(finalize(() => this.statusChangeId.set(null)))
       .subscribe({
         next: () => {
           this.toast.success('Inscription approuvée. Facturation créée.');
@@ -146,15 +156,45 @@ export class EnrollmentsPage implements OnInit {
   }
 
   rejectEnrollment(id: string): void {
-    this.rejectingId.set(id);
+    this.statusChangeId.set(id);
     this.enrollmentService.rejectEnrollment(id)
-      .pipe(finalize(() => this.rejectingId.set(null)))
+      .pipe(finalize(() => this.statusChangeId.set(null)))
       .subscribe({
         next: () => {
           this.toast.success('Inscription rejetée.');
           this.loadData();
         },
         error: () => this.toast.error('Erreur lors du rejet.'),
+      });
+  }
+
+  changeEnrollmentStatus(enrollment: EnrollmentResponse, target: EnrollmentStatus | string): void {
+    const nextStatus = target as EnrollmentStatus;
+    if (nextStatus === enrollment.status) return;
+    const confirmed = confirm(
+      `Changer le statut de ${enrollment.studentFullName} en ${this.enrollmentStatusLabel(nextStatus)} ?`,
+    );
+    if (!confirmed) return;
+
+    this.statusChangeId.set(enrollment.id);
+
+    let request$;
+    if (nextStatus === 'APPROVED') {
+      request$ = this.enrollmentService.approveEnrollment(enrollment.id);
+    } else if (nextStatus === 'REJECTED') {
+      request$ = this.enrollmentService.rejectEnrollment(enrollment.id);
+    } else {
+      request$ = this.enrollmentService.updateStatus(enrollment.id, nextStatus);
+    }
+
+    request$
+      .pipe(finalize(() => this.statusChangeId.set(null)))
+      .subscribe({
+        next: () => {
+          this.toast.success('Statut mis Ã  jour');
+          this.loadData();
+        },
+        error: () => this.toast.error('Erreur lors de la mise Ã  jour du statut'),
       });
   }
 
