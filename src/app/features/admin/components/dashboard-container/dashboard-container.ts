@@ -44,6 +44,7 @@ export class DashboardContainer implements OnInit {
     { label: 'Élèves', route: '/schoolAdmin/students', icon: 'fa-solid fa-user-graduate' },
     { label: 'Inscriptions', route: '/schoolAdmin/enrollments', icon: 'fa-solid fa-clipboard-list' },
     { label: 'Factures', route: '/schoolAdmin/invoices', icon: 'fa-solid fa-file-invoice' },
+    { label: 'Suivi des paiements', route: '/schoolAdmin/fee-payments', icon: 'fa-solid fa-money-check-dollar' },
     { label: 'Remises', route: '/schoolAdmin/discounts', icon: 'fa-solid fa-tags' },
     { label: 'Catalogue de frais', route: '/schoolAdmin/fee-templates', icon: 'fa-solid fa-list-check' },
     { label: 'Param. facturation', route: '/schoolAdmin/billing-settings', icon: 'fa-solid fa-sliders' },
