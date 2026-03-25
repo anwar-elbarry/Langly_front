@@ -67,6 +67,13 @@ export const SCHOOL_ADMIN_ROUTES: Routes = [
           ),
       },
       {
+        path: 'fee-payments',
+        loadComponent: () =>
+          import('./pages/fee-payments/fee-payments.page').then(
+            (m) => m.FeePaymentsPage
+          ),
+      },
+      {
         path: 'discounts',
         loadComponent: () =>
           import('./pages/discounts/discounts.page').then(
