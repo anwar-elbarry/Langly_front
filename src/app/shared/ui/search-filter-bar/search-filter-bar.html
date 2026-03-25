@@ -1,0 +1,29 @@
+<div class="filter-bar">
+  @if (showSearch()) {
+    <div class="search-wrapper">
+      <i class="fa-solid fa-magnifying-glass search-icon"></i>
+      <input
+        type="text"
+        class="search-input"
+        [placeholder]="placeholder()"
+        (input)="onSearch($event)"
+      />
+    </div>
+  }
+
+  @if (filters().length > 0) {
+    <div class="filters-wrapper">
+      @for (filter of filters(); track filter.key) {
+        <select
+          class="filter-select"
+          (change)="onFilterChange(filter.key, $event)"
+        >
+          <option value="">{{ filter.label }}</option>
+          @for (opt of filter.options; track opt.value) {
+            <option [value]="opt.value">{{ opt.label }}</option>
+          }
+        </select>
+      }
+    </div>
+  }
+</div>
