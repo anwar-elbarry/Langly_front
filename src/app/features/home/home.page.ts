@@ -1,15 +1,32 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { AsyncPipe } from '@angular/common';
+import { map } from 'rxjs';
+import { selectIsAuthenticated, selectUserRole } from '../../core/store/selectors/auth.selectors';
+
+const ROLE_DASHBOARD_MAP: Record<string, string> = {
+  SUPER_ADMIN: '/superAdmin',
+  SCHOOL_ADMIN: '/schoolAdmin',
+  TEACHER: '/teacher',
+  STUDENT: '/student',
+};
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, AsyncPipe],
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.css']
 })
 export class HomePage {
+  private store = inject(Store);
+
   readonly year = new Date().getFullYear();
+  readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
+  readonly dashboardRoute$ = this.store.select(selectUserRole).pipe(
+    map(role => ROLE_DASHBOARD_MAP[role] ?? '/login')
+  );
 
   features = [
     {
@@ -51,3 +68,4 @@ export class HomePage {
     { value: '40+', label: 'Languages Supported' },
   ];
 }
+

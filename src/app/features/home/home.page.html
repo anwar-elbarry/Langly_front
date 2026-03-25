@@ -1,7 +1,11 @@
 <section class="hero">
   <nav class="nav">
     <span class="nav-logo">Langly.com</span>
-    <a routerLink="/login" class="nav-cta">Sign In →</a>
+    @if (isAuthenticated$ | async) {
+      <a [routerLink]="dashboardRoute$ | async" class="nav-cta">Dashboard →</a>
+    } @else {
+      <a routerLink="/login" class="nav-cta">Sign In →</a>
+    }
   </nav>
 
   <div class="hero-body">
@@ -15,7 +19,11 @@
       for modern, multilingual education — from enrollment to certification.
     </p>
     <div class="hero-actions">
-      <a routerLink="/login" class="btn-primary">Get Started Free</a>
+      @if (isAuthenticated$ | async) {
+        <a [routerLink]="dashboardRoute$ | async" class="btn-primary">Dashboard</a>
+      } @else {
+        <a routerLink="/login" class="btn-primary">Get Started Free</a>
+      }
       <a href="#features" class="btn-ghost">Explore Features ↓</a>
     </div>
   </div>
@@ -59,7 +67,11 @@
   <div class="cta-inner">
     <h2 class="cta-title">Ready to transform your school?</h2>
     <p class="cta-subtitle">Join hundreds of institutions already using Langly.</p>
-    <a routerLink="/login" class="btn-primary btn-lg">Start Now — It's Free</a>
+    @if (isAuthenticated$ | async) {
+      <a [routerLink]="dashboardRoute$ | async" class="btn-primary btn-lg">Dashboard</a>
+    } @else {
+      <a routerLink="/login" class="btn-primary btn-lg">Start Now — It's Free</a>
+    }
   </div>
   <div class="cta-orb"></div>
 </section>
