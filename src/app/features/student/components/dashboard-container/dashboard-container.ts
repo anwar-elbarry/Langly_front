@@ -40,6 +40,8 @@ export class DashboardContainer {
     { label: "S'inscrire", route: '/student/enroll', icon: 'fa-solid fa-plus-circle' },
     { label: 'Certificats', route: '/student/certifications', icon: 'fa-solid fa-certificate' },
     { label: 'Factures', route: '/student/invoices', icon: 'fa-solid fa-file-invoice' },
+    { label: 'Mes frais', route: '/student/my-fees', icon: 'fa-solid fa-receipt' },
+    { label: 'Catalogue des frais', route: '/student/fee-catalog', icon: 'fa-solid fa-list-check' },
   ];
 
   bottomNavItems = [
