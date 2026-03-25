@@ -8,6 +8,7 @@ import { ButtonComponent } from '../../../../shared/ui/button/button';
 import { FormFieldComponent } from '../../../../shared/ui/form-field/form-field';
 import { RadioComponent } from '../../../../shared/ui/radio/radio';
 import { ModalComponent } from '../../../../shared/ui/modal/modal';
+import { PaginationComponent } from '../../../../shared/ui/pagination/pagination';
 import { SpinnerComponent } from '../../../../shared/ui/spinner/spinner';
 import { TableComponent } from '../../../../shared/ui/table/table';
 import { ToastService } from '../../../../shared/ui/toast/toast.service';
@@ -24,6 +25,7 @@ type BillingTab = 'PENDING' | 'ALL';
     CommonModule,
     ReactiveFormsModule,
     TableComponent,
+    PaginationComponent,
     ButtonComponent,
     ModalComponent,
     FormFieldComponent,
@@ -44,6 +46,9 @@ export class BillingsPage implements OnInit {
   activeTab = signal<BillingTab>('PENDING');
   confirmModalOpen = signal(false);
   confirmingBilling = signal<BillingResponse | null>(null);
+  searchQuery = signal('');
+  currentPage = signal(0);
+  pageSize = signal(10);
 
   paymentStatusClass = paymentStatusClass;
   paymentStatusLabel = paymentStatusLabel;
@@ -52,6 +57,22 @@ export class BillingsPage implements OnInit {
 
   form = new FormGroup({
     paymentMethod: new FormControl<'CASH' | 'BANK_TRANSFER'>('CASH', Validators.required),
+  });
+
+  filteredBillings = computed(() => {
+    let result = this.billings();
+    const q = this.searchQuery().toLowerCase();
+    if (q) {
+      result = result.filter(b => b.studentFullName.toLowerCase().includes(q));
+    }
+    return result;
+  });
+
+  totalItems = computed(() => this.filteredBillings().length);
+
+  paginatedBillings = computed(() => {
+    const start = this.currentPage() * this.pageSize();
+    return this.filteredBillings().slice(start, start + this.pageSize());
   });
 
   ngOnInit(): void {
@@ -75,8 +96,17 @@ export class BillingsPage implements OnInit {
 
   setTab(tab: BillingTab): void {
     this.activeTab.set(tab);
+    this.currentPage.set(0);
     this.loadBillings();
   }
+
+  onSearch(event: Event): void {
+    this.searchQuery.set((event.target as HTMLInputElement).value);
+    this.currentPage.set(0);
+  }
+
+  onPageChange(page: number) { this.currentPage.set(page); }
+  onPageSizeChange(size: number) { this.pageSize.set(size); this.currentPage.set(0); }
 
   openConfirm(billing: BillingResponse): void {
     this.confirmingBilling.set(billing);
