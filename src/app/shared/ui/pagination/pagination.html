@@ -1,0 +1,52 @@
+@if (totalItems() > 0) {
+  <div class="pagination-wrapper">
+    <div class="pagination-info">
+      <span class="pagination-label">
+        Affichage {{ startItem() }}–{{ endItem() }} sur {{ totalItems() }}
+      </span>
+      <select
+        class="page-size-select"
+        [value]="pageSize()"
+        (change)="onPageSizeChange(+$any($event.target).value)"
+      >
+        @for (size of pageSizeOptions; track size) {
+          <option [value]="size">{{ size }} / page</option>
+        }
+      </select>
+    </div>
+
+    @if (totalPages() > 1) {
+      <div class="pagination-controls">
+        <button
+          class="page-btn nav-btn"
+          [disabled]="currentPage() === 0"
+          (click)="goToPage(currentPage() - 1)"
+        >
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+
+        @for (page of pages(); track $index) {
+          @if (page === '...') {
+            <span class="page-ellipsis">…</span>
+          } @else {
+            <button
+              class="page-btn"
+              [class.active]="page === currentPage()"
+              (click)="goToPage(+page)"
+            >
+              {{ +page + 1 }}
+            </button>
+          }
+        }
+
+        <button
+          class="page-btn nav-btn"
+          [disabled]="currentPage() + 1 >= totalPages()"
+          (click)="goToPage(currentPage() + 1)"
+        >
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+      </div>
+    }
+  </div>
+}
