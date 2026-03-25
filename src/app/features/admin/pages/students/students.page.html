@@ -4,8 +4,17 @@
   <p class="text-sm text-gray-500">Consulter les profils des étudiants de votre école</p>
 </div>
 
-<!-- Filters -->
+<!-- Search & Filters -->
 <div class="mb-4 flex flex-wrap items-center gap-3">
+  <div class="relative flex-1 max-w-sm">
+    <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-xs text-gray-400 pointer-events-none"></i>
+    <input
+      type="text"
+      class="w-full rounded-lg border border-gray-300 py-2 pl-9 pr-3 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+      placeholder="Rechercher par nom ou email..."
+      (input)="onSearch($event)"
+    />
+  </div>
   <select
     class="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
     [value]="levelFilter()"
@@ -53,7 +62,7 @@
         </tr>
       </thead>
       <tbody>
-        @for (student of filteredStudents(); track student.id) {
+        @for (student of paginatedStudents(); track student.id) {
           <tr>
             <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ student.firstName }} {{ student.lastName }}</td>
             <td class="px-4 py-3 text-sm text-gray-600">{{ student.email }}</td>
@@ -92,4 +101,13 @@
       </tbody>
     </app-table>
   </div>
+
+  <!-- Pagination -->
+  <app-pagination
+    [currentPage]="currentPage()"
+    [totalItems]="totalItems()"
+    [pageSize]="pageSize()"
+    (pageChange)="onPageChange($event)"
+    (pageSizeChange)="onPageSizeChange($event)"
+  />
 }

@@ -9,6 +9,7 @@ import { FormFieldComponent } from '../../../../shared/ui/form-field/form-field'
 import { ModalComponent } from '../../../../shared/ui/modal/modal';
 import { SpinnerComponent } from '../../../../shared/ui/spinner/spinner';
 import { TableComponent } from '../../../../shared/ui/table/table';
+import { PaginationComponent } from '../../../../shared/ui/pagination/pagination';
 import { ToastService } from '../../../../shared/ui/toast/toast.service';
 import { EnrollmentRequest, EnrollmentResponse } from '../../models/enrollment.model';
 import { StudentResponse } from '../../models/student.model';
@@ -28,6 +29,7 @@ type StatusFilter = 'ALL' | EnrollmentStatus;
     CommonModule,
     ReactiveFormsModule,
     TableComponent,
+    PaginationComponent,
     ButtonComponent,
     ModalComponent,
     FormFieldComponent,
@@ -50,6 +52,8 @@ export class EnrollmentsPage implements OnInit {
   courses = signal<CourseResponse[]>([]);
   modalOpen = signal(false);
   activeTab = signal<StatusFilter>('ALL');
+  currentPage = signal(0);
+  pageSize = signal(10);
 
   enrollmentStatusClass = enrollmentStatusClass;
   enrollmentStatusLabel = enrollmentStatusLabel;
@@ -93,6 +97,13 @@ export class EnrollmentsPage implements OnInit {
     return all.filter((e) => e.status === tab);
   });
 
+  totalItems = computed(() => this.filteredEnrollments().length);
+
+  paginatedEnrollments = computed(() => {
+    const start = this.currentPage() * this.pageSize();
+    return this.filteredEnrollments().slice(start, start + this.pageSize());
+  });
+
   form = new FormGroup({
     studentId: new FormControl('', Validators.required),
     courseId: new FormControl('', Validators.required),
@@ -131,7 +142,11 @@ export class EnrollmentsPage implements OnInit {
 
   setTab(tab: StatusFilter): void {
     this.activeTab.set(tab);
+    this.currentPage.set(0);
   }
+
+  onPageChange(page: number) { this.currentPage.set(page); }
+  onPageSizeChange(size: number) { this.pageSize.set(size); this.currentPage.set(0); }
 
   openCreate(): void {
     this.form.reset();

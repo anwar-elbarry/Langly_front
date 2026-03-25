@@ -8,6 +8,7 @@ import { ButtonComponent } from '../../../../shared/ui/button/button';
 import { FormFieldComponent } from '../../../../shared/ui/form-field/form-field';
 import { InputComponent } from '../../../../shared/ui/input/input';
 import { ModalComponent } from '../../../../shared/ui/modal/modal';
+import { PaginationComponent } from '../../../../shared/ui/pagination/pagination';
 import { RadioComponent } from '../../../../shared/ui/radio/radio';
 import { SpinnerComponent } from '../../../../shared/ui/spinner/spinner';
 import { TableComponent } from '../../../../shared/ui/table/table';
@@ -25,6 +26,7 @@ type TabFilter = 'ALL' | 'TEACHER' | 'STUDENT' | 'SCHOOL_ADMIN';
     CommonModule,
     ReactiveFormsModule,
     TableComponent,
+    PaginationComponent,
     ButtonComponent,
     ModalComponent,
     FormFieldComponent,
@@ -49,12 +51,27 @@ export class TeamPage implements OnInit {
   deletingUserId = signal<string | null>(null);
   emailPreviewOpen = signal(false);
   emailPreview = signal<EmailPreview | null>(null);
+  searchQuery = signal('');
+  currentPage = signal(0);
+  pageSize = signal(10);
 
   filteredUsers = computed(() => {
     const tab = this.activeTab();
-    const all = this.users();
-    if (tab === 'ALL') return all;
-    return all.filter((u) => u.role?.name === tab);
+    let result = this.users();
+    if (tab !== 'ALL') result = result.filter(u => u.role?.name === tab);
+    const q = this.searchQuery().toLowerCase();
+    if (q) result = result.filter(u =>
+      `${u.firstName} ${u.lastName}`.toLowerCase().includes(q) ||
+      u.email.toLowerCase().includes(q)
+    );
+    return result;
+  });
+
+  totalItems = computed(() => this.filteredUsers().length);
+
+  paginatedUsers = computed(() => {
+    const start = this.currentPage() * this.pageSize();
+    return this.filteredUsers().slice(start, start + this.pageSize());
   });
 
   form = new FormGroup({
@@ -91,7 +108,16 @@ export class TeamPage implements OnInit {
 
   setTab(tab: TabFilter): void {
     this.activeTab.set(tab);
+    this.currentPage.set(0);
   }
+
+  onSearch(event: Event): void {
+    this.searchQuery.set((event.target as HTMLInputElement).value);
+    this.currentPage.set(0);
+  }
+
+  onPageChange(page: number) { this.currentPage.set(page); }
+  onPageSizeChange(size: number) { this.pageSize.set(size); this.currentPage.set(0); }
 
   openInvite(): void {
     this.form.reset({ roleName: 'STUDENT' });

@@ -25,6 +25,12 @@
         <app-input type="number" formControlName="dueDateDays" placeholder="0" />
       </app-form-field>
 
+      <!-- Currency -->
+      <app-form-field label="Devise" [required]="true"
+        [error]="form.controls.currency.touched && form.controls.currency.invalid ? 'Devise requise' : ''">
+        <app-input formControlName="currency" placeholder="Ex: MAD, EUR, USD" />
+      </app-form-field>
+
       <!-- Default Installment Plan -->
       <app-form-field label="Plan de versement par défaut" [required]="true">
         <select formControlName="defaultInstallmentPlan"

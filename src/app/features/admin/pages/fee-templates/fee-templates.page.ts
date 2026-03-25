@@ -14,6 +14,7 @@ import { ToastService } from '../../../../shared/ui/toast/toast.service';
 import { FeeTemplateRequest, FeeTemplateResponse } from '../../models/billing-engine.model';
 import { FEE_TYPES, FeeType } from '../../models/enums';
 import { FeeTemplateService } from '../../services/fee-template.service';
+import { BillingSettingsService } from '../../services/billing-settings.service';
 import { feeTypeLabel } from '../../utils/status.utils';
 
 @Component({
@@ -34,12 +35,14 @@ import { feeTypeLabel } from '../../utils/status.utils';
 export class FeeTemplatesPage implements OnInit {
   private store = inject(Store);
   private feeTemplateService = inject(FeeTemplateService);
+  private settingsService = inject(BillingSettingsService);
   private toast = inject(ToastService);
 
   user = this.store.selectSignal(selectCurrentUser);
   loading = signal(true);
   saving = signal(false);
   feeTemplates = signal<FeeTemplateResponse[]>([]);
+  currency = signal('MAD');
   modalOpen = signal(false);
   confirmDeleteOpen = signal(false);
   editingId = signal<string | null>(null);
@@ -64,6 +67,11 @@ export class FeeTemplatesPage implements OnInit {
     const schoolId = this.user()?.schoolId;
     if (!schoolId) return;
     this.loading.set(true);
+
+    this.settingsService.get(schoolId).subscribe({
+      next: (settings) => this.currency.set(settings.currency || 'MAD')
+    });
+
     this.feeTemplateService
       .getAll(schoolId)
       .pipe(finalize(() => this.loading.set(false)))

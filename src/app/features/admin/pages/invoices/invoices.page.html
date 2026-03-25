@@ -4,18 +4,29 @@
   <p class="text-sm text-gray-500">Consultez et gérez les factures de votre école</p>
 </div>
 
-<!-- Tabs -->
-<div class="mb-4 flex gap-1 rounded-lg border border-gray-200 bg-gray-50 p-1 w-fit">
-  @for (tab of tabs; track tab.value) {
-    <button
-      class="rounded-md px-4 py-2 text-sm font-medium transition"
-      [class]="activeTab() === tab.value
-        ? 'bg-white text-gray-900 shadow-sm'
-        : 'text-gray-500 hover:text-gray-700'"
-      (click)="setTab(tab.value)">
-      {{ tab.label }}
-    </button>
-  }
+<!-- Search & Tabs -->
+<div class="mb-4 flex flex-wrap items-center gap-3">
+  <div class="relative flex-1 max-w-sm">
+    <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-xs text-gray-400 pointer-events-none"></i>
+    <input
+      type="text"
+      class="w-full rounded-lg border border-gray-300 py-2 pl-9 pr-3 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+      placeholder="Rechercher par élève ou N° facture..."
+      (input)="onSearch($event)"
+    />
+  </div>
+  <div class="flex gap-1 rounded-lg border border-gray-200 bg-gray-50 p-1 w-fit">
+    @for (tab of tabs; track tab.value) {
+      <button
+        class="rounded-md px-4 py-2 text-sm font-medium transition"
+        [class]="activeTab() === tab.value
+          ? 'bg-white text-gray-900 shadow-sm'
+          : 'text-gray-500 hover:text-gray-700'"
+        (click)="setTab(tab.value)">
+        {{ tab.label }}
+      </button>
+    }
+  </div>
 </div>
 
 @if (loading()) {
@@ -37,7 +48,7 @@
         </tr>
       </thead>
       <tbody>
-        @for (invoice of filteredInvoices; track invoice.id) {
+        @for (invoice of paginatedInvoices(); track invoice.id) {
           <tr class="cursor-pointer" (click)="viewDetail(invoice)">
             <td class="px-4 py-3 text-sm font-medium text-blue-600">{{ invoice.invoiceNumber }}</td>
             <td class="px-4 py-3 text-sm text-gray-900">{{ invoice.studentFullName }}</td>
@@ -62,4 +73,13 @@
       </tbody>
     </app-table>
   </div>
+
+  <!-- Pagination -->
+  <app-pagination
+    [currentPage]="currentPage()"
+    [totalItems]="totalItems()"
+    [pageSize]="pageSize()"
+    (pageChange)="onPageChange($event)"
+    (pageSizeChange)="onPageSizeChange($event)"
+  />
 }

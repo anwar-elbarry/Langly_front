@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { finalize } from 'rxjs';
 import { selectCurrentUser } from '../../../../core/store/selectors/auth.selectors';
+import { PaginationComponent } from '../../../../shared/ui/pagination/pagination';
 import { SpinnerComponent } from '../../../../shared/ui/spinner/spinner';
 import { TableComponent } from '../../../../shared/ui/table/table';
 import { InvoiceResponse } from '../../models/billing-engine.model';
@@ -16,11 +17,7 @@ type TabFilter = 'ALL' | InvoiceStatus;
 @Component({
   selector: 'app-invoices-page',
   standalone: true,
-  imports: [
-    CommonModule,
-    TableComponent,
-    SpinnerComponent,
-  ],
+  imports: [CommonModule, TableComponent, SpinnerComponent, PaginationComponent],
   templateUrl: './invoices.page.html',
 })
 export class InvoicesPage implements OnInit {
@@ -32,6 +29,9 @@ export class InvoicesPage implements OnInit {
   loading = signal(true);
   allInvoices = signal<InvoiceResponse[]>([]);
   activeTab = signal<TabFilter>('ALL');
+  searchQuery = signal('');
+  currentPage = signal(0);
+  pageSize = signal(10);
 
   invoiceStatusClass = invoiceStatusClass;
   invoiceStatusLabel = invoiceStatusLabel;
@@ -43,12 +43,24 @@ export class InvoicesPage implements OnInit {
     { label: 'Payées', value: 'PAID' },
   ];
 
-  get filteredInvoices(): InvoiceResponse[] {
+  filteredInvoices = computed(() => {
     const tab = this.activeTab();
-    const all = this.allInvoices();
-    if (tab === 'ALL') return all;
-    return all.filter((inv) => inv.status === tab);
-  }
+    let result = this.allInvoices();
+    if (tab !== 'ALL') result = result.filter(inv => inv.status === tab);
+    const q = this.searchQuery().toLowerCase();
+    if (q) result = result.filter(inv =>
+      inv.studentFullName.toLowerCase().includes(q) ||
+      inv.invoiceNumber.toLowerCase().includes(q)
+    );
+    return result;
+  });
+
+  totalItems = computed(() => this.filteredInvoices().length);
+
+  paginatedInvoices = computed(() => {
+    const start = this.currentPage() * this.pageSize();
+    return this.filteredInvoices().slice(start, start + this.pageSize());
+  });
 
   ngOnInit(): void {
     this.loadInvoices();
@@ -66,7 +78,16 @@ export class InvoicesPage implements OnInit {
 
   setTab(tab: TabFilter): void {
     this.activeTab.set(tab);
+    this.currentPage.set(0);
   }
+
+  onSearch(event: Event): void {
+    this.searchQuery.set((event.target as HTMLInputElement).value);
+    this.currentPage.set(0);
+  }
+
+  onPageChange(page: number) { this.currentPage.set(page); }
+  onPageSizeChange(size: number) { this.pageSize.set(size); this.currentPage.set(0); }
 
   viewDetail(invoice: InvoiceResponse): void {
     this.router.navigate(['/schoolAdmin/invoices', invoice.id]);

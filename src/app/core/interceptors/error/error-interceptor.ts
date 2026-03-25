@@ -1,12 +1,13 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
 import { Toast, ToastService } from '../../../shared/ui/toast/toast.service';
+import { Store } from '@ngrx/store';
+import { AuthPage } from '../../store/actions/auth.actions';
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
-  const router = inject(Router);
   const toastService = inject(ToastService);
+  const store = inject(Store);
 
   return next(req).pipe(
     catchError(error => {
@@ -20,8 +21,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
         } else {
           message = 'Session expired. Please login again.';
           type = 'warning';
-          localStorage.removeItem('accessToken');
-          router.navigate(['/login']);
+          store.dispatch(AuthPage.logout());
         }
       } else if (error.status === 403) {
         message = 'You do not have permission to perform this action.';

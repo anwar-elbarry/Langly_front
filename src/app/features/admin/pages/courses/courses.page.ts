@@ -8,8 +8,9 @@ import { ButtonComponent } from '../../../../shared/ui/button/button';
 import { FormFieldComponent } from '../../../../shared/ui/form-field/form-field';
 import { InputComponent } from '../../../../shared/ui/input/input';
 import { ModalComponent } from '../../../../shared/ui/modal/modal';
+import { PaginationComponent } from '../../../../shared/ui/pagination/pagination';
+import { SearchFilterBarComponent, FilterConfig } from '../../../../shared/ui/search-filter-bar/search-filter-bar';
 import { SpinnerComponent } from '../../../../shared/ui/spinner/spinner';
-import { TableComponent } from '../../../../shared/ui/table/table';
 import { ToastService } from '../../../../shared/ui/toast/toast.service';
 import { UserResponse } from '../../../auth/models/User.response';
 import { CourseRequest, CourseResponse } from '../../models/course.model';
@@ -24,12 +25,13 @@ import { levelBadgeClass } from '../../utils/status.utils';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    TableComponent,
     ButtonComponent,
     ModalComponent,
     FormFieldComponent,
     InputComponent,
     SpinnerComponent,
+    PaginationComponent,
+    SearchFilterBarComponent,
   ],
   templateUrl: './courses.page.html',
 })
@@ -49,10 +51,44 @@ export class CoursesPage implements OnInit {
   editingCourseId = signal<string | null>(null);
   deletingCourseId = signal<string | null>(null);
 
+  // Filter & pagination state
+  searchQuery = signal('');
+  languageFilter = signal('');
+  levelFilter = signal('');
+  currentPage = signal(0);
+  pageSize = signal(12);
+
   levels = LEVELS;
   languages = LANGUAGES;
   levelBadgeClass = levelBadgeClass;
   getLanguageFlagUrl = getLanguageFlagUrl;
+
+  filterConfigs: FilterConfig[] = [
+    { key: 'language', label: 'Toutes les langues', options: LANGUAGES.map(l => ({ value: l.value, label: l.label })) },
+    { key: 'level', label: 'Tous les niveaux', options: LEVELS.map(l => ({ value: l, label: l })) },
+  ];
+
+  filteredCourses = computed(() => {
+    let result = this.courses();
+    const q = this.searchQuery().toLowerCase();
+    if (q) {
+      result = result.filter(c =>
+        c.name.toLowerCase().includes(q) || c.code.toLowerCase().includes(q)
+      );
+    }
+    const lang = this.languageFilter();
+    if (lang) result = result.filter(c => c.language === lang);
+    const level = this.levelFilter();
+    if (level) result = result.filter(c => c.requiredLevel === level || c.targetLevel === level);
+    return result;
+  });
+
+  totalItems = computed(() => this.filteredCourses().length);
+
+  paginatedCourses = computed(() => {
+    const start = this.currentPage() * this.pageSize();
+    return this.filteredCourses().slice(start, start + this.pageSize());
+  });
 
   form = new FormGroup({
     name: new FormControl('', Validators.required),
@@ -72,6 +108,26 @@ export class CoursesPage implements OnInit {
   ngOnInit(): void {
     this.loadCourses();
     this.loadTeachers();
+  }
+
+  onSearchChange(query: string) {
+    this.searchQuery.set(query);
+    this.currentPage.set(0);
+  }
+
+  onFilterChange(event: { key: string; value: string }) {
+    if (event.key === 'language') this.languageFilter.set(event.value);
+    if (event.key === 'level') this.levelFilter.set(event.value);
+    this.currentPage.set(0);
+  }
+
+  onPageChange(page: number) {
+    this.currentPage.set(page);
+  }
+
+  onPageSizeChange(size: number) {
+    this.pageSize.set(size);
+    this.currentPage.set(0);
   }
 
   loadCourses(): void {
