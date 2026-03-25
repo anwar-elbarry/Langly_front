@@ -10,6 +10,7 @@ export interface BillingSettingsResponse {
   defaultInstallmentPlan: InstallmentPlan;
   blockOnUnpaid: boolean;
   discountEnabled: boolean;
+  currency: string;
 }
 
 export interface BillingSettingsRequest {
@@ -18,6 +19,7 @@ export interface BillingSettingsRequest {
   defaultInstallmentPlan: InstallmentPlan;
   blockOnUnpaid: boolean;
   discountEnabled: boolean;
+  currency: string;
 }
 
 // ── Discounts ──
@@ -57,6 +59,40 @@ export interface FeeTemplateRequest {
   amount: number;
   isRecurring: boolean;
   isActive: boolean;
+}
+
+// ── Fee Payments ──
+
+export interface FeePaymentRequest {
+  feeTemplateId: string;
+  studentId: string;
+  amount: number;
+  paidAt: string;
+  note?: string;
+}
+
+export interface FeePaymentResponse {
+  id: string;
+  feeTemplateId: string;
+  feeTemplateName: string;
+  studentId: string;
+  studentFullName: string;
+  amount: number;
+  paidAt: string;
+  note?: string;
+  isClosed: boolean;
+}
+
+export interface StudentFeeStatusResponse {
+  feeTemplateId: string;
+  feeTemplateName: string;
+  feeType: string;
+  feeAmount: number;
+  isRecurring: boolean;
+  totalPaid: number;
+  paymentCount: number;
+  isClosed: boolean;
+  status: string;
 }
 
 // ── Invoices ──
