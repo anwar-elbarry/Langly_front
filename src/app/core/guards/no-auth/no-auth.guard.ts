@@ -14,7 +14,7 @@ const ROLE_DASHBOARD_MAP: Record<string, string> = {
 export const noAuthGuard: CanActivateFn = () => {
   const store = inject(Store);
   const router = inject(Router);
-
+  console.log('works auth')
   return combineLatest([
     store.select(selectIsAuthenticated),
     store.select(selectUserRole),
