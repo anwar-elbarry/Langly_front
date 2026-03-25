@@ -85,3 +85,26 @@ export interface CourseAttendanceSummaryResponse {
     excused: number;
     unmarked: number;
 }
+
+// Fees
+export interface StudentFeeStatusResponse {
+    feeTemplateId: string;
+    feeTemplateName: string;
+    feeType: string;
+    feeAmount: number;
+    isRecurring: boolean;
+    totalPaid: number;
+    paymentCount: number;
+    isClosed: boolean;
+    status: string;
+}
+
+export interface StudentFeeCatalogResponse {
+    id: string;
+    name: string;
+    type: string;
+    amount: number;
+    isRecurring: boolean;
+    isActive: boolean;
+    schoolId: string;
+}
