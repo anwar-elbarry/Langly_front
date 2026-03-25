@@ -53,6 +53,16 @@ export const STUDENT_ROUTES: Routes = [
                 loadComponent: () =>
                     import('./pages/settings/student-settings.page').then((m) => m.StudentSettingsPage),
             },
+            {
+                path: 'my-fees',
+                loadComponent: () =>
+                    import('./pages/my-fees/my-fees.page').then((m) => m.MyFeesPage),
+            },
+            {
+                path: 'fee-catalog',
+                loadComponent: () =>
+                    import('./pages/fee-catalog/fee-catalog.page').then((m) => m.FeeCatalogPage),
+            },
         ],
     },
 ];
