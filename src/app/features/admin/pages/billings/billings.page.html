@@ -57,7 +57,7 @@
         @for (billing of paginatedBillings(); track billing.id) {
           <tr class="cursor-pointer" (click)="toggleExpand(billing.id)">
             <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ billing.studentFullName }}</td>
-            <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ billing.price }} MAD</td>
+            <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ billing.price }} DH</td>
             <td class="px-4 py-3">
               <span [class]="paymentStatusClass(billing.status)">{{ paymentStatusLabel(billing.status) }}</span>
             </td>
@@ -125,7 +125,7 @@
                               : 'fa-solid fa-circle-info'"></i>
                       </div>
                       <div>
-                        <p class="m-0 text-sm font-medium text-gray-900">{{ entry.price }} MAD</p>
+                        <p class="m-0 text-sm font-medium text-gray-900">{{ entry.price }} DH</p>
                         <p class="m-0 text-xs text-gray-500">{{ paymentMethodLabel(entry.paymentMethod) }}</p>
                       </div>
                     </div>
@@ -179,7 +179,7 @@
           </div>
           <div>
             <span class="text-gray-500">Montant</span>
-            <p class="font-medium text-gray-900">{{ confirmingBilling()!.price }} MAD</p>
+            <p class="font-medium text-gray-900">{{ confirmingBilling()!.price }} DH</p>
           </div>
         </div>
       </div>

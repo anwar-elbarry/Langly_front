@@ -211,7 +211,7 @@
         <tbody>
           @for (b of billings(); track b.id) {
             <tr>
-              <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ b.price }} MAD</td>
+              <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ b.price }} DH</td>
               <td class="px-4 py-3"><span [class]="paymentStatusClass(b.status)">{{ paymentStatusLabel(b.status) }}</span></td>
               <td class="px-4 py-3 text-sm text-gray-600">
                 @if (b.status === 'PAID') {

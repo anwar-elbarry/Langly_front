@@ -150,7 +150,7 @@ export class BillingsPage implements OnInit {
       .subscribe({
         next: () => {
           const methodLabel = payload.paymentMethod === 'CASH' ? 'Espèces' : 'Virement bancaire';
-          this.toast.success(`Paiement de ${billing.price} MAD confirmé pour ${billing.studentFullName} (${methodLabel})`);
+          this.toast.success(`Paiement de ${billing.price} DH confirmé pour ${billing.studentFullName} (${methodLabel})`);
           this.closeConfirm();
           this.loadBillings();
         },

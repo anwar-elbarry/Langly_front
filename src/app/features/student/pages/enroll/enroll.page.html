@@ -33,7 +33,7 @@
                 }
                 {{ course.language }}
             </span>
-            <span class="text-lg font-bold text-gray-900">{{ course.price }} MAD</span>
+            <span class="text-lg font-bold text-gray-900">{{ course.price }} DH</span>
         </div>
 
         <h3 class="m-0 text-[15px] font-semibold text-gray-900">{{ course.name }}</h3>
@@ -78,7 +78,7 @@
             } @else if (course.enrollment?.status === 'APPROVED') {
             <!-- Approved — show Pay button -->
             <app-button variant="primary" [fullWidth]="true" (click)="openPaymentModal(course)">
-                <i class="fa-solid fa-credit-card mr-2"></i>Payer · {{ course.price }} MAD
+                <i class="fa-solid fa-credit-card mr-2"></i>Payer · {{ course.price }} DH
             </app-button>
             } @else if (course.enrollment?.status === 'PENDING_APPROVAL') {
             <!-- Pending approval -->
@@ -152,7 +152,7 @@
     <div class="space-y-3 p-1">
         <p class="text-sm text-gray-600">
             Cours : <strong>{{ paymentCourse()?.name }}</strong>
-            — Montant : <strong>{{ paymentCourse()?.price }} MAD</strong>
+            — Montant : <strong>{{ paymentCourse()?.price }} DH</strong>
         </p>
 
         <!-- CASH -->

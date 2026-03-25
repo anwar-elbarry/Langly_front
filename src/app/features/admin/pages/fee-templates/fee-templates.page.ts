@@ -42,7 +42,7 @@ export class FeeTemplatesPage implements OnInit {
   loading = signal(true);
   saving = signal(false);
   feeTemplates = signal<FeeTemplateResponse[]>([]);
-  currency = signal('MAD');
+  currency = signal('DH');
   modalOpen = signal(false);
   confirmDeleteOpen = signal(false);
   editingId = signal<string | null>(null);
@@ -69,7 +69,7 @@ export class FeeTemplatesPage implements OnInit {
     this.loading.set(true);
 
     this.settingsService.get(schoolId).subscribe({
-      next: (settings) => this.currency.set(settings.currency || 'MAD')
+      next: (settings) => this.currency.set(settings.currency || 'DH')
     });
 
     this.feeTemplateService

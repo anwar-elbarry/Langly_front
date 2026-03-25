@@ -118,7 +118,7 @@
           <p class="mt-1 text-xs text-gray-500">
             Revenus encaissés ({{ earningsView() === 'after_tva' ? 'après TVA' : 'avant TVA' }})
           </p>
-          <p class="mt-0.5 text-xs text-gray-400">sur {{ displayedTotalRevenue() | number:'1.2-2' }} MAD total</p>
+          <p class="mt-0.5 text-xs text-gray-400">sur {{ displayedTotalRevenue() | number:'1.2-2' }} DH total</p>
         </div>
 
         <!-- TVA Amount -->
@@ -128,7 +128,7 @@
           </div>
           <p class="text-2xl font-bold text-indigo-900">{{ fs.paidTva | number:'1.2-2' }}</p>
           <p class="mt-1 text-xs text-indigo-700">TVA collectée ({{ fs.tvaRate }}%)</p>
-          <p class="mt-0.5 text-xs text-indigo-400">sur {{ fs.totalTva | number:'1.2-2' }} MAD total</p>
+          <p class="mt-0.5 text-xs text-indigo-400">sur {{ fs.totalTva | number:'1.2-2' }} DH total</p>
         </div>
 
         <!-- Pending Revenue -->
@@ -140,7 +140,7 @@
           <p class="mt-1 text-xs text-gray-500">
             En attente ({{ earningsView() === 'after_tva' ? 'après TVA' : 'avant TVA' }})
           </p>
-          <p class="mt-0.5 text-xs text-gray-400">TVA en attente : {{ fs.pendingTva | number:'1.2-2' }} MAD</p>
+          <p class="mt-0.5 text-xs text-gray-400">TVA en attente : {{ fs.pendingTva | number:'1.2-2' }} DH</p>
         </div>
 
         <!-- Invoice Count -->

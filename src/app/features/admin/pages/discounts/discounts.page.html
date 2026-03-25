@@ -83,7 +83,7 @@
     </app-form-field>
 
     <app-form-field label="Valeur" [required]="true"
-      [hint]="form.value.type === 'PERCENTAGE' ? 'En pourcentage (ex: 10 pour 10%)' : 'En MAD'"
+      [hint]="form.value.type === 'PERCENTAGE' ? 'En pourcentage (ex: 10 pour 10%)' : 'En DH'"
       [error]="form.controls.value.touched && form.controls.value.invalid ? 'Valeur requise' : ''">
       <app-input type="number" formControlName="value" placeholder="10" />
     </app-form-field>

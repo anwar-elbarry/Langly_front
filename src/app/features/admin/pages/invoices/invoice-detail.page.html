@@ -45,7 +45,7 @@
                 <td class="px-6 py-3 text-sm text-gray-900">{{ line.description }}</td>
                 <td class="px-6 py-3 text-right text-sm font-medium"
                   [class]="line.amount < 0 ? 'text-green-600' : 'text-gray-900'">
-                  {{ line.amount | number:'1.2-2' }} MAD
+                  {{ line.amount | number:'1.2-2' }} DH
                 </td>
               </tr>
             } @empty {
@@ -60,15 +60,15 @@
         <div class="border-t border-gray-100 px-6 py-4 space-y-2">
           <div class="flex justify-between text-sm">
             <span class="text-gray-500">Total TTC</span>
-            <span class="font-medium text-gray-900">{{ inv.totalTtc | number:'1.2-2' }} MAD</span>
+            <span class="font-medium text-gray-900">{{ inv.totalTtc | number:'1.2-2' }} DH</span>
           </div>
           <div class="flex justify-between text-sm">
             <span class="text-gray-500">TVA ({{ inv.tvaRate }}%)</span>
-            <span class="font-medium text-red-500">-{{ inv.tvaAmount | number:'1.2-2' }} MAD</span>
+            <span class="font-medium text-red-500">-{{ inv.tvaAmount | number:'1.2-2' }} DH</span>
           </div>
           <div class="flex justify-between border-t border-gray-100 pt-2 text-base">
             <span class="font-semibold text-gray-900">Sous-total HT</span>
-            <span class="font-bold text-gray-900">{{ inv.subtotal | number:'1.2-2' }} MAD</span>
+            <span class="font-bold text-gray-900">{{ inv.subtotal | number:'1.2-2' }} DH</span>
           </div>
         </div>
       </div>
@@ -93,7 +93,7 @@
               @for (schedule of inv.schedules; track schedule.id) {
                 <tr>
                   <td class="px-6 py-3 text-sm text-gray-900">Versement {{ schedule.installment }}</td>
-                  <td class="px-6 py-3 text-sm font-medium text-gray-900">{{ schedule.amount | number:'1.2-2' }} MAD</td>
+                  <td class="px-6 py-3 text-sm font-medium text-gray-900">{{ schedule.amount | number:'1.2-2' }} DH</td>
                   <td class="px-6 py-3 text-sm text-gray-600">{{ schedule.dueDate | date:'dd/MM/yyyy' }}</td>
                   <td class="px-6 py-3">
                     <span [class]="scheduleStatusClass(schedule.status)">{{ scheduleStatusLabel(schedule.status) }}</span>
@@ -125,16 +125,16 @@
           <hr class="border-gray-100" />
           <div class="flex justify-between text-sm">
             <span class="text-gray-500">Montant dû (HT)</span>
-            <span class="font-semibold text-gray-900">{{ inv.subtotal | number:'1.2-2' }} MAD</span>
+            <span class="font-semibold text-gray-900">{{ inv.subtotal | number:'1.2-2' }} DH</span>
           </div>
           <div class="flex justify-between text-sm">
             <span class="text-gray-500">Payé</span>
-            <span class="font-medium text-green-600">{{ paidAmount() | number:'1.2-2' }} MAD</span>
+            <span class="font-medium text-green-600">{{ paidAmount() | number:'1.2-2' }} DH</span>
           </div>
           <div class="flex justify-between text-sm">
             <span class="text-gray-500">Restant</span>
             <span class="font-semibold" [class]="remainingAmount() > 0 ? 'text-red-600' : 'text-green-600'">
-              {{ remainingAmount() | number:'1.2-2' }} MAD
+              {{ remainingAmount() | number:'1.2-2' }} DH
             </span>
           </div>
         </div>
@@ -148,15 +148,15 @@
         <div class="space-y-2">
           <div class="flex justify-between text-sm">
             <span class="text-indigo-700">Total TTC</span>
-            <span class="font-medium text-indigo-900">{{ inv.totalTtc | number:'1.2-2' }} MAD</span>
+            <span class="font-medium text-indigo-900">{{ inv.totalTtc | number:'1.2-2' }} DH</span>
           </div>
           <div class="flex justify-between text-sm">
             <span class="text-indigo-700">TVA ({{ inv.tvaRate }}%)</span>
-            <span class="font-medium text-red-400">-{{ inv.tvaAmount | number:'1.2-2' }} MAD</span>
+            <span class="font-medium text-red-400">-{{ inv.tvaAmount | number:'1.2-2' }} DH</span>
           </div>
           <div class="flex justify-between border-t border-indigo-200 pt-2 text-sm">
             <span class="font-semibold text-indigo-900">Sous-total HT</span>
-            <span class="font-bold text-indigo-900">{{ inv.subtotal | number:'1.2-2' }} MAD</span>
+            <span class="font-bold text-indigo-900">{{ inv.subtotal | number:'1.2-2' }} DH</span>
           </div>
         </div>
       </div>
@@ -170,8 +170,8 @@
     </div>
 
     <form [formGroup]="paymentForm" (ngSubmit)="recordPayment()" class="space-y-4">
-      <app-form-field label="Montant (MAD)" [required]="true"
-        [hint]="'Restant dû : ' + (remainingAmount() | number:'1.2-2') + ' MAD'"
+      <app-form-field label="Montant (DH)" [required]="true"
+        [hint]="'Restant dû : ' + (remainingAmount() | number:'1.2-2') + ' DH'"
         [error]="paymentForm.controls.amount.touched && paymentForm.controls.amount.invalid ? 'Montant requis' : ''">
         <app-input type="number" formControlName="amount" placeholder="0.00" />
       </app-form-field>

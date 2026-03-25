@@ -42,7 +42,7 @@ export class BillingSettingsPage implements OnInit {
     defaultInstallmentPlan: new FormControl<InstallmentPlan>('FULL', [Validators.required]),
     blockOnUnpaid: new FormControl<boolean>(false),
     discountEnabled: new FormControl<boolean>(false),
-    currency: new FormControl<string>('MAD', [Validators.required]),
+    currency: new FormControl<string>('DH', [Validators.required]),
   });
 
   ngOnInit(): void {
@@ -82,7 +82,7 @@ export class BillingSettingsPage implements OnInit {
       defaultInstallmentPlan: this.form.value.defaultInstallmentPlan ?? 'FULL',
       blockOnUnpaid: this.form.value.blockOnUnpaid ?? false,
       discountEnabled: this.form.value.discountEnabled ?? false,
-      currency: this.form.value.currency || 'MAD',
+      currency: this.form.value.currency || 'DH',
     };
 
     this.saving.set(true);

@@ -147,6 +147,6 @@ export class DiscountsPage implements OnInit {
   formatValue(discount: DiscountResponse): string {
     return discount.type === 'PERCENTAGE'
       ? `${discount.value}%`
-      : `${discount.value} MAD`;
+      : `${discount.value} DH`;
   }
 }

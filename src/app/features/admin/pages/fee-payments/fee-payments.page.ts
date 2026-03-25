@@ -41,7 +41,7 @@ export class FeePaymentsPage implements OnInit {
   private toast = inject(ToastService);
 
   user = this.store.selectSignal(selectCurrentUser);
-  currency = signal('MAD');
+  currency = signal('DH');
   
   loadingStudents = signal(true);
   loadingFees = signal(false);
@@ -72,7 +72,7 @@ export class FeePaymentsPage implements OnInit {
     if (!schoolId) return;
 
     this.settingsService.get(schoolId).subscribe({
-      next: (settings) => this.currency.set(settings.currency || 'MAD')
+      next: (settings) => this.currency.set(settings.currency || 'DH')
     });
 
     this.studentService.getAllBySchool(schoolId)

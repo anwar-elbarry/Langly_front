@@ -81,7 +81,7 @@ export class SubscriptionsPage implements OnInit {
   form = new FormGroup({
     schoolId: new FormControl('', Validators.required),
     amount: new FormControl<number | null>(null, Validators.required),
-    currency: new FormControl('MAD', Validators.required),
+    currency: new FormControl('DH', Validators.required),
     billingCycle: new FormControl<BillingCycle>('MONTHLY', Validators.required),
   });
 
@@ -112,7 +112,7 @@ export class SubscriptionsPage implements OnInit {
     this.form.reset({
       schoolId: '',
       amount: null,
-      currency: 'MAD',
+      currency: 'DH',
       billingCycle: 'MONTHLY',
     });
     this.form.controls.schoolId.setValidators([Validators.required]);
@@ -161,7 +161,7 @@ export class SubscriptionsPage implements OnInit {
     const payload: SubscriptionRequest = {
       schoolId: this.form.value.schoolId || '',
       amount: Number(this.form.value.amount || 0),
-      currency: this.form.value.currency || 'MAD',
+      currency: this.form.value.currency || 'DH',
       billingCycle: (this.form.value.billingCycle || 'MONTHLY') as BillingCycle,
     };
     return this.subscriptionsService.create(payload);
@@ -170,7 +170,7 @@ export class SubscriptionsPage implements OnInit {
   updateSubscription(id: string) {
     const payload: SubscriptionUpdateRequest = {
       amount: Number(this.form.value.amount || 0),
-      currency: this.form.value.currency || 'MAD',
+      currency: this.form.value.currency || 'DH',
       billingCycle: (this.form.value.billingCycle || 'MONTHLY') as BillingCycle,
     };
     return this.subscriptionsService.update(id, payload);

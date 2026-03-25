@@ -53,7 +53,7 @@
             <td class="px-4 py-3 text-sm font-medium text-blue-600">{{ invoice.invoiceNumber }}</td>
             <td class="px-4 py-3 text-sm text-gray-900">{{ invoice.studentFullName }}</td>
             <td class="px-4 py-3 text-sm text-gray-600">{{ invoice.courseName }}</td>
-            <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ invoice.totalTtc | number:'1.2-2' }} MAD</td>
+            <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ invoice.totalTtc | number:'1.2-2' }} DH</td>
             <td class="px-4 py-3">
               <span [class]="invoiceStatusClass(invoice.status)">{{ invoiceStatusLabel(invoice.status) }}</span>
             </td>
