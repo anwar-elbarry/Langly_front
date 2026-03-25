@@ -93,7 +93,7 @@
         </tr>
       </thead>
       <tbody>
-        @for (enrollment of filteredEnrollments(); track enrollment.id) {
+        @for (enrollment of paginatedEnrollments(); track enrollment.id) {
           <tr>
             <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ enrollment.studentFullName }}</td>
             <td class="px-4 py-3 text-sm text-gray-600">{{ enrollment.courseName }}</td>
@@ -130,6 +130,15 @@
       </tbody>
     </app-table>
   </div>
+
+  <!-- Pagination -->
+  <app-pagination
+    [currentPage]="currentPage()"
+    [totalItems]="totalItems()"
+    [pageSize]="pageSize()"
+    (pageChange)="onPageChange($event)"
+    (pageSizeChange)="onPageSizeChange($event)"
+  />
 }
 
 <!-- Create Modal -->
