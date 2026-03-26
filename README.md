@@ -1,59 +1,60 @@
-# LanglyFront
+# Langly Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.4.
+Application web Angular pour la gestion des écoles de langues.
 
-## Development server
+## Stack technique
 
-To start a local development server, run:
+- **Framework :** Angular 21 (Standalone Components)
+- **Langage :** TypeScript
+- **Gestion d'état :** NgRx (actions, reducers, effects, selectors)
+- **Authentification :** JWT (access token + refresh token)
 
-```bash
-ng serve
+## Structure du projet
+
+```
+src/
+├── app/
+│   ├── core/               # Éléments centraux de l'application
+│   │   ├── auth/           # Service et logique d'authentification
+│   │   ├── constants/      # Enums et constantes (rôles, statuts)
+│   │   ├── guards/         # Guards de routes (auth, no-auth, role)
+│   │   ├── interceptors/   # Intercepteurs HTTP (auth, erreur)
+│   │   ├── models/         # Modèles partagés (notification, sidebar)
+│   │   ├── pages/          # Pages globales (401, 404, 500)
+│   │   ├── services/       # Services globaux (notification)
+│   │   └── store/          # Store NgRx (actions, effects, reducers, selectors)
+│   │
+│   ├── features/           # Modules fonctionnels par rôle
+│   │   ├── admin/          # Espace School Admin (équipe, cours, étudiants, inscriptions, facturation)
+│   │   ├── auth/           # Pages de connexion / déconnexion
+│   │   ├── home/           # Page d'accueil
+│   │   ├── student/        # Espace Étudiant (cours actifs, présence, certifications)
+│   │   ├── superAdmin/     # Espace Super Admin (écoles, abonnements)
+│   │   └── teacher/        # Espace Enseignant (cours, séances)
+│   │
+│   ├── layouts/            # Layout principal (sidebar)
+│   │
+│   └── shared/             # Éléments réutilisables
+│       ├── components/     # Composants partagés (Table, Modal, etc.)
+│       └── ui/             # Composants UI de base (Button, Input, etc.)
+│
+├── environments/           # Configuration par environnement (dev, prod)
+└── public/                 # Assets statiques (images)
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Rôles utilisateur
 
-## Code scaffolding
+| Rôle | Accès |
+|------|-------|
+| **Super Admin** | Gestion de toutes les écoles et abonnements |
+| **School Admin** | Gestion des cours, étudiants, inscriptions et facturation de son école |
+| **Teacher** | Gestion de ses cours et séances |
+| **Student** | Consultation de ses cours, présence et certifications |
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+## Scripts disponibles
 
 ```bash
-ng build
+npm start       # Démarrer le serveur de développement
+npm run build   # Compiler l'application
+npm test        # Lancer les tests
 ```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
