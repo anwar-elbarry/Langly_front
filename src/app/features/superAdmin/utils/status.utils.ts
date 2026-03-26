@@ -22,6 +22,10 @@ export function paymentStatusClass(status?: PaymentStatus): string {
   return getBadgeClass(status);
 }
 
+export function roleClass(roleName?: string): string {
+  return getBadgeClass(roleName);
+}
+
 export function userStatusClass(status?: UserStatus): string {
   return getBadgeClass(status);
 }

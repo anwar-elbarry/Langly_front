@@ -54,7 +54,7 @@
             </td>
             <td class="px-4 py-3 text-sm text-gray-600">{{ u.email }}</td>
             <td class="px-4 py-3 text-sm text-gray-600">{{ u.phoneNumber || '—' }}</td>
-            <td class="px-4 py-3"><span [class]="userStatusClass(u.role?.name || '')">{{ u.role?.name }}</span></td>
+            <td class="px-4 py-3"><span [class]="roleClass(u.role?.name)">{{ u.role?.name }}</span></td>
             <td class="px-4 py-3 text-sm text-gray-600">
               <div class="flex items-center gap-2">
                 <div class="flex h-8 w-8 items-center justify-center overflow-hidden rounded-md bg-gray-100 text-xs font-semibold text-gray-600">
@@ -67,7 +67,7 @@
                 <span>{{ schoolNameById(u.schoolId) }}</span>
               </div>
             </td>
-            <td class="px-4 py-3"><span [class]="userStatusClass(u.status || 'ACTIVE')">{{ u.status || 'ACTIVE' }}</span></td>
+            <td class="px-4 py-3"><span [class]="userStatusClass(u.status || UserStatus.ACTIVE)">{{ u.status || UserStatus.ACTIVE }}</span></td>
             <td class="px-4 py-3 text-right">
               <div class="flex items-center justify-end gap-2">
                 @if (u.id !== currentUser()?.id) {
@@ -75,7 +75,7 @@
                     Modifier
                   </button>
                   <button class="rounded-md px-2 py-1 text-xs font-medium text-blue-600 transition hover:bg-blue-50" (click)="toggleStatus(u)">
-                    {{ u.status === 'SUSPENDED' ? 'Activer' : 'Suspendre' }}
+                    {{ u.status === UserStatus.SUSPENDED ? 'Activer' : 'Suspendre' }}
                   </button>
                   <button class="rounded-md px-2 py-1 text-xs font-medium text-red-600 transition hover:bg-red-50" (click)="openDelete(u.id)">
                     Supprimer

@@ -12,13 +12,14 @@ import { SearchSelectComponent, Option } from '../../../../shared/ui/search-sele
 import { ToastService } from '../../../../shared/ui/toast/toast.service';
 import { Store } from '@ngrx/store';
 import { selectCurrentUser } from '../../../../core/store/selectors/auth.selectors';
+import { UserStatus } from '../../../../core/constants/user.status';
 import { SearchFilterBarComponent, FilterConfig } from '../../../../shared/ui/search-filter-bar/search-filter-bar';
 import { RoleResponse } from '../../models/role.model';
 import { SchoolResponse } from '../../models/school.model';
 import { EmailPreview, UserRequest, UserResponse, UserUpdateRequest } from '../../models/user.model';
 import { SchoolsService } from '../../services/schools.service';
 import { UsersService } from '../../services/users.service';
-import { userStatusClass } from '../../utils/status.utils';
+import { roleClass, userStatusClass } from '../../utils/status.utils';
 import { RolesService } from '../../services/roles.service';
 
 @Component({
@@ -55,6 +56,7 @@ export class UsersPage implements OnInit {
   searchQuery = signal('');
   roleFilter = signal('');
   schoolFilter = signal('');
+  statusFilter = signal('');
   page = signal(0);
   pageSize = signal(10);
   filteredUsers = computed(() => {
@@ -74,6 +76,8 @@ export class UsersPage implements OnInit {
     if (role) result = result.filter((u) => u.role?.name === role);
     const schoolId = this.schoolFilter();
     if (schoolId) result = result.filter((u) => u.schoolId === schoolId);
+    const status = this.statusFilter();
+    if (status) result = result.filter((u) => (u.status ?? UserStatus.ACTIVE) === status);
     return result;
   });
 
@@ -147,6 +151,7 @@ export class UsersPage implements OnInit {
   onFilterChange(event: { key: string; value: string }): void {
     if (event.key === 'role') this.roleFilter.set(event.value);
     if (event.key === 'school') this.schoolFilter.set(event.value);
+    if (event.key === 'status') this.statusFilter.set(event.value);
     this.page.set(0);
   }
 
@@ -252,13 +257,26 @@ export class UsersPage implements OnInit {
   }
 
   toggleStatus(user: UserResponse): void {
-    const isSuspended = user.status === 'SUSPENDED';
+    const isSuspended = user.status === UserStatus.SUSPENDED;
+    const nextStatus: UserResponse['status'] = isSuspended ? UserStatus.ACTIVE : UserStatus.SUSPENDED;
     const request$ = isSuspended ? this.usersService.activate(user.id) : this.usersService.suspend(user.id);
+
+    // Optimistic UI update so status changes immediately in the table.
+    this.users.update((list) =>
+      list.map((u) => (u.id === user.id ? { ...u, status: nextStatus } : u))
+    );
+
     request$.subscribe({
       next: () => {
         this.toast.success(`User ${isSuspended ? 'activated' : 'suspended'} successfully`);
-        this.loadUsers();
       },
+      error: () => {
+        // Revert optimistic update on failure.
+        this.users.update((list) =>
+          list.map((u) => (u.id === user.id ? { ...u, status: user.status } : u))
+        );
+        this.toast.error('Failed to update user status');
+      }
     });
   }
 
@@ -314,6 +332,14 @@ export class UsersPage implements OnInit {
       label: 'Toutes les écoles',
       options: this.schools().map((s) => ({ value: s.id, label: s.name })),
     },
+    {
+      key: 'status',
+      label: 'Tous les statuts',
+      options: [
+        { value: UserStatus.ACTIVE, label: 'ACTIVE' },
+        { value: UserStatus.SUSPENDED, label: 'SUSPENDED' },
+      ],
+    },
   ]);
 
   closeEmailPreview(): void {
@@ -322,6 +348,8 @@ export class UsersPage implements OnInit {
   }
 
   userStatusClass = userStatusClass;
+  roleClass = roleClass;
+  UserStatus = UserStatus;
 
   private normalize(value?: string): string {
     return (value || '')
