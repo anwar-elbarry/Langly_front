@@ -16,7 +16,6 @@ import { StudentResponse } from '../../models/student.model';
 import { BillingSettingsService } from '../../services/billing-settings.service';
 import { FeePaymentService } from '../../services/fee-payment.service';
 import { StudentService } from '../../services/student.service';
-import { feeTypeLabel } from '../../utils/status.utils';
 
 @Component({
   selector: 'app-fee-payments-page',
@@ -58,8 +57,6 @@ export class FeePaymentsPage implements OnInit {
   modalOpen = signal(false);
   confirmCloseOpen = signal(false);
   closingFee = signal<StudentFeeStatusResponse | null>(null);
-
-  feeTypeLabel = feeTypeLabel;
 
   form = new FormGroup({
     amount: new FormControl<number | null>(null, [Validators.required, Validators.min(0.01)]),

@@ -12,10 +12,8 @@ import { SpinnerComponent } from '../../../../shared/ui/spinner/spinner';
 import { TableComponent } from '../../../../shared/ui/table/table';
 import { ToastService } from '../../../../shared/ui/toast/toast.service';
 import { FeeTemplateRequest, FeeTemplateResponse } from '../../models/billing-engine.model';
-import { FEE_TYPES, FeeType } from '../../models/enums';
 import { FeeTemplateService } from '../../services/fee-template.service';
 import { BillingSettingsService } from '../../services/billing-settings.service';
-import { feeTypeLabel } from '../../utils/status.utils';
 
 @Component({
   selector: 'app-fee-templates-page',
@@ -48,12 +46,8 @@ export class FeeTemplatesPage implements OnInit {
   editingId = signal<string | null>(null);
   deletingId = signal<string | null>(null);
 
-  feeTypes = FEE_TYPES;
-  feeTypeLabel = feeTypeLabel;
-
   form = new FormGroup({
     name: new FormControl('', Validators.required),
-    type: new FormControl<FeeType>('TUITION', Validators.required),
     amount: new FormControl<number | null>(null, [Validators.required, Validators.min(0)]),
     isRecurring: new FormControl<boolean>(false),
     isActive: new FormControl<boolean>(true),
@@ -79,7 +73,7 @@ export class FeeTemplatesPage implements OnInit {
   }
 
   openCreate(): void {
-    this.form.reset({ type: 'TUITION', isRecurring: false, isActive: true });
+    this.form.reset({ isRecurring: false, isActive: true });
     this.editingId.set(null);
     this.modalOpen.set(true);
   }
@@ -87,7 +81,6 @@ export class FeeTemplatesPage implements OnInit {
   openEdit(fee: FeeTemplateResponse): void {
     this.form.patchValue({
       name: fee.name,
-      type: fee.type,
       amount: fee.amount,
       isRecurring: fee.isRecurring,
       isActive: fee.isActive,
@@ -109,7 +102,6 @@ export class FeeTemplatesPage implements OnInit {
 
     const payload: FeeTemplateRequest = {
       name: this.form.value.name || '',
-      type: this.form.value.type || 'TUITION',
       amount: this.form.value.amount || 0,
       isRecurring: this.form.value.isRecurring ?? false,
       isActive: this.form.value.isActive ?? true,

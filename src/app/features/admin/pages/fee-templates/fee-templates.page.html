@@ -19,7 +19,6 @@
       <thead>
         <tr>
           <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Nom</th>
-          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Type</th>
           <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Montant</th>
           <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Récurrent</th>
           <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Statut</th>
@@ -30,7 +29,6 @@
         @for (fee of feeTemplates(); track fee.id) {
           <tr>
             <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ fee.name }}</td>
-            <td class="px-4 py-3 text-sm text-gray-600">{{ feeTypeLabel(fee.type) }}</td>
             <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ fee.amount }} {{ currency() }}</td>
             <td class="px-4 py-3">
               @if (fee.isRecurring) {
@@ -59,7 +57,7 @@
           </tr>
         } @empty {
           <tr>
-            <td colspan="6" class="px-4 py-8 text-center text-sm text-gray-400">Aucun frais configuré</td>
+            <td colspan="5" class="px-4 py-8 text-center text-sm text-gray-400">Aucun frais configuré</td>
           </tr>
         }
       </tbody>
@@ -79,15 +77,6 @@
     <app-form-field label="Nom" [required]="true"
       [error]="form.controls.name.touched && form.controls.name.invalid ? 'Nom requis' : ''">
       <app-input formControlName="name" placeholder="Ex: Frais d'inscription" />
-    </app-form-field>
-
-    <app-form-field label="Type" [required]="true">
-      <select formControlName="type"
-        class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none">
-        @for (t of feeTypes; track t.value) {
-          <option [value]="t.value">{{ t.label }}</option>
-        }
-      </select>
     </app-form-field>
 
     <app-form-field [label]="'Montant (' + currency() + ')'" [required]="true"
