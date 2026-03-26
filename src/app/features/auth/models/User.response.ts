@@ -1,4 +1,5 @@
 import {RoleResponse} from './role.response';
+import { UserStatus } from '../../../core/constants/user.status';
 
 export interface EmailPreview {
   from?: string;
@@ -16,6 +17,7 @@ export interface UserResponse {
   email?: string;
   phoneNumber?: string;
   profile?: string;
+  status?: UserStatus;
   role?: RoleResponse;
   schoolId?: string;
   emailPreview?: EmailPreview;
