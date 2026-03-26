@@ -47,16 +47,6 @@
     </div>
   </div>
 
-  <!-- Recent Subscriptions -->
-  <div class="mb-6 flex items-center justify-between">
-    <h3 class="text-sm font-semibold text-gray-900">
-      <i class="fa-solid fa-clock-rotate-left mr-2 text-indigo-600"></i>Abonnements Récents
-    </h3>
-    <app-button variant="outline" size="sm" (click)="loadData()">
-      <i class="fa-solid fa-arrows-rotate mr-1"></i>Actualiser
-    </app-button>
-  </div>
-
   @if (data().recentSubscriptions.length === 0) {
     <div class="rounded-xl border border-gray-200 bg-white p-8 text-center text-sm text-gray-400 shadow-sm">
       Aucun abonnement récent trouvé.
