@@ -9,6 +9,7 @@ import { InputComponent } from '../../../../shared/ui/input/input';
 import { ModalComponent } from '../../../../shared/ui/modal/modal';
 import { TableComponent } from '../../../../shared/ui/table/table';
 import { ToastService } from '../../../../shared/ui/toast/toast.service';
+import { SearchFilterBarComponent } from '../../../../shared/ui/search-filter-bar/search-filter-bar';
 import { SchoolRequest, SchoolResponse } from '../../models/school.model';
 import { SchoolsService } from '../../services/schools.service';
 import { schoolStatusClass } from '../../utils/status.utils';
@@ -25,6 +26,7 @@ import { schoolStatusClass } from '../../utils/status.utils';
     FormFieldComponent,
     InputComponent,
     SpinnerComponent,
+    SearchFilterBarComponent,
   ],
   templateUrl: './schools.page.html',
 })
@@ -34,7 +36,7 @@ export class SchoolsPage implements OnInit {
 
   loading = signal(false);
   saving = signal(false);
-  query = signal('');
+  searchQuery = signal('');
   schools = signal<SchoolResponse[]>([]);
   modalOpen = signal(false);
   confirmDeleteOpen = signal(false);
@@ -42,14 +44,13 @@ export class SchoolsPage implements OnInit {
   deletingSchoolId = signal<string | null>(null);
 
   filteredSchools = computed(() => {
-    const search = this.query().trim().toLowerCase();
+    const search = this.searchQuery().trim().toLowerCase();
     if (!search) return this.schools();
     return this.schools().filter((school) => school.name.toLowerCase().includes(search));
   });
 
   form = new FormGroup({
     name: new FormControl('', [Validators.required, Validators.minLength(2)]),
-    subDomain: new FormControl('', [Validators.required, Validators.minLength(3)]),
     logo: new FormControl(''),
     city: new FormControl('', Validators.required),
     country: new FormControl('', Validators.required),
@@ -70,6 +71,19 @@ export class SchoolsPage implements OnInit {
       });
   }
 
+  onSearchChange(value: string): void {
+    this.searchQuery.set(value);
+  }
+
+  schoolLogo(school: SchoolResponse): string | null {
+    return school.logo || null;
+  }
+
+  schoolLetter(school: SchoolResponse): string {
+    const name = (school.name || '').trim();
+    return name ? name[0].toUpperCase() : '?';
+  }
+
   openCreate(): void {
     this.form.reset();
     this.editingSchoolId.set(null);
@@ -79,7 +93,6 @@ export class SchoolsPage implements OnInit {
   openEdit(school: SchoolResponse): void {
     this.form.patchValue({
       name: school.name ?? '',
-      subDomain: school.subDomain ?? '',
       logo: school.logo ?? '',
       city: school.city ?? '',
       country: school.country ?? '',
@@ -99,7 +112,6 @@ export class SchoolsPage implements OnInit {
 
     const payload: SchoolRequest = {
       name: this.form.value.name || '',
-      subDomain: this.form.value.subDomain || '',
       logo: this.form.value.logo || '',
       city: this.form.value.city || '',
       country: this.form.value.country || '',
