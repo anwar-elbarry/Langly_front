@@ -5,6 +5,7 @@ import { AuthApi, AuthPage } from "../actions/auth.actions";
 import { catchError, map, of, switchMap, tap } from "rxjs";
 import { Router } from "@angular/router";
 import { RoleEnum } from "../../constants/role.enum";
+import { UserStatus } from "../../constants/user.status";
 
 @Injectable()
 export class AuthEffects {
@@ -46,14 +47,20 @@ export class AuthEffects {
     loginSuccess$ = createEffect(() =>
         this.actions$.pipe(
             ofType(AuthApi.loginSuccess),
-            tap(() => {
-                if(this.authService.getCurrentUser()?.role?.name === RoleEnum.SUPER_ADMIN) {
+            tap(({ user }) => {
+                if (user.status === UserStatus.SUSPENDED) {
+                    this.authService.logout();
+                    this.router.navigate(['/login']);
+                    return;
+                }
+
+                if(user.role?.name === RoleEnum.SUPER_ADMIN) {
                     this.router.navigate(['/superAdmin']);
-                } else if(this.authService.getCurrentUser()?.role?.name === RoleEnum.SCHOOL_ADMIN) {
+                } else if(user.role?.name === RoleEnum.SCHOOL_ADMIN) {
                     this.router.navigate(['/schoolAdmin']);
-                } else if(this.authService.getCurrentUser()?.role?.name === RoleEnum.TEACHER) {
+                } else if(user.role?.name === RoleEnum.TEACHER) {
                     this.router.navigate(['/teacher']);
-                } else if(this.authService.getCurrentUser()?.role?.name === RoleEnum.STUDENT) {
+                } else if(user.role?.name === RoleEnum.STUDENT) {
                     this.router.navigate(['/student']);
                 }
             })
