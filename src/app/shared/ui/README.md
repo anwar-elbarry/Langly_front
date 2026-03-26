@@ -135,6 +135,26 @@ Wraps a native `<select>` with a custom chevron icon. Use `<ng-content>` for opt
 
 ---
 
+## Search Select
+
+**Selector:** `<app-search-select>`  
+**Import:** `SearchSelectComponent` from `shared/ui/search-select/search-select`
+
+A searchable select dropdown that allows users to filter options. Supports `ControlValueAccessor`.
+
+| Input | Type | Default | Description |
+|-------|------|---------|-------------|
+| `options` | `Option[]` | `[]` | Array of options (`{id: any, label: string}`) |
+| `placeholder` | `string` | `'Search and select...'` | Placeholder text |
+| `disabled` | `boolean` | `false` | Disabled state |
+| `error` | `boolean` | `false` | Red border for error state |
+
+```html
+<app-search-select [options]="searchOptions" placeholder="Type to search..." />
+```
+
+---
+
 ## Checkbox
 
 **Selector:** `<app-checkbox>`  
