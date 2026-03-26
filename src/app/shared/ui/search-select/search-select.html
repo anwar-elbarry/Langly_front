@@ -1,0 +1,34 @@
+<div class="ui-search-select-wrapper" [class.ui-search-select-disabled]="disabled">
+    <input 
+        class="ui-search-select-input" 
+        [class.ui-search-select-error]="error"
+        type="text" 
+        [placeholder]="placeholder" 
+        [disabled]="disabled"
+        [value]="searchTerm()" 
+        (input)="onInput($event)" 
+        (focus)="showDropdown.set(true)"
+        (blur)="onBlur()" 
+    />
+    <i class="ui-search-select-chevron fa-solid fa-chevron-down" [class.rotate]="showDropdown()"></i>
+  
+    @if (showDropdown() && filtered().length > 0) {
+        <ul class="ui-search-select-dropdown">
+            @for (opt of filtered(); track opt.id) {
+                <li 
+                    class="ui-search-select-item"
+                    [class.active]="selected()?.id === opt.id"
+                    (mousedown)="select(opt)">
+                    <span class="truncate">{{ opt.label }}</span>
+                    @if (selected()?.id === opt.id) {
+                        <i class="fa-solid fa-check check-icon"></i>
+                    }
+                </li>
+            }
+        </ul>
+    } @else if (showDropdown() && filtered().length === 0) {
+        <ul class="ui-search-select-dropdown">
+            <li class="ui-search-select-empty">No results found</li>
+        </ul>
+    }
+</div>
