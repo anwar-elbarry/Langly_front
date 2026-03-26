@@ -1,6 +1,7 @@
 import { RoleResponse } from './role.model';
+import { UserStatus as CoreUserStatus } from '../../../core/constants/user.status';
 
-export type UserStatus = 'ACTIVE' | 'SUSPENDED' | string;
+export type UserStatus = CoreUserStatus;
 
 export interface EmailPreview {
   from?: string;
