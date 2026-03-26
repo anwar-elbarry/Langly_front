@@ -102,15 +102,6 @@ export function scheduleStatusLabel(status?: ScheduleStatus): string {
   }
 }
 
-export function feeTypeLabel(type?: string): string {
-  switch (type) {
-    case 'REGISTRATION': return 'Frais d\'inscription';
-    case 'PLACEMENT_TEST': return 'Test de niveau';
-    case 'TUITION': return 'Scolarité';
-    default: return type || '';
-  }
-}
-
 export function discountTypeLabel(type?: string): string {
   switch (type) {
     case 'PERCENTAGE': return 'Pourcentage';
