@@ -1,4 +1,4 @@
-import { DiscountType, FeeType, InstallmentPlan, InvoiceStatus, ScheduleStatus } from './enums';
+import { DiscountType, InstallmentPlan, InvoiceStatus, ScheduleStatus } from './enums';
 
 // ── Billing Settings ──
 
@@ -47,7 +47,6 @@ export interface FeeTemplateResponse {
   id: string;
   schoolId: string;
   name: string;
-  type: FeeType;
   amount: number;
   isRecurring: boolean;
   isActive: boolean;
@@ -55,7 +54,6 @@ export interface FeeTemplateResponse {
 
 export interface FeeTemplateRequest {
   name: string;
-  type: FeeType;
   amount: number;
   isRecurring: boolean;
   isActive: boolean;
@@ -86,7 +84,6 @@ export interface FeePaymentResponse {
 export interface StudentFeeStatusResponse {
   feeTemplateId: string;
   feeTemplateName: string;
-  feeType: string;
   feeAmount: number;
   isRecurring: boolean;
   totalPaid: number;
