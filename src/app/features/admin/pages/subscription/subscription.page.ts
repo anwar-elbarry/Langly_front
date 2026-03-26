@@ -1,9 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { selectCurrentUser } from '../../../../core/store/selectors/auth.selectors';
 import { SubscriptionService } from '../../services/subscription.service';
 import { SubscriptionResponse } from '../../models/subscription.model';
+import { BankInfoService } from '../../services/bank-info.service';
+import { BankInfoResponse } from '../../models/bank-info.model';
 import { ButtonComponent } from '../../../../shared/ui/button/button';
 import { ModalComponent } from '../../../../shared/ui/modal/modal';
 import { ToastService } from '../../../../shared/ui/toast/toast.service';
@@ -18,10 +21,15 @@ export class SubscriptionPage implements OnInit {
   private store = inject(Store);
   private subscriptionService = inject(SubscriptionService);
   private toastService = inject(ToastService);
+  private bankInfoService = inject(BankInfoService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
   user = this.store.selectSignal(selectCurrentUser);
   subscription = signal<SubscriptionResponse | null>(null);
   isLoading = signal(true);
+  bankInfo = signal<BankInfoResponse | null>(null);
+  bankLoading = signal(true);
   
   isPaymentModalOpen = signal(false);
   paymentMethod = signal<'STRIPE' | 'BANK_TRANSFER' | null>(null);
@@ -33,6 +41,8 @@ export class SubscriptionPage implements OnInit {
 
   ngOnInit() {
     this.loadSubscription();
+    this.loadBankInfo();
+    this.checkPaymentReturn();
   }
 
   loadSubscription() {
@@ -52,6 +62,29 @@ export class SubscriptionPage implements OnInit {
         this.isLoading.set(false);
       }
     });
+  }
+
+  loadBankInfo() {
+    this.bankLoading.set(true);
+    this.bankInfoService.get().subscribe({
+      next: (info) => {
+        this.bankInfo.set(info);
+        this.bankLoading.set(false);
+      },
+      error: () => this.bankLoading.set(false),
+    });
+  }
+
+  checkPaymentReturn() {
+    const payment = this.route.snapshot.queryParamMap.get('payment');
+    if (payment === 'success') {
+      this.toastService.success('Paiement réussi, votre abonnement sera mis à jour.');
+      // Redirect to dashboard/home
+      this.router.navigate(['/schoolAdmin/home'], { replaceUrl: true });
+    } else if (payment === 'cancelled') {
+      this.toastService.info('Paiement annulé.');
+      this.router.navigate(['/schoolAdmin/subscription'], { replaceUrl: true, queryParams: {} });
+    }
   }
 
   openPaymentModal() {
@@ -117,5 +150,13 @@ export class SubscriptionPage implements OnInit {
       default:
         return 'bg-gray-100 text-gray-800';
     }
+  }
+
+  formattedMotive(): string {
+    const base = this.bankInfo()?.motive;
+    const subId = this.subscription()?.id;
+    if (base && subId) return `${base} ${subId.substring(0, 8)}`;
+    if (base) return base;
+    return subId ? `Abonnement ${subId.substring(0, 8)}` : 'Abonnement';
   }
 }
