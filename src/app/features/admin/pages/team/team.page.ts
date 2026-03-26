@@ -13,7 +13,9 @@ import { RadioComponent } from '../../../../shared/ui/radio/radio';
 import { SpinnerComponent } from '../../../../shared/ui/spinner/spinner';
 import { TableComponent } from '../../../../shared/ui/table/table';
 import { ToastService } from '../../../../shared/ui/toast/toast.service';
+import { SearchFilterBarComponent } from '../../../../shared/ui/search-filter-bar/search-filter-bar';
 import { UserResponse, EmailPreview } from '../../../auth/models/User.response';
+import { environment } from '../../../../../environments/environment.development';
 import { SchoolUserService, InviteRequest } from '../../services/school-user.service';
 import { roleBadgeClass, userStatusClass } from '../../utils/status.utils';
 
@@ -33,6 +35,7 @@ type TabFilter = 'ALL' | 'TEACHER' | 'STUDENT' | 'SCHOOL_ADMIN';
     InputComponent,
     RadioComponent,
     SpinnerComponent,
+    SearchFilterBarComponent,
   ],
   templateUrl: './team.page.html',
 })
@@ -62,7 +65,7 @@ export class TeamPage implements OnInit {
     const q = this.searchQuery().toLowerCase();
     if (q) result = result.filter(u =>
       `${u.firstName} ${u.lastName}`.toLowerCase().includes(q) ||
-      u.email.toLowerCase().includes(q)
+      u.email?.toLowerCase().includes(q)
     );
     return result;
   });
@@ -111,8 +114,8 @@ export class TeamPage implements OnInit {
     this.currentPage.set(0);
   }
 
-  onSearch(event: Event): void {
-    this.searchQuery.set((event.target as HTMLInputElement).value);
+  onSearchChange(value: string): void {
+    this.searchQuery.set(value);
     this.currentPage.set(0);
   }
 
@@ -199,5 +202,20 @@ export class TeamPage implements OnInit {
   closeEmailPreview(): void {
     this.emailPreviewOpen.set(false);
     this.emailPreview.set(null);
+  }
+
+  profileUrl(user: UserResponse): string {
+    const p = user.profile || '';
+    if (!p) return '';
+    if (p.startsWith('http://') || p.startsWith('https://')) return p;
+    if (p.startsWith('/')) return `${environment.apiUrl}${p}`;
+    return p;
+  }
+
+  userInitials(user: UserResponse): string {
+    const first = (user.firstName || '').trim();
+    const last = (user.lastName || '').trim();
+    const initials = `${first ? first[0] : ''}${last ? last[0] : ''}` || (user.email ? user.email[0] : '?');
+    return initials.toUpperCase();
   }
 }
