@@ -10,13 +10,26 @@
 </div>
 
 <!-- Search & Filters -->
-<div class="mb-4">
-  <app-search-filter-bar
-    placeholder="Rechercher par école..."
-    [filters]="filterConfigs()"
-    (searchChange)="onSearchChange($event)"
-    (filterChange)="onFilterChange($event)"
+<div class="mb-4 grid gap-3 md:grid-cols-2">
+  <app-search-select
+    [ngModel]="schoolFilter() || null"
+    [ngModelOptions]="{ standalone: true }"
+    (ngModelChange)="onSchoolFilterChange($event)"
+    [options]="schoolFilterOptions()"
+    placeholder="Filtrer par école..."
   />
+
+  <select
+    class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+    [value]="statusFilter()"
+    (change)="onStatusFilterChange($event)"
+  >
+    <option value="">Tous les statuts</option>
+    <option value="PAID">PAID</option>
+    <option value="PENDING">PENDING</option>
+    <option value="OVERDUE">OVERDUE</option>
+    <option value="CANCELLED">CANCELLED</option>
+  </select>
 </div>
 
 <!-- Bank Info -->

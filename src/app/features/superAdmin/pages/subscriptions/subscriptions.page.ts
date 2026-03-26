@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
 import { SpinnerComponent } from '../../../../shared/ui/spinner/spinner';
 import { ButtonComponent } from '../../../../shared/ui/button/button';
@@ -10,7 +10,6 @@ import { ModalComponent } from '../../../../shared/ui/modal/modal';
 import { TableComponent } from '../../../../shared/ui/table/table';
 import { SearchSelectComponent, Option } from '../../../../shared/ui/search-select/search-select';
 import { ToastService } from '../../../../shared/ui/toast/toast.service';
-import { SearchFilterBarComponent, FilterConfig } from '../../../../shared/ui/search-filter-bar/search-filter-bar';
 import { SchoolResponse } from '../../models/school.model';
 import {
   BillingCycle,
@@ -30,6 +29,7 @@ import { paymentStatusClass } from '../../utils/status.utils';
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     ReactiveFormsModule,
     TableComponent,
     ButtonComponent,
@@ -37,7 +37,6 @@ import { paymentStatusClass } from '../../utils/status.utils';
     FormFieldComponent,
     InputComponent,
     SpinnerComponent,
-    SearchFilterBarComponent,
     SearchSelectComponent,
   ],
   templateUrl: './subscriptions.page.html',
@@ -54,7 +53,6 @@ export class SubscriptionsPage implements OnInit {
   schools = signal<SchoolResponse[]>([]);
   statusFilter = signal('');
   schoolFilter = signal('');
-  searchQuery = signal('');
 
   modalOpen = signal(false);
   editingId = signal<string | null>(null);
@@ -71,32 +69,13 @@ export class SubscriptionsPage implements OnInit {
     this.subscriptions().filter((item) => {
       if (this.statusFilter() && item.status !== this.statusFilter()) return false;
       if (this.schoolFilter() && item.schoolId !== this.schoolFilter()) return false;
-      const q = this.searchQuery().trim().toLowerCase();
-      if (q) {
-        const schoolName = this.schoolNameById(item.schoolId).toLowerCase();
-        if (!schoolName.includes(q)) return false;
-      }
       return true;
     })
   );
 
-  filterConfigs = computed<FilterConfig[]>(() => [
-    {
-      key: 'status',
-      label: 'Tous les statuts',
-      options: [
-        { value: 'PAID', label: 'PAID' },
-        { value: 'PENDING', label: 'PENDING' },
-        { value: 'OVERDUE', label: 'OVERDUE' },
-        { value: 'CANCELLED', label: 'CANCELLED' },
-      ],
-    },
-    {
-      key: 'school',
-      label: 'Toutes les écoles',
-      options: this.schools().map((s) => ({ value: s.id, label: s.name })),
-    },
-  ]);
+  schoolFilterOptions = computed<Option[]>(() =>
+    this.schools().map((s) => ({ id: s.id, label: s.name }))
+  );
 
   schoolOptions = computed<Option[]>(() => {
     const subscribedSchoolIds = new Set(this.subscriptions().map((sub) => sub.schoolId));
@@ -156,13 +135,13 @@ export class SubscriptionsPage implements OnInit {
     });
   }
 
-  onSearchChange(value: string): void {
-    this.searchQuery.set(value);
+  onSchoolFilterChange(value: string | null): void {
+    this.schoolFilter.set(value || '');
   }
 
-  onFilterChange(event: { key: string; value: string }): void {
-    if (event.key === 'status') this.statusFilter.set(event.value);
-    if (event.key === 'school') this.schoolFilter.set(event.value);
+  onStatusFilterChange(event: Event): void {
+    const value = (event.target as HTMLSelectElement).value;
+    this.statusFilter.set(value);
   }
 
   openCreate(): void {
