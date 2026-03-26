@@ -141,7 +141,9 @@ export class CoursesPage implements OnInit {
   }
 
   loadTeachers(): void {
-    this.userService.getTeachers().subscribe({
+    const schoolId = this.user()?.schoolId;
+    if (!schoolId) return;
+    this.userService.getTeachersBySchool(schoolId).subscribe({
       next: (data) => this.teachers.set(data),
     });
   }
