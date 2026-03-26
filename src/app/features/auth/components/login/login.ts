@@ -6,7 +6,6 @@ import { AuthRequest } from '../../models/Auth.request';
 import { FormFieldComponent } from '../../../../shared/ui/form-field/form-field';
 import { InputComponent } from '../../../../shared/ui/input/input';
 import { ButtonComponent } from '../../../../shared/ui/button/button';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { selectAuthLoading } from '../../../../core/store/selectors/auth.selectors';
 import { SpinnerComponent } from "../../../../shared/ui/spinner/spinner";
 
@@ -24,8 +23,7 @@ export class Login {
     password: new FormControl('', Validators.required),
   });
 
-  isLoading = toSignal(this.store.select(selectAuthLoading));
-
+  isLoading = this.store.selectSignal(selectAuthLoading);
   showPassword = false;
 
   get emailError(): string {
