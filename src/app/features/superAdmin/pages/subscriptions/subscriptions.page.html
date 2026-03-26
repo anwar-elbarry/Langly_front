@@ -9,29 +9,42 @@
   </app-button>
 </div>
 
-<!-- Filters -->
-<div class="mb-4 flex flex-wrap items-center gap-3">
-  <select
-    class="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
-    [value]="statusFilter()"
-    (change)="statusFilter.set($any($event.target).value)"
-  >
-    <option value="">Tous les Statuts</option>
-    <option value="PAID">PAID</option>
-    <option value="PENDING">PENDING</option>
-    <option value="OVERDUE">OVERDUE</option>
-    <option value="CANCELLED">CANCELLED</option>
-  </select>
-  <select
-    class="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
-    [value]="schoolFilter()"
-    (change)="schoolFilter.set($any($event.target).value)"
-  >
-    <option value="">Toutes les Écoles</option>
-    @for (school of schools(); track school.id) {
-      <option [value]="school.id">{{ school.name }}</option>
-    }
-  </select>
+<!-- Search & Filters -->
+<div class="mb-4">
+  <app-search-filter-bar
+    placeholder="Rechercher par école..."
+    [filters]="filterConfigs()"
+    (searchChange)="onSearchChange($event)"
+    (filterChange)="onFilterChange($event)"
+  />
+</div>
+
+<!-- Bank Info -->
+<div class="mb-6 rounded-xl border border-blue-100 bg-blue-50 p-4">
+  <div class="flex items-center justify-between gap-3">
+    <div>
+      <p class="text-sm font-semibold text-blue-800">Informations bancaires (virement)</p>
+      <p class="text-xs text-blue-700">Utilisées pour les virements entrants. Modifiables par le Super Admin.</p>
+    </div>
+    <app-button variant="primary" size="sm" [loading]="bankInfoSaving()" (click)="saveBankInfo()">Enregistrer</app-button>
+  </div>
+  <form [formGroup]="bankForm" class="mt-4 grid gap-4 md:grid-cols-2">
+    <app-form-field label="Banque" [required]="true">
+      <app-input formControlName="bankName" placeholder="Bank of Africa" />
+    </app-form-field>
+    <app-form-field label="Titulaire" [required]="true">
+      <app-input formControlName="accountHolder" placeholder="Langly SaaS Inc." />
+    </app-form-field>
+    <app-form-field label="IBAN" [required]="true">
+      <app-input formControlName="iban" placeholder="MA64 0110 0100 0000 0000 0000" />
+    </app-form-field>
+    <app-form-field label="Motif" [required]="true">
+      <app-input formControlName="motive" placeholder="Abonnement XXXXX" />
+    </app-form-field>
+    <app-form-field label="Note (facultatif)" class="md:col-span-2">
+      <app-input formControlName="note" placeholder="Inclure le motif pour un traitement rapide." />
+    </app-form-field>
+  </form>
 </div>
 
 @if (loading()) {
@@ -56,7 +69,18 @@
       <tbody>
         @for (item of filteredSubscriptions(); track item.id) {
           <tr>
-            <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ schoolNameById(item.schoolId) }}</td>
+            <td class="px-4 py-3 text-sm font-medium text-gray-900">
+              <div class="flex items-center gap-2">
+                <div class="flex h-8 w-8 items-center justify-center overflow-hidden rounded-md bg-gray-100 text-xs font-semibold text-gray-600">
+                  @if (schoolLogoById(item.schoolId); as logo) {
+                    <img [src]="logo" alt="Logo école" class="h-full w-full object-cover" />
+                  } @else {
+                    <span>{{ schoolNameById(item.schoolId).slice(0,1) }}</span>
+                  }
+                </div>
+                <span>{{ schoolNameById(item.schoolId) }}</span>
+              </div>
+            </td>
             <td class="px-4 py-3 text-sm text-gray-600">{{ item.amount | number:'1.2-2' }}</td>
             <td class="px-4 py-3 text-sm text-gray-600">{{ item.currency }}</td>
             <td class="px-4 py-3 text-sm text-gray-600">{{ item.billingCycle }}</td>
@@ -129,19 +153,19 @@
       </app-form-field>
     }
 
-    <div class="grid grid-cols-2 gap-4">
+    @if (editingId() && editingStatus() === 'PAID') {
+      <div class="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">
+        Les modifications de montant ou de cycle seront appliquées au prochain renouvellement. L'abonnement reste actif jusqu'à la fin de la période en cours.
+      </div>
+    } @else if (editingId()) {
+      <div class="rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-sm text-blue-800">
+        Les nouvelles conditions seront appliquées immédiatement et nécessiteront un paiement pour réactiver l'abonnement.
+      </div>
+    }
+
+    <div class="grid grid-cols-1 gap-4">
       <app-form-field label="Montant" [required]="true">
         <app-input type="number" formControlName="amount" placeholder="299.99" />
-      </app-form-field>
-      <app-form-field label="Devise" [required]="true">
-        <select
-          class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
-          formControlName="currency"
-        >
-          <option value="DH">DH</option>
-          <option value="EUR">EUR</option>
-          <option value="USD">USD</option>
-        </select>
       </app-form-field>
     </div>
 
@@ -151,7 +175,6 @@
         formControlName="billingCycle"
       >
         <option value="MONTHLY">MONTHLY</option>
-        <option value="QUARTERLY">QUARTERLY</option>
         <option value="YEARLY">YEARLY</option>
       </select>
     </app-form-field>

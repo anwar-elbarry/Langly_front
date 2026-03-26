@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
 import { SpinnerComponent } from '../../../../shared/ui/spinner/spinner';
@@ -9,6 +9,7 @@ import { InputComponent } from '../../../../shared/ui/input/input';
 import { ModalComponent } from '../../../../shared/ui/modal/modal';
 import { TableComponent } from '../../../../shared/ui/table/table';
 import { ToastService } from '../../../../shared/ui/toast/toast.service';
+import { SearchFilterBarComponent } from '../../../../shared/ui/search-filter-bar/search-filter-bar';
 import { SuperAdminRequest, SuperAdminResponse } from '../../models/super-admin.model';
 import { SuperAdminsService } from '../../services/super-admins.service';
 
@@ -24,6 +25,7 @@ import { SuperAdminsService } from '../../services/super-admins.service';
     FormFieldComponent,
     InputComponent,
     SpinnerComponent,
+    SearchFilterBarComponent,
   ],
   templateUrl: './super-admins.page.html',
 })
@@ -34,6 +36,20 @@ export class SuperAdminsPage implements OnInit {
   loading = signal(false);
   saving = signal(false);
   admins = signal<SuperAdminResponse[]>([]);
+  searchQuery = signal('');
+
+  filteredAdmins = computed(() => {
+    const q = this.searchQuery().trim().toLowerCase();
+    if (!q) return this.admins();
+    return this.admins().filter((a) => {
+      const fullName = `${a.firstName || ''} ${a.lastName || ''}`.trim().toLowerCase();
+      return (
+        fullName.includes(q) ||
+        (a.email || '').toLowerCase().includes(q) ||
+        (a.phoneNumber || '').toLowerCase().includes(q)
+      );
+    });
+  });
 
   modalOpen = signal(false);
   editingId = signal<string | null>(null);
@@ -59,6 +75,17 @@ export class SuperAdminsPage implements OnInit {
       .getAll()
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({ next: (admins) => this.admins.set(admins) });
+  }
+
+  onSearchChange(value: string): void {
+    this.searchQuery.set(value);
+  }
+
+  userInitials(user: SuperAdminResponse): string {
+    const first = (user.firstName || '').trim();
+    const last = (user.lastName || '').trim();
+    const initials = `${first ? first[0] : ''}${last ? last[0] : ''}` || (user.email ? user.email[0] : '?');
+    return initials.toUpperCase();
   }
 
   openCreate(): void {
