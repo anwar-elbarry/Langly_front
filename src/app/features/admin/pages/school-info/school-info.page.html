@@ -1,0 +1,112 @@
+<section class="mx-auto max-w-3xl space-y-6">
+  <!-- Page header -->
+  <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <h2 class="text-xl font-bold text-gray-900">Mon École</h2>
+      <p class="text-sm text-gray-500">Gérez les informations et le logo de votre école</p>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="flex items-center justify-center py-20">
+      <i class="fa-solid fa-spinner fa-spin text-2xl text-blue-500"></i>
+    </div>
+  } @else {
+    <!-- Logo Section -->
+    <div class="rounded-2xl border border-gray-200 bg-white p-5">
+      <div class="mb-4 flex items-center gap-3">
+        <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600">
+          <i class="fa-solid fa-image text-lg"></i>
+        </div>
+        <div>
+          <h2 class="m-0 text-base font-semibold text-gray-900">Logo de l'école</h2>
+          <p class="m-0 text-[13px] text-gray-500">Téléchargez une image ou renseignez une URL</p>
+        </div>
+      </div>
+
+      <!-- Logo preview + file upload -->
+      <div class="mb-5 flex flex-col items-center gap-4 sm:flex-row sm:items-start">
+        <label for="logoUpload"
+          class="group relative cursor-pointer overflow-hidden rounded-xl border border-gray-200 bg-gray-50 transition-all hover:border-indigo-400">
+          @if (school()?.logo) {
+            <img [src]="school()!.logo" alt="Logo de l'école" class="h-28 w-28 object-contain p-1" />
+          } @else {
+            <div class="flex h-28 w-28 items-center justify-center text-gray-400">
+              <i class="fa-solid fa-school text-3xl"></i>
+            </div>
+          }
+          <div
+            class="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
+            <i class="fa-solid fa-pen text-white"></i>
+          </div>
+        </label>
+        <div class="flex flex-col text-center sm:text-left">
+          <label for="logoUpload"
+            class="cursor-pointer text-sm font-medium text-indigo-600 hover:text-indigo-700 hover:underline">
+            Changer le logo
+          </label>
+          <p class="mt-1 m-0 text-xs text-gray-400">JPG, PNG ou GIF. 2 Mo max.</p>
+          @if (savingLogo()) {
+            <p class="mt-2 m-0 text-xs text-indigo-500">
+              <i class="fa-solid fa-spinner fa-spin mr-1"></i>Upload en cours…
+            </p>
+          }
+          <input type="file" id="logoUpload" class="hidden" accept="image/png, image/jpeg, image/gif"
+            (change)="onLogoFileChange($event)" />
+        </div>
+      </div>
+
+      <!-- Logo URL input -->
+      <div class="flex items-end gap-2">
+        <div class="flex-1">
+          <label class="mb-1 block text-sm font-medium text-gray-700">Ou saisir une URL</label>
+          <input type="url" [formControl]="logoUrl" placeholder="https://example.com/logo.png"
+            class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm transition focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+        </div>
+        <button type="button" (click)="applyLogoUrl()" [disabled]="savingLogo() || !logoUrl.value?.trim()"
+          class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50">
+          Appliquer
+        </button>
+      </div>
+    </div>
+
+    <!-- School Information Form -->
+    <div class="rounded-2xl border border-gray-200 bg-white p-5">
+      <div class="mb-4 flex items-center gap-3">
+        <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+          <i class="fa-solid fa-school text-lg"></i>
+        </div>
+        <div>
+          <h2 class="m-0 text-base font-semibold text-gray-900">Informations de l'école</h2>
+          <p class="m-0 text-[13px] text-gray-500">Modifiez les détails de votre établissement</p>
+        </div>
+      </div>
+
+      <form class="space-y-3" [formGroup]="infoForm">
+        <app-form-field label="Nom de l'école" [required]="true"
+          [error]="infoForm.controls.name.touched && infoForm.controls.name.invalid ? 'Le nom est requis (min. 2 caractères)' : ''">
+          <app-input formControlName="name" placeholder="Nom de l'école" />
+        </app-form-field>
+
+        <div class="grid gap-3 md:grid-cols-2">
+          <app-form-field label="Ville" [required]="true"
+            [error]="infoForm.controls.city.touched && infoForm.controls.city.invalid ? 'La ville est requise' : ''">
+            <app-input formControlName="city" placeholder="Ville" />
+          </app-form-field>
+          <app-form-field label="Pays" [required]="true"
+            [error]="infoForm.controls.country.touched && infoForm.controls.country.invalid ? 'Le pays est requis' : ''">
+            <app-input formControlName="country" placeholder="Pays" />
+          </app-form-field>
+        </div>
+
+        <app-form-field label="Adresse">
+          <app-input formControlName="address" placeholder="Adresse complète" />
+        </app-form-field>
+
+        <div class="flex justify-end pt-2">
+          <app-button [loading]="saving()" (click)="saveInfo()">Enregistrer</app-button>
+        </div>
+      </form>
+    </div>
+  }
+</section>
