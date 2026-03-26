@@ -6,6 +6,7 @@ import { FormFieldComponent } from '../../../shared/ui/form-field/form-field';
 import { InputComponent } from '../../../shared/ui/input/input';
 import { TextareaComponent } from '../../../shared/ui/textarea/textarea';
 import { SelectComponent } from '../../../shared/ui/select/select';
+import { SearchSelectComponent, Option } from '../../../shared/ui/search-select/search-select';
 import { CheckboxComponent } from '../../../shared/ui/checkbox/checkbox';
 import { RadioComponent } from '../../../shared/ui/radio/radio';
 import { CardComponent } from '../../../shared/ui/card/card';
@@ -26,6 +27,7 @@ import { TableComponent } from '../../../shared/ui/table/table';
         InputComponent,
         TextareaComponent,
         SelectComponent,
+        SearchSelectComponent,
         CheckboxComponent,
         RadioComponent,
         CardComponent,
@@ -42,6 +44,13 @@ export class UiTestComponent {
     private toastService = inject(ToastService);
     modalOpen = false;
     selectedRadio = 'option1';
+
+    searchOptions: Option[] = [
+        { id: 1, label: 'Angular' },
+        { id: 2, label: 'React' },
+        { id: 3, label: 'Vue' },
+        { id: 4, label: 'Svelte' },
+    ];
 
     showToast(type: 'info' | 'success' | 'warning' | 'error'): void {
         const messages: Record<string, string> = {

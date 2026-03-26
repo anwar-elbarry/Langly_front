@@ -61,6 +61,10 @@
                 </app-select>
             </app-form-field>
 
+            <app-form-field label="Framework" hint="Searchable select dropdown">
+                <app-search-select [options]="searchOptions" placeholder="Type to search..." />
+            </app-form-field>
+
             <app-form-field label="Password" hint="At least 8 characters">
                 <app-input type="password" placeholder="••••••••" />
             </app-form-field>
