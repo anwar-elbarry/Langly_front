@@ -8,6 +8,7 @@ import { FormFieldComponent } from '../../../../shared/ui/form-field/form-field'
 import { InputComponent } from '../../../../shared/ui/input/input';
 import { ModalComponent } from '../../../../shared/ui/modal/modal';
 import { TableComponent } from '../../../../shared/ui/table/table';
+import { SearchSelectComponent, Option } from '../../../../shared/ui/search-select/search-select';
 import { ToastService } from '../../../../shared/ui/toast/toast.service';
 import { Store } from '@ngrx/store';
 import { selectCurrentUser } from '../../../../core/store/selectors/auth.selectors';
@@ -33,6 +34,7 @@ import { RolesService } from '../../services/roles.service';
     InputComponent,
     SpinnerComponent,
     SearchFilterBarComponent,
+    SearchSelectComponent,
   ],
   templateUrl: './users.page.html',
 })
@@ -53,8 +55,6 @@ export class UsersPage implements OnInit {
   searchQuery = signal('');
   roleFilter = signal('');
   schoolFilter = signal('');
-  schoolSearchTerm = signal('');
-
   page = signal(0);
   pageSize = signal(10);
   filteredUsers = computed(() => {
@@ -85,14 +85,9 @@ export class UsersPage implements OnInit {
     return this.filteredUsers().slice(start, start + this.pageSize());
   });
 
-  filteredSchoolsForCreate = computed(() => {
-    const term = this.normalize(this.schoolSearchTerm());
-    return this.schools().filter((school) => {
-      if (!term) return true;
-      const name = this.normalize(school.name);
-      return name.includes(term);
-    });
-  });
+  schoolOptions = computed<Option[]>(() =>
+    this.schools().map((s) => ({ id: s.id, label: s.name }))
+  );
 
   modalOpen = signal(false);
   editingUserId = signal<string | null>(null);
@@ -171,7 +166,6 @@ export class UsersPage implements OnInit {
     this.editingUserId.set(null);
     this.setFormMode(false);
     this.form.reset();
-    this.schoolSearchTerm.set('');
     this.modalOpen.set(true);
     this.page.set(0);
   }

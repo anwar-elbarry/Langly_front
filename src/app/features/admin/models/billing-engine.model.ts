@@ -110,10 +110,7 @@ export interface InvoiceResponse {
   schoolId: string;
   enrollmentId: string;
   courseName: string;
-  subtotal: number;
-  tvaRate: number;
-  tvaAmount: number;
-  totalTtc: number;
+  total: number;
   status: InvoiceStatus;
   issuedAt: string;
   dueDate: string;

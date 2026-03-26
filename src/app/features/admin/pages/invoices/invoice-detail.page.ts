@@ -69,7 +69,7 @@ export class InvoiceDetailPage implements OnInit {
   openPaymentModal(): void {
     const inv = this.invoice();
     if (!inv) return;
-    this.paymentForm.reset({ paymentMethod: 'CASH', amount: inv.subtotal - this.paidAmount() });
+    this.paymentForm.reset({ paymentMethod: 'CASH', amount: inv.total - this.paidAmount() });
     this.paymentModalOpen.set(true);
   }
 
@@ -112,6 +112,6 @@ export class InvoiceDetailPage implements OnInit {
   remainingAmount(): number {
     const inv = this.invoice();
     if (!inv) return 0;
-    return inv.subtotal - this.paidAmount();
+    return inv.total - this.paidAmount();
   }
 }

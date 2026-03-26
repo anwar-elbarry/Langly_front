@@ -129,27 +129,7 @@
   <form [formGroup]="form" class="space-y-4 p-1">
     @if (!editingId()) {
       <app-form-field label="École" [required]="true">
-        <input
-          type="text"
-          class="mb-2 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
-          placeholder="Rechercher une école par nom..."
-          [value]="schoolSearchTerm()"
-          (input)="schoolSearchTerm.set($any($event.target).value)"
-        />
-        <select
-          class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
-          formControlName="schoolId"
-        >
-          <option value="">Sélectionner une école</option>
-          @for (school of filteredAvailableSchools(); track school.id) {
-            <option [value]="school.id">{{ school.name }}</option>
-          }
-        </select>
-        @if (filteredAvailableSchools().length === 0) {
-          <p class="mt-2 text-xs font-medium text-gray-500">
-            {{ schoolSearchTerm() ? 'Aucune école disponible ne correspond à votre recherche.' : 'Toutes les écoles ont déjà un abonnement.' }}
-          </p>
-        }
+        <app-search-select formControlName="schoolId" [options]="schoolOptions()" placeholder="Rechercher une école par nom..." />
       </app-form-field>
     }
 

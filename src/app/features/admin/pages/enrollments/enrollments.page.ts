@@ -11,6 +11,7 @@ import { SpinnerComponent } from '../../../../shared/ui/spinner/spinner';
 import { TableComponent } from '../../../../shared/ui/table/table';
 import { PaginationComponent } from '../../../../shared/ui/pagination/pagination';
 import { ToastService } from '../../../../shared/ui/toast/toast.service';
+import { SearchSelectComponent, Option } from '../../../../shared/ui/search-select/search-select';
 import { EnrollmentRequest, EnrollmentResponse } from '../../models/enrollment.model';
 import { StudentResponse } from '../../models/student.model';
 import { CourseResponse } from '../../models/course.model';
@@ -34,6 +35,7 @@ type StatusFilter = 'ALL' | EnrollmentStatus;
     ModalComponent,
     FormFieldComponent,
     SpinnerComponent,
+    SearchSelectComponent,
   ],
   templateUrl: './enrollments.page.html',
 })
@@ -118,6 +120,14 @@ export class EnrollmentsPage implements OnInit {
     const course = this.selectedCourse();
     return course ? course.enrolledCount >= course.capacity : false;
   });
+
+  studentOptions = computed<Option[]>(() =>
+    this.students().map((s) => ({ id: s.id, label: `${s.firstName} ${s.lastName}` }))
+  );
+
+  courseOptions = computed<Option[]>(() =>
+    this.courses().map((c) => ({ id: c.id, label: `${c.name} (${c.enrolledCount}/${c.capacity} places)` }))
+  );
 
   ngOnInit(): void {
     this.loadData();

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { finalize } from 'rxjs';
@@ -11,6 +11,7 @@ import { ModalComponent } from '../../../../shared/ui/modal/modal';
 import { SpinnerComponent } from '../../../../shared/ui/spinner/spinner';
 import { TableComponent } from '../../../../shared/ui/table/table';
 import { ToastService } from '../../../../shared/ui/toast/toast.service';
+import { SearchSelectComponent, Option } from '../../../../shared/ui/search-select/search-select';
 import { FeePaymentRequest, FeePaymentResponse, StudentFeeStatusResponse } from '../../models/billing-engine.model';
 import { StudentResponse } from '../../models/student.model';
 import { BillingSettingsService } from '../../services/billing-settings.service';
@@ -29,6 +30,7 @@ import { StudentService } from '../../services/student.service';
     FormFieldComponent,
     InputComponent,
     SpinnerComponent,
+    SearchSelectComponent,
   ],
   templateUrl: './fee-payments.page.html',
 })
@@ -49,6 +51,11 @@ export class FeePaymentsPage implements OnInit {
 
   students = signal<StudentResponse[]>([]);
   selectedStudentId = signal<string | null>(null);
+  studentControl = new FormControl<string | null>(null);
+
+  studentOptions = computed<Option[]>(() =>
+    this.students().map((s) => ({ id: s.id, label: `${s.firstName} ${s.lastName} - ${s.cnie}` }))
+  );
   
   feeStatuses = signal<StudentFeeStatusResponse[]>([]);
   paymentHistory = signal<FeePaymentResponse[]>([]);
@@ -77,20 +84,16 @@ export class FeePaymentsPage implements OnInit {
       .subscribe({
         next: (data) => this.students.set(data),
       });
-  }
 
-  onStudentChange(event: Event): void {
-    const target = event.target as HTMLSelectElement;
-    const studentId = target.value;
-    
-    if (!studentId) {
-       this.selectedStudentId.set(null);
-       this.feeStatuses.set([]);
-       return;
-    }
-    
-    this.selectedStudentId.set(studentId);
-    this.loadFeeStatuses(studentId);
+    this.studentControl.valueChanges.subscribe((id) => {
+      if (!id) {
+        this.selectedStudentId.set(null);
+        this.feeStatuses.set([]);
+        return;
+      }
+      this.selectedStudentId.set(id);
+      this.loadFeeStatuses(id);
+    });
   }
 
   loadFeeStatuses(studentId: string): void {

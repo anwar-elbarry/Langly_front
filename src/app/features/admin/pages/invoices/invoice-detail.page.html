@@ -56,19 +56,11 @@
           </tbody>
         </app-table>
 
-        <!-- Totals -->
+        <!-- Total -->
         <div class="border-t border-gray-100 px-6 py-4 space-y-2">
-          <div class="flex justify-between text-sm">
-            <span class="text-gray-500">Total TTC</span>
-            <span class="font-medium text-gray-900">{{ inv.totalTtc | number:'1.2-2' }} DH</span>
-          </div>
-          <div class="flex justify-between text-sm">
-            <span class="text-gray-500">TVA ({{ inv.tvaRate }}%)</span>
-            <span class="font-medium text-red-500">-{{ inv.tvaAmount | number:'1.2-2' }} DH</span>
-          </div>
-          <div class="flex justify-between border-t border-gray-100 pt-2 text-base">
-            <span class="font-semibold text-gray-900">Sous-total HT</span>
-            <span class="font-bold text-gray-900">{{ inv.subtotal | number:'1.2-2' }} DH</span>
+          <div class="flex justify-between text-base">
+            <span class="font-semibold text-gray-900">Total</span>
+            <span class="font-bold text-gray-900">{{ inv.total | number:'1.2-2' }} DH</span>
           </div>
         </div>
       </div>
@@ -124,8 +116,8 @@
           </div>
           <hr class="border-gray-100" />
           <div class="flex justify-between text-sm">
-            <span class="text-gray-500">Montant dû (HT)</span>
-            <span class="font-semibold text-gray-900">{{ inv.subtotal | number:'1.2-2' }} DH</span>
+            <span class="text-gray-500">Montant dû</span>
+            <span class="font-semibold text-gray-900">{{ inv.total | number:'1.2-2' }} DH</span>
           </div>
           <div class="flex justify-between text-sm">
             <span class="text-gray-500">Payé</span>
@@ -136,27 +128,6 @@
             <span class="font-semibold" [class]="remainingAmount() > 0 ? 'text-red-600' : 'text-green-600'">
               {{ remainingAmount() | number:'1.2-2' }} DH
             </span>
-          </div>
-        </div>
-      </div>
-
-      <!-- TVA Tracking (admin only) -->
-      <div class="rounded-xl border border-indigo-100 bg-indigo-50 p-6">
-        <h3 class="mb-3 flex items-center gap-2 text-sm font-semibold text-indigo-900">
-          <i class="fa-solid fa-calculator"></i> Suivi TVA
-        </h3>
-        <div class="space-y-2">
-          <div class="flex justify-between text-sm">
-            <span class="text-indigo-700">Total TTC</span>
-            <span class="font-medium text-indigo-900">{{ inv.totalTtc | number:'1.2-2' }} DH</span>
-          </div>
-          <div class="flex justify-between text-sm">
-            <span class="text-indigo-700">TVA ({{ inv.tvaRate }}%)</span>
-            <span class="font-medium text-red-400">-{{ inv.tvaAmount | number:'1.2-2' }} DH</span>
-          </div>
-          <div class="flex justify-between border-t border-indigo-200 pt-2 text-sm">
-            <span class="font-semibold text-indigo-900">Sous-total HT</span>
-            <span class="font-bold text-indigo-900">{{ inv.subtotal | number:'1.2-2' }} DH</span>
           </div>
         </div>
       </div>

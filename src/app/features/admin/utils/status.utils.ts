@@ -109,3 +109,27 @@ export function discountTypeLabel(type?: string): string {
     default: return type || '';
   }
 }
+
+export function feeTypeLabel(type?: string): string {
+  if (!type) return '';
+
+  const normalized = type.toUpperCase();
+  switch (normalized) {
+    case 'TUITION': return 'Frais de scolarité';
+    case 'REGISTRATION': return "Frais d'inscription";
+    case 'EXAM': return "Frais d'examen";
+    case 'MATERIAL': return 'Matériel pédagogique';
+    case 'TRANSPORT': return 'Transport';
+    case 'ACCOMMODATION':
+    case 'HOUSING': return 'Hébergement';
+    case 'MEAL':
+    case 'CANTEEN': return 'Cantine';
+    case 'OTHER': return 'Autre';
+    default:
+      return type
+        .toLowerCase()
+        .split('_')
+        .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+        .join(' ');
+  }
+}

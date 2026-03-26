@@ -178,12 +178,7 @@
     </app-form-field>
 
     <app-form-field label="Professeur" [required]="true">
-      <select formControlName="teacherId" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none">
-        <option value="">Sélectionner un professeur</option>
-        @for (teacher of teachers(); track teacher.id) {
-          <option [value]="teacher.id">{{ teacher.firstName }} {{ teacher.lastName }}</option>
-        }
-      </select>
+      <app-search-select formControlName="teacherId" [options]="teacherOptions()" placeholder="Sélectionner un professeur" />
     </app-form-field>
   </form>
 

@@ -8,6 +8,7 @@ import { FormFieldComponent } from '../../../../shared/ui/form-field/form-field'
 import { InputComponent } from '../../../../shared/ui/input/input';
 import { ModalComponent } from '../../../../shared/ui/modal/modal';
 import { TableComponent } from '../../../../shared/ui/table/table';
+import { SearchSelectComponent, Option } from '../../../../shared/ui/search-select/search-select';
 import { ToastService } from '../../../../shared/ui/toast/toast.service';
 import { SearchFilterBarComponent, FilterConfig } from '../../../../shared/ui/search-filter-bar/search-filter-bar';
 import { SchoolResponse } from '../../models/school.model';
@@ -37,6 +38,7 @@ import { paymentStatusClass } from '../../utils/status.utils';
     InputComponent,
     SpinnerComponent,
     SearchFilterBarComponent,
+    SearchSelectComponent,
   ],
   templateUrl: './subscriptions.page.html',
 })
@@ -96,18 +98,11 @@ export class SubscriptionsPage implements OnInit {
     },
   ]);
 
-  schoolSearchTerm = signal('');
-
-  filteredAvailableSchools = computed(() => {
-    const term = this.schoolSearchTerm().toLowerCase().trim();
-    // Get list of school IDs that already have a subscription
+  schoolOptions = computed<Option[]>(() => {
     const subscribedSchoolIds = new Set(this.subscriptions().map((sub) => sub.schoolId));
-
-    return this.schools().filter((school) => {
-      if (subscribedSchoolIds.has(school.id)) return false;
-      if (term && !school.name.toLowerCase().includes(term)) return false;
-      return true;
-    });
+    return this.schools()
+      .filter((school) => !subscribedSchoolIds.has(school.id))
+      .map((s) => ({ id: s.id, label: s.name }));
   });
 
   form = new FormGroup({
@@ -173,7 +168,6 @@ export class SubscriptionsPage implements OnInit {
   openCreate(): void {
     this.editingId.set(null);
     this.editingStatus.set(null);
-    this.schoolSearchTerm.set('');
     this.form.reset({
       schoolId: '',
       amount: null,

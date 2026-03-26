@@ -14,13 +14,11 @@
       <app-spinner size="sm" /> <span>Chargement des élèves...</span>
     </div>
   } @else {
-    <select (change)="onStudentChange($event)"
-      class="w-full max-w-md rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
-      <option value="">-- Choisir un élève --</option>
-      @for (student of students(); track student.id) {
-        <option [value]="student.id">{{ student.firstName }} {{ student.lastName }} - {{ student.cnie }}</option>
-      }
-    </select>
+    <app-search-select
+      [options]="studentOptions()"
+      [formControl]="studentControl"
+      placeholder="Choisir un élève..."
+    />
   }
 </div>
 

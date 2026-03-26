@@ -12,6 +12,7 @@ import { PaginationComponent } from '../../../../shared/ui/pagination/pagination
 import { SearchFilterBarComponent, FilterConfig } from '../../../../shared/ui/search-filter-bar/search-filter-bar';
 import { SpinnerComponent } from '../../../../shared/ui/spinner/spinner';
 import { ToastService } from '../../../../shared/ui/toast/toast.service';
+import { SearchSelectComponent, Option } from '../../../../shared/ui/search-select/search-select';
 import { UserResponse } from '../../../auth/models/User.response';
 import { CourseRequest, CourseResponse } from '../../models/course.model';
 import { getLanguageFlagUrl, LANGUAGES, LEVELS } from '../../models/enums';
@@ -32,6 +33,7 @@ import { levelBadgeClass } from '../../utils/status.utils';
     SpinnerComponent,
     PaginationComponent,
     SearchFilterBarComponent,
+    SearchSelectComponent,
   ],
   templateUrl: './courses.page.html',
 })
@@ -89,6 +91,10 @@ export class CoursesPage implements OnInit {
     const start = this.currentPage() * this.pageSize();
     return this.filteredCourses().slice(start, start + this.pageSize());
   });
+
+  teacherOptions = computed<Option[]>(() =>
+    this.teachers().map((t) => ({ id: t.id, label: `${t.firstName ?? ''} ${t.lastName ?? ''}`.trim() }))
+  );
 
   form = new FormGroup({
     name: new FormControl('', Validators.required),

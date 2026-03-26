@@ -149,23 +149,11 @@
 
   <form [formGroup]="form" (ngSubmit)="saveEnrollment()" class="space-y-4 p-1">
     <app-form-field label="Élève" [required]="true">
-      <select formControlName="studentId" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none">
-        <option value="">Sélectionner un élève</option>
-        @for (student of students(); track student.id) {
-          <option [value]="student.id">{{ student.firstName }} {{ student.lastName }}</option>
-        }
-      </select>
+      <app-search-select formControlName="studentId" [options]="studentOptions()" placeholder="Sélectionner un élève" />
     </app-form-field>
 
     <app-form-field label="Cours" [required]="true">
-      <select formControlName="courseId" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none">
-        <option value="">Sélectionner un cours</option>
-        @for (course of courses(); track course.id) {
-          <option [value]="course.id">
-            {{ course.name }} ({{ course.enrolledCount }}/{{ course.capacity }} places)
-          </option>
-        }
-      </select>
+      <app-search-select formControlName="courseId" [options]="courseOptions()" placeholder="Sélectionner un cours" />
     </app-form-field>
 
     @if (isCourseFull()) {
