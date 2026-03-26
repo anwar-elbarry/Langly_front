@@ -41,6 +41,7 @@ export class DashboardContainer implements OnInit {
     { label: 'Accueil', route: '/schoolAdmin/home', icon: 'fa-solid fa-house' },
     { label: 'Équipe', route: '/schoolAdmin/team', icon: 'fa-solid fa-users' },
     { label: 'Cours', route: '/schoolAdmin/courses', icon: 'fa-solid fa-book' },
+    { label: 'Langues', route: '/schoolAdmin/languages', icon: 'fa-solid fa-globe' },
     { label: 'Élèves', route: '/schoolAdmin/students', icon: 'fa-solid fa-user-graduate' },
     { label: 'Inscriptions', route: '/schoolAdmin/enrollments', icon: 'fa-solid fa-clipboard-list' },
     { label: 'Factures', route: '/schoolAdmin/invoices', icon: 'fa-solid fa-file-invoice' },

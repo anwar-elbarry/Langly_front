@@ -29,6 +29,13 @@ export const SCHOOL_ADMIN_ROUTES: Routes = [
           import('./pages/courses/courses.page').then((m) => m.CoursesPage),
       },
       {
+        path: 'languages',
+        loadComponent: () =>
+          import('./pages/languages/languages.page').then(
+            (m) => m.LanguagesPage
+          ),
+      },
+      {
         path: 'students',
         loadComponent: () =>
           import('./pages/students/students.page').then((m) => m.StudentsPage),
