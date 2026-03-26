@@ -22,8 +22,8 @@ export class SchoolUserService {
     return this.http.get<UserResponse[]>(`${this.apiUrl}/school/${schoolId}`);
   }
 
-  getTeachers(): Observable<UserResponse[]> {
-    return this.http.get<UserResponse[]>(`${this.apiUrl}/role/TEACHER`);
+  getTeachersBySchool(schoolId: string): Observable<UserResponse[]> {
+    return this.http.get<UserResponse[]>(`${this.apiUrl}/school/${schoolId}/role/TEACHER`);
   }
 
   invite(payload: InviteRequest): Observable<UserResponse> {
