@@ -3,7 +3,6 @@ export type SchoolStatus = 'ACTIVE' | 'SUSPENDED' | 'PENDING' | 'CLOSED' | strin
 export interface SchoolResponse {
   id: string;
   name: string;
-  subDomain: string;
   logo?: string;
   city: string;
   country: string;
@@ -13,7 +12,6 @@ export interface SchoolResponse {
 
 export interface SchoolRequest {
   name: string;
-  subDomain: string;
   logo?: string;
   city: string;
   country: string;
@@ -22,10 +20,8 @@ export interface SchoolRequest {
 
 export interface SchoolUpdateRequest {
   name?: string;
-  subDomain?: string;
   logo?: string;
   city?: string;
   country?: string;
   address?: string;
 }
-
