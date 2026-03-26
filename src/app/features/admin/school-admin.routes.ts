@@ -19,6 +19,13 @@ export const SCHOOL_ADMIN_ROUTES: Routes = [
           import('./pages/home/home.page').then((m) => m.HomePage),
       },
       {
+        path: 'school-info',
+        loadComponent: () =>
+          import('./pages/school-info/school-info.page').then(
+            (m) => m.SchoolInfoPage
+          ),
+      },
+      {
         path: 'team',
         loadComponent: () =>
           import('./pages/team/team.page').then((m) => m.TeamPage),

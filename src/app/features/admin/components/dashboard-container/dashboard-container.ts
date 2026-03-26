@@ -39,6 +39,7 @@ export class DashboardContainer implements OnInit {
 
   navItems = [
     { label: 'Accueil', route: '/schoolAdmin/home', icon: 'fa-solid fa-house' },
+    { label: 'Mon École', route: '/schoolAdmin/school-info', icon: 'fa-solid fa-school' },
     { label: 'Équipe', route: '/schoolAdmin/team', icon: 'fa-solid fa-users' },
     { label: 'Cours', route: '/schoolAdmin/courses', icon: 'fa-solid fa-book' },
     { label: 'Langues', route: '/schoolAdmin/languages', icon: 'fa-solid fa-globe' },
