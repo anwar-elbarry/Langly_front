@@ -11,12 +11,14 @@ import { TableComponent } from '../../../../shared/ui/table/table';
 import { ToastService } from '../../../../shared/ui/toast/toast.service';
 import { Store } from '@ngrx/store';
 import { selectCurrentUser } from '../../../../core/store/selectors/auth.selectors';
+import { SearchFilterBarComponent, FilterConfig } from '../../../../shared/ui/search-filter-bar/search-filter-bar';
 import { RoleResponse } from '../../models/role.model';
 import { SchoolResponse } from '../../models/school.model';
 import { EmailPreview, UserRequest, UserResponse, UserUpdateRequest } from '../../models/user.model';
 import { SchoolsService } from '../../services/schools.service';
 import { UsersService } from '../../services/users.service';
 import { userStatusClass } from '../../utils/status.utils';
+import { RolesService } from '../../services/roles.service';
 
 @Component({
   selector: 'app-users-page',
@@ -30,12 +32,14 @@ import { userStatusClass } from '../../utils/status.utils';
     FormFieldComponent,
     InputComponent,
     SpinnerComponent,
+    SearchFilterBarComponent,
   ],
   templateUrl: './users.page.html',
 })
 export class UsersPage implements OnInit {
   private usersService = inject(UsersService);
   private schoolsService = inject(SchoolsService);
+  private rolesService = inject(RolesService);
   private toast = inject(ToastService);
   private store = inject(Store);
 
@@ -46,12 +50,49 @@ export class UsersPage implements OnInit {
   users = signal<UserResponse[]>([]);
   schools = signal<SchoolResponse[]>([]);
   roles = signal<RoleResponse[]>([]);
+  searchQuery = signal('');
   roleFilter = signal('');
   schoolFilter = signal('');
+  schoolSearchTerm = signal('');
 
   page = signal(0);
   pageSize = signal(10);
-  totalElements = signal(0);
+  filteredUsers = computed(() => {
+    let result = this.users();
+    const q = this.searchQuery().trim().toLowerCase();
+    if (q) {
+      result = result.filter((u) => {
+        const fullName = `${u.firstName || ''} ${u.lastName || ''}`.trim().toLowerCase();
+        return (
+          fullName.includes(q) ||
+          (u.email || '').toLowerCase().includes(q) ||
+          (u.phoneNumber || '').toLowerCase().includes(q)
+        );
+      });
+    }
+    const role = this.roleFilter();
+    if (role) result = result.filter((u) => u.role?.name === role);
+    const schoolId = this.schoolFilter();
+    if (schoolId) result = result.filter((u) => u.schoolId === schoolId);
+    return result;
+  });
+
+  totalElements = computed(() => this.filteredUsers().length);
+  totalPages = computed(() => Math.max(1, Math.ceil(this.totalElements() / this.pageSize())));
+
+  paginatedUsers = computed(() => {
+    const start = this.page() * this.pageSize();
+    return this.filteredUsers().slice(start, start + this.pageSize());
+  });
+
+  filteredSchoolsForCreate = computed(() => {
+    const term = this.normalize(this.schoolSearchTerm());
+    return this.schools().filter((school) => {
+      if (!term) return true;
+      const name = this.normalize(school.name);
+      return name.includes(term);
+    });
+  });
 
   modalOpen = signal(false);
   editingUserId = signal<string | null>(null);
@@ -60,14 +101,11 @@ export class UsersPage implements OnInit {
   emailPreviewOpen = signal(false);
   emailPreview = signal<EmailPreview | null>(null);
 
-  totalPages = computed(() => Math.max(1, Math.ceil(this.totalElements() / this.pageSize())));
-
   form = new FormGroup({
-    firstName: new FormControl(''),
-    lastName: new FormControl(''),
+    firstName: new FormControl('', Validators.required),
+    lastName: new FormControl('', Validators.required),
     email: new FormControl('', [Validators.required, Validators.email]),
     phoneNumber: new FormControl(''),
-    profile: new FormControl(''),
     password: new FormControl(''),
     roleName: new FormControl('', Validators.required),
     schoolId: new FormControl('', Validators.required),
@@ -80,47 +118,18 @@ export class UsersPage implements OnInit {
 
   loadDictionaries(): void {
     this.schoolsService.getAll().subscribe({ next: (schools) => this.schools.set(schools) });
+    this.rolesService.getAll().subscribe({ next: (roles) => this.roles.set(roles) });
   }
 
   loadUsers(): void {
     this.loading.set(true);
-    const role = this.roleFilter();
-    const schoolId = this.schoolFilter();
-
-    if (schoolId) {
-      this.usersService
-        .getAllBySchool(schoolId)
-        .pipe(finalize(() => this.loading.set(false)))
-        .subscribe({
-          next: (users) => {
-            const filtered = role ? users.filter((u) => u.role?.name === role) : users;
-            this.users.set(filtered);
-            this.totalElements.set(filtered.length);
-          },
-        });
-      return;
-    }
-
-    if (role) {
-      this.usersService
-        .getAllByRole(role)
-        .pipe(finalize(() => this.loading.set(false)))
-        .subscribe({
-          next: (users) => {
-            this.users.set(users);
-            this.totalElements.set(users.length);
-          },
-        });
-      return;
-    }
-
     this.usersService
-      .getAll(this.page(), this.pageSize())
+      .getAll(0, 1000)
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: (response) => {
-          this.users.set(response.content || []);
-          this.totalElements.set(response.totalElements || 0);
+          const content = Array.isArray((response as any).content) ? (response as any).content : (response as any);
+          this.users.set(content || []);
         },
       });
   }
@@ -128,13 +137,22 @@ export class UsersPage implements OnInit {
   onChangeRoleFilter(value: string): void {
     this.roleFilter.set(value);
     this.page.set(0);
-    this.loadUsers();
   }
 
   onChangeSchoolFilter(value: string): void {
     this.schoolFilter.set(value);
     this.page.set(0);
-    this.loadUsers();
+  }
+
+  onSearchChange(value: string): void {
+    this.searchQuery.set(value);
+    this.page.set(0);
+  }
+
+  onFilterChange(event: { key: string; value: string }): void {
+    if (event.key === 'role') this.roleFilter.set(event.value);
+    if (event.key === 'school') this.schoolFilter.set(event.value);
+    this.page.set(0);
   }
 
   previousPage(): void {
@@ -153,7 +171,9 @@ export class UsersPage implements OnInit {
     this.editingUserId.set(null);
     this.setFormMode(false);
     this.form.reset();
+    this.schoolSearchTerm.set('');
     this.modalOpen.set(true);
+    this.page.set(0);
   }
 
   openEdit(user: UserResponse): void {
@@ -164,7 +184,6 @@ export class UsersPage implements OnInit {
       lastName: user.lastName || '',
       email: user.email || '',
       phoneNumber: user.phoneNumber || '',
-      profile: user.profile || '',
       password: '',
       roleName: user.role?.name || '',
       schoolId: user.schoolId || '',
@@ -218,7 +237,6 @@ export class UsersPage implements OnInit {
       lastName: this.form.value.lastName || '',
       email: this.form.value.email || '',
       phoneNumber: this.form.value.phoneNumber || '',
-      profile: this.form.value.profile || '',
       roleName: this.form.value.roleName || '',
       schoolId: this.form.value.schoolId || '',
     };
@@ -234,7 +252,6 @@ export class UsersPage implements OnInit {
       lastName: this.form.value.lastName || '',
       email: this.form.value.email || '',
       phoneNumber: this.form.value.phoneNumber || '',
-      profile: this.form.value.profile || '',
     };
     if (this.form.value.password) payload.password = this.form.value.password;
     return this.usersService.update(id, payload);
@@ -278,10 +295,45 @@ export class UsersPage implements OnInit {
     return this.schools().find((school) => school.id === id)?.name || id;
   }
 
+  schoolLogoById(id?: string): string | null {
+    if (!id) return null;
+    return this.schools().find((school) => school.id === id)?.logo || null;
+  }
+
+  userInitials(user: UserResponse): string {
+    const first = (user.firstName || '').trim();
+    const last = (user.lastName || '').trim();
+    const firstInitial = first ? first[0] : '';
+    const lastInitial = last ? last[0] : '';
+    const initials = `${firstInitial}${lastInitial}` || (user.email ? user.email[0] : '?');
+    return initials.toUpperCase();
+  }
+
+  filterConfigs = computed<FilterConfig[]>(() => [
+    {
+      key: 'role',
+      label: 'Tous les rôles',
+      options: this.roles().map((r) => ({ value: r.name, label: r.name })),
+    },
+    {
+      key: 'school',
+      label: 'Toutes les écoles',
+      options: this.schools().map((s) => ({ value: s.id, label: s.name })),
+    },
+  ]);
+
   closeEmailPreview(): void {
     this.emailPreviewOpen.set(false);
     this.emailPreview.set(null);
   }
 
   userStatusClass = userStatusClass;
+
+  private normalize(value?: string): string {
+    return (value || '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .trim();
+  }
 }

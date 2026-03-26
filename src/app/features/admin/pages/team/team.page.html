@@ -11,12 +11,12 @@
 
 <!-- Search & Tabs -->
 <div class="mb-4 flex flex-wrap items-center gap-3">
-  <div class="relative flex-1 max-w-sm">
-    <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-xs text-gray-400 pointer-events-none"></i>
-    <input type="text"
-      class="w-full rounded-lg border border-gray-300 py-2 pl-9 pr-3 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+  <div class="flex-1 min-w-[240px] max-w-sm">
+    <app-search-filter-bar
       placeholder="Rechercher par nom ou email..."
-      (input)="onSearch($event)" />
+      [filters]="[]"
+      (searchChange)="onSearchChange($event)"
+    />
   </div>
   <div class="flex gap-1 rounded-lg bg-gray-100 p-1">
     @for (tab of tabs; track tab.value) {
@@ -51,7 +51,18 @@
       <tbody>
         @for (u of paginatedUsers(); track u.id) {
           <tr>
-            <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ u.firstName }} {{ u.lastName }}</td>
+            <td class="px-4 py-3 text-sm font-medium text-gray-900">
+              <div class="flex items-center gap-3">
+                <div class="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-gray-100 text-xs font-semibold text-gray-600">
+                  @if (u.profile) {
+                    <img [src]="profileUrl(u)" alt="Avatar {{ u.firstName }}" class="h-full w-full object-cover" />
+                  } @else {
+                    <span>{{ userInitials(u) }}</span>
+                  }
+                </div>
+                <span>{{ u.firstName }} {{ u.lastName }}</span>
+              </div>
+            </td>
             <td class="px-4 py-3 text-sm text-gray-600">{{ u.email }}</td>
             <td class="px-4 py-3 text-sm text-gray-600">{{ u.phoneNumber || '—' }}</td>
             <td class="px-4 py-3">

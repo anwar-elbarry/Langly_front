@@ -9,29 +9,14 @@
   </app-button>
 </div>
 
-<!-- Filters -->
-<div class="mb-4 flex flex-wrap items-center gap-3">
-  <select
-    class="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
-    [value]="roleFilter()"
-    (change)="onChangeRoleFilter($any($event.target).value)"
-  >
-    <option value="">Tous les Rôles</option>
-    @for (role of roles(); track role.id) {
-      <option [value]="role.name">{{ role.name }}</option>
-    }
-  </select>
-
-  <select
-    class="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
-    [value]="schoolFilter()"
-    (change)="onChangeSchoolFilter($any($event.target).value)"
-  >
-    <option value="">Toutes les Écoles</option>
-    @for (school of schools(); track school.id) {
-      <option [value]="school.id">{{ school.name }}</option>
-    }
-  </select>
+<!-- Search & Filters -->
+<div class="mb-4">
+  <app-search-filter-bar
+    placeholder="Rechercher par nom, email ou téléphone..."
+    [filters]="filterConfigs()"
+    (searchChange)="onSearchChange($event)"
+    (filterChange)="onFilterChange($event)"
+  />
 </div>
 
 @if (loading()) {
@@ -53,13 +38,35 @@
         </tr>
       </thead>
       <tbody>
-        @for (u of users(); track u.id) {
+        @for (u of paginatedUsers(); track u.id) {
           <tr>
-            <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ u.firstName }} {{ u.lastName }}</td>
+            <td class="px-4 py-3 text-sm font-medium text-gray-900">
+              <div class="flex items-center gap-3">
+                <div class="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-gray-100 text-xs font-semibold text-gray-600">
+                  @if (u.profile) {
+                    <img [src]="u.profile" alt="Avatar {{ u.firstName }}" class="h-full w-full object-cover" />
+                  } @else {
+                    <span>{{ userInitials(u) }}</span>
+                  }
+                </div>
+                <span>{{ u.firstName }} {{ u.lastName }}</span>
+              </div>
+            </td>
             <td class="px-4 py-3 text-sm text-gray-600">{{ u.email }}</td>
             <td class="px-4 py-3 text-sm text-gray-600">{{ u.phoneNumber || '—' }}</td>
             <td class="px-4 py-3"><span [class]="userStatusClass(u.role?.name || '')">{{ u.role?.name }}</span></td>
-            <td class="px-4 py-3 text-sm text-gray-600">{{ schoolNameById(u.schoolId) }}</td>
+            <td class="px-4 py-3 text-sm text-gray-600">
+              <div class="flex items-center gap-2">
+                <div class="flex h-8 w-8 items-center justify-center overflow-hidden rounded-md bg-gray-100 text-xs font-semibold text-gray-600">
+                  @if (schoolLogoById(u.schoolId); as logo) {
+                    <img [src]="logo" alt="Logo école" class="h-full w-full object-cover" />
+                  } @else {
+                    <span>{{ (schoolNameById(u.schoolId) || '?').slice(0, 1) }}</span>
+                  }
+                </div>
+                <span>{{ schoolNameById(u.schoolId) }}</span>
+              </div>
+            </td>
             <td class="px-4 py-3"><span [class]="userStatusClass(u.status || 'ACTIVE')">{{ u.status || 'ACTIVE' }}</span></td>
             <td class="px-4 py-3 text-right">
               <div class="flex items-center justify-end gap-2">
@@ -110,10 +117,10 @@
 
   <form [formGroup]="form" class="space-y-4 p-1">
     <div class="grid grid-cols-2 gap-4">
-      <app-form-field label="Prénom">
+      <app-form-field label="Prénom" [required]="true">
         <app-input formControlName="firstName" placeholder="Prénom" />
       </app-form-field>
-      <app-form-field label="Nom">
+      <app-form-field label="Nom" [required]="true">
         <app-input formControlName="lastName" placeholder="Nom" />
       </app-form-field>
     </div>
@@ -134,12 +141,24 @@
         </select>
       </app-form-field>
       <app-form-field label="École" [required]="true">
+        <input
+          type="text"
+          class="mb-2 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+          placeholder="Rechercher une école par nom..."
+          [value]="schoolSearchTerm()"
+          (input)="schoolSearchTerm.set($any($event.target).value)"
+        />
         <select formControlName="schoolId" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none">
           <option value="">Sélectionner une école</option>
-          @for (school of schools(); track school.id) {
+          @for (school of filteredSchoolsForCreate(); track school.id) {
             <option [value]="school.id">{{ school.name }}</option>
           }
         </select>
+        @if (filteredSchoolsForCreate().length === 0) {
+          <p class="mt-2 text-xs font-medium text-gray-500">
+            {{ schoolSearchTerm() ? 'Aucune école ne correspond à votre recherche.' : 'Aucune école disponible.' }}
+          </p>
+        }
       </app-form-field>
     }
 
@@ -148,10 +167,6 @@
         <app-input type="password" formControlName="password" placeholder="Laisser vide pour ne pas modifier" />
       </app-form-field>
     }
-
-    <app-form-field label="Profil">
-      <app-input formControlName="profile" placeholder="URL de la photo de profil" />
-    </app-form-field>
   </form>
 
   <div class="modal-footer">
