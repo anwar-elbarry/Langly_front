@@ -12,7 +12,6 @@ export type InvoiceStatus = 'UNPAID' | 'PARTIALLY_PAID' | 'PAID';
 
 export type DiscountType = 'PERCENTAGE' | 'FIXED_AMOUNT';
 
-export type FeeType = 'REGISTRATION' | 'PLACEMENT_TEST' | 'TUITION';
 
 export type InstallmentPlan = 'FULL' | 'TWO_PARTS' | 'THREE_PARTS';
 
@@ -44,11 +43,6 @@ export const INSTALLMENT_PLANS: { value: InstallmentPlan; label: string }[] = [
   { value: 'THREE_PARTS', label: '3 versements' },
 ];
 
-export const FEE_TYPES: { value: FeeType; label: string }[] = [
-  { value: 'REGISTRATION', label: 'Frais d\'inscription' },
-  { value: 'PLACEMENT_TEST', label: 'Test de niveau' },
-  { value: 'TUITION', label: 'Scolarité' },
-];
 
 export const DISCOUNT_TYPES: { value: DiscountType; label: string }[] = [
   { value: 'PERCENTAGE', label: 'Pourcentage' },
