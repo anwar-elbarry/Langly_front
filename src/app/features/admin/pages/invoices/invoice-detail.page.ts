@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { DatePipe, DecimalPipe } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -16,9 +16,9 @@ import { invoiceStatusClass, invoiceStatusLabel, scheduleStatusClass, scheduleSt
 
 @Component({
   selector: 'app-invoice-detail-page',
-  standalone: true,
   imports: [
-    CommonModule,
+    DatePipe,
+    DecimalPipe,
     ReactiveFormsModule,
     TableComponent,
     ButtonComponent,

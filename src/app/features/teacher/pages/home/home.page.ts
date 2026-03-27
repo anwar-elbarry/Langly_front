@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
@@ -9,8 +8,7 @@ import { TeacherOverviewResponse } from '../../models/teacher.model';
 
 @Component({
   selector: 'app-home-page',
-  standalone: true,
-  imports: [CommonModule, SpinnerComponent, ButtonComponent],
+  imports: [SpinnerComponent, ButtonComponent],
   templateUrl: './home.page.html',
 })
 export class HomePage implements OnInit {

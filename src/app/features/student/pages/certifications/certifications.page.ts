@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { getLanguageFlagUrl } from '../../../admin/models/enums';
 import { CertificationService } from '../../services/certification.service';
@@ -6,8 +5,7 @@ import { CertificationResponse } from '../../models/student.model';
 
 @Component({
     selector: 'app-certifications',
-    standalone: true,
-    imports: [CommonModule],
+    imports: [],
     templateUrl: './certifications.page.html',
 })
 export class CertificationsPage implements OnInit {

@@ -9,7 +9,6 @@ import { CourseService } from '../../services/course.service';
 
 @Component({
   selector: 'app-languages-page',
-  standalone: true,
   imports: [SpinnerComponent],
   templateUrl: './languages.page.html',
 })

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { DatePipe, NgClass, UpperCasePipe } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -13,8 +13,7 @@ import { ToastService } from '../../../../shared/ui/toast/toast.service';
 
 @Component({
   selector: 'app-subscription-page',
-  standalone: true,
-  imports: [CommonModule, ButtonComponent, ModalComponent],
+  imports: [DatePipe, NgClass, UpperCasePipe, ButtonComponent, ModalComponent],
   templateUrl: './subscription.page.html',
 })
 export class SubscriptionPage implements OnInit {

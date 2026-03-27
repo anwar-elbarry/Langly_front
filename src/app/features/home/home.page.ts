@@ -1,8 +1,6 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { AsyncPipe } from '@angular/common';
-import { map } from 'rxjs';
 import { selectIsAuthenticated, selectUserRole } from '../../core/store/selectors/auth.selectors';
 
 const ROLE_DASHBOARD_MAP: Record<string, string> = {
@@ -14,8 +12,7 @@ const ROLE_DASHBOARD_MAP: Record<string, string> = {
 
 @Component({
   selector: 'app-home',
-  standalone: true,
-  imports: [RouterLink, AsyncPipe],
+  imports: [RouterLink],
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.css']
 })
@@ -23,10 +20,11 @@ export class HomePage {
   private store = inject(Store);
 
   readonly year = new Date().getFullYear();
-  readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
-  readonly dashboardRoute$ = this.store.select(selectUserRole).pipe(
-    map(role => ROLE_DASHBOARD_MAP[role] ?? '/login')
-  );
+  readonly isAuthenticated = this.store.selectSignal(selectIsAuthenticated);
+  readonly dashboardRoute = computed(() => {
+    const role = this.store.selectSignal(selectUserRole)();
+    return ROLE_DASHBOARD_MAP[role] ?? '/login';
+  });
 
   features = [
     {

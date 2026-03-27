@@ -1,10 +1,10 @@
-@if (visible) {
-<div class="ui-alert" [class.ui-alert-info]="type === 'info'" [class.ui-alert-success]="type === 'success'"
-    [class.ui-alert-warning]="type === 'warning'" [class.ui-alert-error]="type === 'error'">
+@if (visible()) {
+<div class="ui-alert" [class.ui-alert-info]="type() === 'info'" [class.ui-alert-success]="type() === 'success'"
+    [class.ui-alert-warning]="type() === 'warning'" [class.ui-alert-error]="type() === 'error'">
 
     <!-- Icons -->
     <div class="ui-alert-icon">
-        @switch (type) {
+        @switch (type()) {
         @case ('info') {
         <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
             <circle cx="9" cy="9" r="8" stroke="currentColor" stroke-width="1.5" />
@@ -40,7 +40,7 @@
         <ng-content />
     </div>
 
-    @if (dismissible) {
+    @if (dismissible()) {
     <button class="ui-alert-close" (click)="dismiss()" aria-label="Dismiss">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
             <path d="M3.5 3.5L10.5 10.5M10.5 3.5L3.5 10.5" stroke="currentColor" stroke-width="1.5"

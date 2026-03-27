@@ -1,5 +1,4 @@
 import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
 
 import { ButtonComponent } from '../../../shared/ui/button/button';
 import { FormFieldComponent } from '../../../shared/ui/form-field/form-field';
@@ -19,9 +18,7 @@ import { TableComponent } from '../../../shared/ui/table/table';
 
 @Component({
     selector: 'app-ui-test',
-    standalone: true,
     imports: [
-        CommonModule,
         ButtonComponent,
         FormFieldComponent,
         InputComponent,

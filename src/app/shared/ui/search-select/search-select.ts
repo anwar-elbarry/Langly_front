@@ -1,5 +1,4 @@
-import { Component, Input, forwardRef, signal, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, input, forwardRef, signal, computed } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormsModule } from '@angular/forms';
 
 export interface Option {
@@ -9,8 +8,7 @@ export interface Option {
 
 @Component({
     selector: 'app-search-select',
-    standalone: true,
-    imports: [CommonModule, FormsModule],
+    imports: [FormsModule],
     templateUrl: './search-select.html',
     styleUrl: './search-select.css',
     providers: [
@@ -18,18 +16,18 @@ export interface Option {
     ]
 })
 export class SearchSelectComponent implements ControlValueAccessor {
-    @Input() disabled = false;
-    @Input() error = false;
-    @Input() placeholder = 'Search and select...';
-    @Input() options: Option[] = [];
+    readonly error = input(false);
+    readonly placeholder = input('Search and select...');
+    readonly options = input<Option[]>([]);
 
+    disabled = signal(false);
     searchTerm = signal('');
     showDropdown = signal(false);
     selected = signal<Option | null>(null);
 
     filtered = computed(() => {
         const term = this.searchTerm().toLowerCase();
-        return this.options.filter(o => o.label.toLowerCase().includes(term));
+        return this.options().filter(o => o.label.toLowerCase().includes(term));
     });
 
     onChange: (val: any) => void = () => { };
@@ -37,7 +35,7 @@ export class SearchSelectComponent implements ControlValueAccessor {
 
     writeValue(val: any): void {
         if (val !== undefined && val !== null) {
-            const option = this.options.find(o => o.id === val);
+            const option = this.options().find(o => o.id === val);
             if (option) {
                 this.selected.set(option);
                 this.searchTerm.set(option.label);
@@ -53,7 +51,7 @@ export class SearchSelectComponent implements ControlValueAccessor {
 
     registerOnChange(fn: (val: any) => void): void { this.onChange = fn; }
     registerOnTouched(fn: () => void): void { this.onTouched = fn; }
-    setDisabledState(isDisabled: boolean): void { this.disabled = isDisabled; }
+    setDisabledState(isDisabled: boolean): void { this.disabled.set(isDisabled); }
 
     onInput(event: Event) {
         const val = (event.target as HTMLInputElement).value;

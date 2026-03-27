@@ -34,7 +34,9 @@
             <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ fee.feeAmount | currency:'MAD':'DH ' }}</td>
             <td class="px-4 py-3 text-sm text-gray-600">
               {{ fee.totalPaid | currency:'MAD':'DH ' }}
-              <span class="text-xs text-gray-400" *ngIf="fee.paymentCount > 0">({{ fee.paymentCount }} paiement{{ fee.paymentCount > 1 ? 's' : '' }})</span>
+              @if (fee.paymentCount > 0) {
+                <span class="text-xs text-gray-400">({{ fee.paymentCount }} paiement{{ fee.paymentCount > 1 ? 's' : '' }})</span>
+              }
             </td>
             <td class="px-4 py-3">
               <span [class]="getStatusBadgeClass(fee.status)">{{ getStatusLabel(fee.status) }}</span>

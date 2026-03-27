@@ -1,20 +1,17 @@
-import { Component, Input, Output, EventEmitter, HostListener } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, input, output, HostListener } from '@angular/core';
 
 @Component({
     selector: 'app-modal',
-    standalone: true,
-    imports: [CommonModule],
     templateUrl: './modal.html',
     styleUrl: './modal.css',
 })
 export class ModalComponent {
-    @Input() isOpen = false;
-    @Input() closeOnBackdrop = true;
-    @Output() closed = new EventEmitter<void>();
+    readonly isOpen = input(false);
+    readonly closeOnBackdrop = input(true);
+    readonly closed = output<void>();
 
     onBackdropClick(): void {
-        if (this.closeOnBackdrop) {
+        if (this.closeOnBackdrop()) {
             this.close();
         }
     }
@@ -25,7 +22,7 @@ export class ModalComponent {
 
     @HostListener('document:keydown.escape')
     onEscape(): void {
-        if (this.isOpen) {
+        if (this.isOpen()) {
             this.close();
         }
     }

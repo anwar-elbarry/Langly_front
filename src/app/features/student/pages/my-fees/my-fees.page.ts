@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CurrencyPipe } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { finalize } from 'rxjs';
 import { SpinnerComponent } from '../../../../shared/ui/spinner/spinner';
@@ -9,8 +9,7 @@ import { feeTypeLabel } from '../../../admin/utils/status.utils';
 
 @Component({
   selector: 'app-my-fees-page',
-  standalone: true,
-  imports: [CommonModule, TableComponent, SpinnerComponent],
+  imports: [CurrencyPipe, TableComponent, SpinnerComponent],
   templateUrl: './my-fees.page.html',
 })
 export class MyFeesPage implements OnInit {

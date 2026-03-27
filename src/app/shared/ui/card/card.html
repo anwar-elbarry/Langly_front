@@ -1,7 +1,7 @@
-<div class="ui-card" [class.ui-card-hoverable]="hoverable">
-    @if (imageSrc) {
+<div class="ui-card" [class.ui-card-hoverable]="hoverable()">
+    @if (imageSrc()) {
     <div class="ui-card-image">
-        <img [src]="imageSrc" [alt]="imageAlt" />
+        <img [src]="imageSrc()" [alt]="imageAlt()" />
     </div>
     }
 

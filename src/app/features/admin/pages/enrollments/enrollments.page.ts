@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
@@ -25,9 +25,8 @@ type StatusFilter = 'ALL' | EnrollmentStatus;
 
 @Component({
   selector: 'app-enrollments-page',
-  standalone: true,
   imports: [
-    CommonModule,
+    DatePipe,
     ReactiveFormsModule,
     TableComponent,
     PaginationComponent,

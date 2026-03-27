@@ -1,14 +1,11 @@
-import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, input } from '@angular/core';
 
 @Component({
     selector: 'app-spinner',
-    standalone: true,
-    imports: [CommonModule],
     templateUrl: './spinner.html',
     styleUrl: './spinner.css',
 })
 export class SpinnerComponent {
-    @Input() size: 'sm' | 'md' | 'lg' = 'md';
-    @Input() color: 'accent' | 'white' | 'muted' = 'accent';
+    readonly size = input<'sm' | 'md' | 'lg'>('md');
+    readonly color = input<'accent' | 'white' | 'muted'>('accent');
 }

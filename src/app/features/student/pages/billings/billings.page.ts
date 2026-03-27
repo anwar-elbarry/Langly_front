@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { finalize } from 'rxjs';
 import { StudentBillingService } from '../../services/student-billing.service';
@@ -10,8 +10,7 @@ import { paymentStatusClass, paymentStatusLabel } from '../../../admin/utils/sta
 
 @Component({
   selector: 'app-student-billings',
-  standalone: true,
-  imports: [CommonModule, SpinnerComponent, TableComponent],
+  imports: [DatePipe, SpinnerComponent, TableComponent],
   templateUrl: './billings.page.html',
 })
 export class BillingsPage implements OnInit {

@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -10,8 +9,7 @@ import { StudentService } from '../../services/student.service';
 
 @Component({
   selector: 'app-dashboard-container',
-  standalone: true,
-  imports: [CommonModule, RouterOutlet, DashboardAsideComponent, DashboardHeaderComponent],
+  imports: [RouterOutlet, DashboardAsideComponent, DashboardHeaderComponent],
   templateUrl: './dashboard-container.html',
 })
 export class DashboardContainer implements OnInit {

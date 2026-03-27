@@ -1,37 +1,36 @@
-import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { NgClass } from '@angular/common';
+import { Component, input, output } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { SidebarModel } from '../../core/models/sideBar.model';
 
 @Component({
   selector: 'app-dashboard-aside',
-  standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive],
+  imports: [NgClass, RouterLink, RouterLinkActive],
   templateUrl: './aside.html',
 })
 export class DashboardAsideComponent {
-  @Input() isSidebarOpen = false;
-  @Input() isSidebarCollapsed = false;
+  readonly isSidebarOpen = input(false);
+  readonly isSidebarCollapsed = input(false);
 
-  @Input() navItems: SidebarModel[] = [];
-  @Input() bottomNavItems: SidebarModel[] = [];
+  readonly navItems = input<SidebarModel[]>([]);
+  readonly bottomNavItems = input<SidebarModel[]>([]);
 
-  @Input() logoIcon = 'fa-solid fa-language';
-  @Input() badgeLabel = 'Admin';
-  @Input() roleLabel = 'Administrateur';
+  readonly logoIcon = input('fa-solid fa-language');
+  readonly badgeLabel = input('Admin');
+  readonly roleLabel = input('Administrateur');
 
-  @Input() accentBg = 'bg-blue-50';
-  @Input() accentText = 'text-blue-600';
-  @Input() gradientFrom = 'from-blue-600';
-  @Input() gradientTo = 'to-sky-500';
+  readonly accentBg = input('bg-blue-50');
+  readonly accentText = input('text-blue-600');
+  readonly gradientFrom = input('from-blue-600');
+  readonly gradientTo = input('to-sky-500');
 
-  @Input() fullName = '';
-  @Input() initials = '';
-  @Input() profileImage: string | undefined;
+  readonly fullName = input('');
+  readonly initials = input('');
+  readonly profileImage = input<string | undefined>();
 
-  @Output() closeSidebar = new EventEmitter<void>();
-  @Output() toggleCollapse = new EventEmitter<void>();
-  @Output() logout = new EventEmitter<void>();
+  readonly closeSidebar = output<void>();
+  readonly toggleCollapse = output<void>();
+  readonly logout = output<void>();
 
   onCloseSidebar(): void {
     this.closeSidebar.emit();

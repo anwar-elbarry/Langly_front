@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { DatePipe, DecimalPipe } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
@@ -26,9 +26,9 @@ import { paymentStatusClass } from '../../utils/status.utils';
 
 @Component({
   selector: 'app-subscriptions-page',
-  standalone: true,
   imports: [
-    CommonModule,
+    DatePipe,
+    DecimalPipe,
     FormsModule,
     ReactiveFormsModule,
     TableComponent,

@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
@@ -24,9 +23,7 @@ import { RolesService } from '../../services/roles.service';
 
 @Component({
   selector: 'app-users-page',
-  standalone: true,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     TableComponent,
     ButtonComponent,

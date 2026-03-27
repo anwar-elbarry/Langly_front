@@ -1,5 +1,4 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize, forkJoin } from 'rxjs';
 import { Store } from '@ngrx/store';
@@ -15,9 +14,7 @@ import { selectCurrentUser } from '../../../../core/store/selectors/auth.selecto
 
 @Component({
   selector: 'app-student-settings-page',
-  standalone: true,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     FormFieldComponent,
     InputComponent,

@@ -1,6 +1,6 @@
-<div class="ui-spinner" [class.ui-spinner-sm]="size === 'sm'" [class.ui-spinner-md]="size === 'md'"
-    [class.ui-spinner-lg]="size === 'lg'" [class.ui-spinner-accent]="color === 'accent'"
-    [class.ui-spinner-white]="color === 'white'" [class.ui-spinner-muted]="color === 'muted'">
+<div class="ui-spinner" [class.ui-spinner-sm]="size() === 'sm'" [class.ui-spinner-md]="size() === 'md'"
+    [class.ui-spinner-lg]="size() === 'lg'" [class.ui-spinner-accent]="color() === 'accent'"
+    [class.ui-spinner-white]="color() === 'white'" [class.ui-spinner-muted]="color() === 'muted'">
     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <circle class="ui-spinner-track" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" />
         <path class="ui-spinner-arc" d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" stroke-width="3"

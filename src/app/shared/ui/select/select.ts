@@ -1,14 +1,11 @@
-import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, input } from '@angular/core';
 
 @Component({
     selector: 'app-select',
-    standalone: true,
-    imports: [CommonModule],
     templateUrl: './select.html',
     styleUrl: './select.css',
 })
 export class SelectComponent {
-    @Input() disabled = false;
-    @Input() error = false;
+    readonly disabled = input(false);
+    readonly error = input(false);
 }

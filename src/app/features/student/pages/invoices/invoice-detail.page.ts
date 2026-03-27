@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { DatePipe, DecimalPipe } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs';
@@ -11,8 +11,7 @@ import { invoiceStatusClass, invoiceStatusLabel, scheduleStatusClass, scheduleSt
 
 @Component({
   selector: 'app-student-invoice-detail-page',
-  standalone: true,
-  imports: [CommonModule, TableComponent, ButtonComponent, SpinnerComponent],
+  imports: [DatePipe, DecimalPipe, TableComponent, ButtonComponent, SpinnerComponent],
   templateUrl: './invoice-detail.page.html',
 })
 export class StudentInvoiceDetailPage implements OnInit {

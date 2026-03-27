@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { getLanguageFlagUrl } from '../../../admin/models/enums';
@@ -8,8 +7,7 @@ import { ActiveCourseResponse, CourseMaterialResponse } from '../../models/stude
 
 @Component({
     selector: 'app-course-detail',
-    standalone: true,
-    imports: [CommonModule, RouterLink],
+    imports: [RouterLink],
     templateUrl: './course-detail.page.html',
 })
 export class CourseDetailPage implements OnInit {

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { DatePipe, DecimalPipe } from '@angular/common';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -16,8 +16,7 @@ type TabFilter = 'ALL' | InvoiceStatus;
 
 @Component({
   selector: 'app-invoices-page',
-  standalone: true,
-  imports: [CommonModule, TableComponent, SpinnerComponent, PaginationComponent],
+  imports: [DatePipe, DecimalPipe, TableComponent, SpinnerComponent, PaginationComponent],
   templateUrl: './invoices.page.html',
 })
 export class InvoicesPage implements OnInit {

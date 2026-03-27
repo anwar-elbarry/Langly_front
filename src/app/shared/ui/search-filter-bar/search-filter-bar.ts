@@ -1,5 +1,4 @@
-import { Component, Output, EventEmitter, input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, input, output } from '@angular/core';
 
 export interface FilterConfig {
   key: string;
@@ -9,8 +8,6 @@ export interface FilterConfig {
 
 @Component({
   selector: 'app-search-filter-bar',
-  standalone: true,
-  imports: [CommonModule],
   templateUrl: './search-filter-bar.html',
   styleUrl: './search-filter-bar.css',
 })
@@ -19,8 +16,8 @@ export class SearchFilterBarComponent {
   filters = input<FilterConfig[]>([]);
   showSearch = input(true);
 
-  @Output() searchChange = new EventEmitter<string>();
-  @Output() filterChange = new EventEmitter<{ key: string; value: string }>();
+  readonly searchChange = output<string>();
+  readonly filterChange = output<{ key: string; value: string }>();
 
   onSearch(event: Event) {
     const value = (event.target as HTMLInputElement).value;

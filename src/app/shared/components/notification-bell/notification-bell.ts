@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, ElementRef, HostListener, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription, interval, switchMap, startWith } from 'rxjs';
@@ -7,8 +6,7 @@ import { NotificationResponse } from '../../../core/models/notification.model';
 
 @Component({
   selector: 'app-notification-bell',
-  standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './notification-bell.html',
 })
 export class NotificationBellComponent implements OnInit, OnDestroy {

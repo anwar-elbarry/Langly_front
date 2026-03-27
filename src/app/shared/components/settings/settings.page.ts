@@ -1,5 +1,4 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
 import { Store } from '@ngrx/store';
@@ -13,9 +12,7 @@ import { AuthApi } from '../../../core/store/actions/auth.actions';
 
 @Component({
   selector: 'app-settings-page',
-  standalone: true,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     FormFieldComponent,
     InputComponent,

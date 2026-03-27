@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, inject, OnDestroy, OnInit, signal, computed } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
@@ -10,8 +9,7 @@ import { AttendanceResponse } from '../../models/teacher.model';
 
 @Component({
   selector: 'app-attendance-page',
-  standalone: true,
-  imports: [CommonModule, RouterLink, SpinnerComponent, TableComponent],
+  imports: [RouterLink, SpinnerComponent, TableComponent],
   templateUrl: './attendance.page.html',
 })
 export class AttendancePage implements OnInit {

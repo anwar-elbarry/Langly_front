@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -11,8 +10,7 @@ import { StudentService } from '../../services/student.service';
 
 @Component({
   selector: 'app-alerts-page',
-  standalone: true,
-  imports: [CommonModule, TableComponent, SpinnerComponent],
+  imports: [TableComponent, SpinnerComponent],
   templateUrl: './alerts.page.html',
 })
 export class AlertsPage implements OnInit {

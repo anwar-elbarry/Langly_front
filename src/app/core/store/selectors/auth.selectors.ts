@@ -1,29 +1,12 @@
-import { createFeatureSelector, createSelector } from "@ngrx/store";
-import { AuthState } from "../reducers/auth.reducer";
+import { createSelector } from "@ngrx/store";
+import { authFeature } from "../reducers/auth.reducer";
 
-// Feature selector
-export const selectAuthState = createFeatureSelector<AuthState>('auth');
-
-// Selectors
-export const selectCurrentUser = createSelector(
-    selectAuthState,
-    (state) => state.user
-);
-
-export const selectIsAuthenticated = createSelector(
-    selectAuthState,
-    (state) => state.isAuthenticated
-);
-
-export const selectAuthLoading = createSelector(
-    selectAuthState,
-    (state) => state.isLoading
-);
-
-export const selectAuthError = createSelector(
-    selectAuthState,
-    (state) => state.error
-);
+// Use auto-generated selectors from createFeature()
+export const selectAuthState = authFeature.selectAuthState;
+export const selectCurrentUser = authFeature.selectUser;
+export const selectIsAuthenticated = authFeature.selectIsAuthenticated;
+export const selectAuthLoading = authFeature.selectIsLoading;
+export const selectAuthError = authFeature.selectError;
 
 // Composite selectors
 export const selectUserFullName = createSelector(

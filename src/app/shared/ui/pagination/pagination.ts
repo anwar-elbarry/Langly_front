@@ -1,10 +1,7 @@
-import { Component, Input, Output, EventEmitter, computed, input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, input, output, computed } from '@angular/core';
 
 @Component({
   selector: 'app-pagination',
-  standalone: true,
-  imports: [CommonModule],
   templateUrl: './pagination.html',
   styleUrl: './pagination.css',
 })
@@ -13,8 +10,8 @@ export class PaginationComponent {
   totalItems = input(0);
   pageSize = input(10);
 
-  @Output() pageChange = new EventEmitter<number>();
-  @Output() pageSizeChange = new EventEmitter<number>();
+  readonly pageChange = output<number>();
+  readonly pageSizeChange = output<number>();
 
   readonly pageSizeOptions = [10, 20, 50];
 

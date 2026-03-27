@@ -1,10 +1,10 @@
-<div class="ui-search-select-wrapper" [class.ui-search-select-disabled]="disabled">
+<div class="ui-search-select-wrapper" [class.ui-search-select-disabled]="disabled()">
     <input 
         class="ui-search-select-input" 
-        [class.ui-search-select-error]="error"
+        [class.ui-search-select-error]="error()"
         type="text" 
-        [placeholder]="placeholder" 
-        [disabled]="disabled"
+        [placeholder]="placeholder()" 
+        [disabled]="disabled()"
         [value]="searchTerm()" 
         (input)="onInput($event)" 
         (focus)="showDropdown.set(true)"

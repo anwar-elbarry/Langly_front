@@ -1,15 +1,12 @@
-import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, input } from '@angular/core';
 
 @Component({
   selector: 'app-table',
-  standalone: true,
-  imports: [CommonModule],
   templateUrl: './table.html',
   styleUrl: './table.css',
 })
 export class TableComponent {
-  @Input() striped = false;
-  @Input() hoverable = true;
-  @Input() compact = false;
+  readonly striped = input(false);
+  readonly hoverable = input(true);
+  readonly compact = input(false);
 }

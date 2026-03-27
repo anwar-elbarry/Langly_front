@@ -1,12 +1,12 @@
-import { createReducer, on } from "@ngrx/store";
+import { createFeature, createReducer, on } from "@ngrx/store";
 import { AuthApi, AuthPage } from "../actions/auth.actions";
 import { UserResponse } from "../../../features/auth/models/User.response";
 
 export interface AuthState {
-    user: UserResponse | null;
-    isLoading: boolean;
-    error: string | null;
-    isAuthenticated: boolean;
+    readonly user: UserResponse | null;
+    readonly isLoading: boolean;
+    readonly error: string | null;
+    readonly isAuthenticated: boolean;
 }
 
 export const initialState: AuthState = {
@@ -16,7 +16,9 @@ export const initialState: AuthState = {
     isAuthenticated: false,
 };
 
-export const authReducer = createReducer(
+export const authFeature = createFeature({
+    name: 'auth',
+    reducer: createReducer(
     initialState,
 
     // ── Check Auth ──
@@ -67,4 +69,7 @@ export const authReducer = createReducer(
     on(AuthApi.logoutSuccess, () => ({
         ...initialState,
     })),
-);
+    ),
+});
+
+export const authReducer = authFeature.reducer;

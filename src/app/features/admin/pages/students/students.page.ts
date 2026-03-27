@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -15,8 +15,7 @@ type ProfileFilter = 'ALL' | 'COMPLETE' | 'INCOMPLETE';
 
 @Component({
   selector: 'app-students-page',
-  standalone: true,
-  imports: [CommonModule, TableComponent, SpinnerComponent, PaginationComponent],
+  imports: [DatePipe, TableComponent, SpinnerComponent, PaginationComponent],
   templateUrl: './students.page.html',
 })
 export class StudentsPage implements OnInit {

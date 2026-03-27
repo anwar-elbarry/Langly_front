@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { DatePipe, DecimalPipe } from '@angular/common';
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { SpinnerComponent } from '../../../../shared/ui/spinner/spinner';
@@ -9,8 +9,7 @@ import { paymentStatusClass } from '../../utils/status.utils';
 
 @Component({
   selector: 'app-overview-page',
-  standalone: true,
-  imports: [CommonModule, TableComponent, ButtonComponent, SpinnerComponent],
+  imports: [DatePipe, DecimalPipe, TableComponent, ButtonComponent, SpinnerComponent],
   templateUrl: './overview.page.html',
 })
 export class OverviewPage implements OnInit {

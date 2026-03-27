@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
@@ -16,9 +15,7 @@ import { schoolStatusClass } from '../../utils/status.utils';
 
 @Component({
   selector: 'app-schools-page',
-  standalone: true,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     TableComponent,
     ButtonComponent,

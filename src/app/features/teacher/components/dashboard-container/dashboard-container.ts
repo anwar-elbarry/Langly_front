@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -9,8 +8,7 @@ import { DashboardHeaderComponent } from '../../../../shared/components/dashboar
 
 @Component({
   selector: 'app-dashboard-container',
-  standalone: true,
-  imports: [CommonModule, RouterOutlet, DashboardAsideComponent, DashboardHeaderComponent],
+  imports: [RouterOutlet, DashboardAsideComponent, DashboardHeaderComponent],
   templateUrl: './dashboard-container.html',
   styleUrl: './dashboard-container.css',
 })

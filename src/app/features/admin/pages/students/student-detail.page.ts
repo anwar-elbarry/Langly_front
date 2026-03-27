@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { finalize, forkJoin } from 'rxjs';
@@ -19,8 +19,7 @@ type Tab = 'enrollments' | 'billings';
 
 @Component({
   selector: 'app-student-detail-page',
-  standalone: true,
-  imports: [CommonModule, SpinnerComponent, TableComponent],
+  imports: [DatePipe, SpinnerComponent, TableComponent],
   templateUrl: './student-detail.page.html',
 })
 export class StudentDetailPage implements OnInit {

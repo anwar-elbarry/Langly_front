@@ -1,22 +1,19 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, input, output, signal } from '@angular/core';
 
 @Component({
     selector: 'app-alert',
-    standalone: true,
-    imports: [CommonModule],
     templateUrl: './alert.html',
     styleUrl: './alert.css',
 })
 export class AlertComponent {
-    @Input() type: 'info' | 'success' | 'warning' | 'error' = 'info';
-    @Input() dismissible = false;
-    @Output() dismissed = new EventEmitter<void>();
+    readonly type = input<'info' | 'success' | 'warning' | 'error'>('info');
+    readonly dismissible = input(false);
+    readonly dismissed = output<void>();
 
-    visible = true;
+    visible = signal(true);
 
     dismiss(): void {
-        this.visible = false;
+        this.visible.set(false);
         this.dismissed.emit();
     }
 }

@@ -127,41 +127,42 @@
         @if (paymentMethod() === 'BANK_TRANSFER') {
           <div class="mt-4 rounded-lg bg-white p-4 border border-slate-200">
             <h4 class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Informations Bancaires</h4>
-            <div class="space-y-2 text-sm text-slate-700" *ngIf="!bankLoading(); else bankLoadingTpl">
-              <div class="flex justify-between">
-                <span class="text-slate-500">Banque:</span>
-                <span class="font-medium">{{ bankInfo()?.bankName || '—' }}</span>
-              </div>
-              <div class="flex justify-between">
-                <span class="text-slate-500">Titulaire:</span>
-                <span class="font-medium">{{ bankInfo()?.accountHolder || '—' }}</span>
-              </div>
-              <div class="flex justify-between">
-                <span class="text-slate-500">IBAN:</span>
-                <span class="font-medium font-mono">{{ bankInfo()?.iban || '—' }}</span>
-              </div>
-              <div class="flex justify-between">
-                <span class="text-slate-500">Motif:</span>
-                <span class="font-medium font-mono">{{ formattedMotive() }}</span>
-              </div>
-              @if (bankInfo()?.note) {
-                <div class="mt-3 bg-blue-50 text-blue-800 p-2 rounded text-xs">
-                  <i class="fa-solid fa-circle-info mr-1"></i>
-                  {{ bankInfo()?.note }}
+            @if (!bankLoading()) {
+              <div class="space-y-2 text-sm text-slate-700">
+                <div class="flex justify-between">
+                  <span class="text-slate-500">Banque:</span>
+                  <span class="font-medium">{{ bankInfo()?.bankName || '—' }}</span>
                 </div>
-              } @else {
-                <div class="mt-3 bg-blue-50 text-blue-800 p-2 rounded text-xs">
-                  <i class="fa-solid fa-circle-info mr-1"></i>
-                  Veuillez inclure le motif dans votre virement pour un traitement rapide.
+                <div class="flex justify-between">
+                  <span class="text-slate-500">Titulaire:</span>
+                  <span class="font-medium">{{ bankInfo()?.accountHolder || '—' }}</span>
                 </div>
-              }
-            </div>
-            <ng-template #bankLoadingTpl>
+                <div class="flex justify-between">
+                  <span class="text-slate-500">IBAN:</span>
+                  <span class="font-medium font-mono">{{ bankInfo()?.iban || '—' }}</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-slate-500">Motif:</span>
+                  <span class="font-medium font-mono">{{ formattedMotive() }}</span>
+                </div>
+                @if (bankInfo()?.note) {
+                  <div class="mt-3 bg-blue-50 text-blue-800 p-2 rounded text-xs">
+                    <i class="fa-solid fa-circle-info mr-1"></i>
+                    {{ bankInfo()?.note }}
+                  </div>
+                } @else {
+                  <div class="mt-3 bg-blue-50 text-blue-800 p-2 rounded text-xs">
+                    <i class="fa-solid fa-circle-info mr-1"></i>
+                    Veuillez inclure le motif dans votre virement pour un traitement rapide.
+                  </div>
+                }
+              </div>
+            } @else {
               <div class="flex items-center gap-2 text-xs text-slate-500">
                 <div class="h-4 w-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
                 Chargement des informations bancaires...
               </div>
-            </ng-template>
+            }
           </div>
         }
       </div>

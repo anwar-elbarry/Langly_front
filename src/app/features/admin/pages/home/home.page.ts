@@ -1,9 +1,9 @@
-import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { finalize, forkJoin } from 'rxjs';
 import { selectCurrentUser } from '../../../../core/store/selectors/auth.selectors';
+import { DecimalPipe } from '@angular/common';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration } from 'chart.js';
 import { SpinnerComponent } from '../../../../shared/ui/spinner/spinner';
@@ -21,8 +21,7 @@ import { Level, LEVELS } from '../../models/enums';
 
 @Component({
   selector: 'app-home-page',
-  standalone: true,
-  imports: [CommonModule, BaseChartDirective, SpinnerComponent, ButtonComponent],
+  imports: [DecimalPipe, BaseChartDirective, SpinnerComponent, ButtonComponent],
   templateUrl: './home.page.html',
 })
 export class HomePage implements OnInit {

@@ -1,28 +1,28 @@
 <!-- Sidebar -->
 <aside
   class="fixed inset-y-0 left-0 z-40 flex flex-col border-r border-gray-200 bg-white transition-all duration-300 lg:translate-x-0"
-  [class.-translate-x-full]="!isSidebarOpen"
-  [class.translate-x-0]="isSidebarOpen"
-  [class.w-72]="!isSidebarCollapsed"
-  [class.w-[72px]]="isSidebarCollapsed"
+  [class.-translate-x-full]="!isSidebarOpen()"
+  [class.translate-x-0]="isSidebarOpen()"
+  [class.w-72]="!isSidebarCollapsed()"
+  [class.w-[72px]]="isSidebarCollapsed()"
 >
   <!-- Logo area -->
   <div
     class="flex items-center border-b border-gray-200 px-5 py-5"
-    [class.justify-between]="!isSidebarCollapsed"
-    [class.justify-center]="isSidebarCollapsed"
+    [class.justify-between]="!isSidebarCollapsed()"
+    [class.justify-center]="isSidebarCollapsed()"
   >
-    @if (!isSidebarCollapsed) {
+    @if (!isSidebarCollapsed()) {
       <div class="flex items-center gap-2.5">
         <div
           class="flex h-9 w-9 items-center justify-center rounded-lg bg-linear-to-br"
-          [ngClass]="[gradientFrom, gradientTo]"
+          [ngClass]="[gradientFrom(), gradientTo()]"
         >
-          <i [class]="logoIcon + ' text-base text-white'"></i>
+          <i [class]="logoIcon() + ' text-base text-white'"></i>
         </div>
         <div>
           <span class="text-[15px] font-bold tracking-tight text-gray-900">Langly</span>
-          <span class="ml-1 text-[10px] font-medium uppercase tracking-wider text-gray-400">{{ badgeLabel }}</span>
+          <span class="ml-1 text-[10px] font-medium uppercase tracking-wider text-gray-400">{{ badgeLabel() }}</span>
         </div>
       </div>
       <button
@@ -35,38 +35,38 @@
     } @else {
       <div
         class="flex h-9 w-9 items-center justify-center rounded-lg bg-linear-to-br"
-        [ngClass]="[gradientFrom, gradientTo]"
+        [ngClass]="[gradientFrom(), gradientTo()]"
       >
-        <i [class]="logoIcon + ' text-base text-white'"></i>
+        <i [class]="logoIcon() + ' text-base text-white'"></i>
       </div>
     }
   </div>
 
   <!-- Main nav -->
   <div class="flex flex-1 flex-col overflow-y-auto px-3 pt-5">
-    @if (!isSidebarCollapsed) {
+    @if (!isSidebarCollapsed()) {
       <p class="mb-2 px-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">
         Menu Principal
       </p>
     }
 
     <nav class="flex flex-col gap-1">
-      @for (item of navItems; track item.route) {
+      @for (item of navItems(); track item.route) {
         <a
           [routerLink]="item.route"
           routerLinkActive
           #rla="routerLinkActive"
           class="group flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] font-medium text-gray-600 transition-colors duration-150 hover:bg-gray-100 hover:text-gray-900"
-          [ngClass]="rla.isActive ? [accentBg, accentText, 'font-semibold!'] : []"
-          [class.justify-center]="isSidebarCollapsed"
-          [title]="isSidebarCollapsed ? item.label : ''"
+          [ngClass]="rla.isActive ? [accentBg(), accentText(), 'font-semibold!'] : []"
+          [class.justify-center]="isSidebarCollapsed()"
+          [title]="isSidebarCollapsed() ? item.label : ''"
           (click)="onCloseSidebar()"
         >
           <i
             [class]="item.icon + ' w-5 text-center text-[15px] text-gray-400 transition-colors group-hover:text-gray-600'"
-            [ngClass]="rla.isActive ? [accentText] : []"
+            [ngClass]="rla.isActive ? [accentText()] : []"
           ></i>
-          @if (!isSidebarCollapsed) {
+          @if (!isSidebarCollapsed()) {
             <span>{{ item.label }}</span>
           }
         </a>
@@ -75,28 +75,28 @@
 
     <!-- Bottom nav section -->
     <div class="mt-auto border-t border-gray-200 pt-4 pb-3">
-      @if (!isSidebarCollapsed) {
+      @if (!isSidebarCollapsed()) {
         <p class="mb-2 px-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">
           Support
         </p>
       }
       <nav class="flex flex-col gap-1">
-        @for (item of bottomNavItems; track item.route) {
+        @for (item of bottomNavItems(); track item.route) {
           <a
             [routerLink]="item.route"
             routerLinkActive
             #rlaBottom="routerLinkActive"
             class="group flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] font-medium text-gray-600 transition-colors duration-150 hover:bg-gray-100 hover:text-gray-900"
-            [ngClass]="rlaBottom.isActive ? [accentBg, accentText, 'font-semibold!'] : []"
-            [class.justify-center]="isSidebarCollapsed"
-            [title]="isSidebarCollapsed ? item.label : ''"
+            [ngClass]="rlaBottom.isActive ? [accentBg(), accentText(), 'font-semibold!'] : []"
+            [class.justify-center]="isSidebarCollapsed()"
+            [title]="isSidebarCollapsed() ? item.label : ''"
             (click)="onCloseSidebar()"
           >
             <i
               [class]="item.icon + ' w-5 text-center text-[15px] text-gray-400 transition-colors group-hover:text-gray-600'"
-              [ngClass]="rlaBottom.isActive ? [accentText] : []"
+              [ngClass]="rlaBottom.isActive ? [accentText()] : []"
             ></i>
-            @if (!isSidebarCollapsed) {
+            @if (!isSidebarCollapsed()) {
               <span>{{ item.label }}</span>
             }
           </a>
@@ -106,11 +106,11 @@
       <!-- Collapse button (desktop only) -->
       <button
         class="mt-3 hidden w-full cursor-pointer items-center gap-3 rounded-lg border-0 bg-transparent px-3 py-2.5 text-[13px] font-medium text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 lg:flex"
-        [class.justify-center]="isSidebarCollapsed"
+        [class.justify-center]="isSidebarCollapsed()"
         type="button"
         (click)="onToggleCollapse()"
       >
-        @if (isSidebarCollapsed) {
+        @if (isSidebarCollapsed()) {
           <i class="fa-solid fa-angles-right w-5 text-center text-[15px]"></i>
         } @else {
           <i class="fa-solid fa-angles-left w-5 text-center text-[15px]"></i>
@@ -124,26 +124,26 @@
   <div class="border-t border-gray-200 px-3 py-3">
     <div
       class="flex items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-gray-50"
-      [class.justify-center]="isSidebarCollapsed"
+      [class.justify-center]="isSidebarCollapsed()"
     >
-      @if (profileImage) {
+      @if (profileImage()) {
         <img
-          [src]="profileImage"
+          [src]="profileImage()"
           alt="Avatar"
           class="h-9 w-9 shrink-0 rounded-full object-cover"
         />
       } @else {
         <div
           class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-linear-to-br text-xs font-bold text-white"
-          [ngClass]="[gradientFrom, gradientTo]"
+          [ngClass]="[gradientFrom(), gradientTo()]"
         >
-          {{ initials }}
+          {{ initials() }}
         </div>
       }
-      @if (!isSidebarCollapsed) {
+      @if (!isSidebarCollapsed()) {
         <div class="min-w-0 flex-1">
-          <p class="m-0 truncate text-[13px] font-semibold text-gray-900">{{ fullName }}</p>
-          <p class="m-0 text-[11px] text-gray-400">{{ roleLabel }}</p>
+          <p class="m-0 truncate text-[13px] font-semibold text-gray-900">{{ fullName() }}</p>
+          <p class="m-0 text-[11px] text-gray-400">{{ roleLabel() }}</p>
         </div>
         <button
           class="shrink-0 cursor-pointer rounded-md border-0 bg-transparent p-1.5 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600"
@@ -159,7 +159,7 @@
 </aside>
 
 <!-- Overlay for mobile -->
-@if (isSidebarOpen) {
+@if (isSidebarOpen()) {
   <button
     class="fixed inset-0 z-30 border-0 bg-black/30 backdrop-blur-[2px] lg:hidden"
     type="button"

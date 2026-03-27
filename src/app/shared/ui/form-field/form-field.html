@@ -1,8 +1,8 @@
-<div class="form-field" [class.has-error]="error">
-    @if (label) {
+<div class="form-field" [class.has-error]="error()">
+    @if (label()) {
     <label class="form-label">
-        {{ label }}
-        @if (required) {
+        {{ label() }}
+        @if (required()) {
         <span class="form-required">*</span>
         }
     </label>
@@ -12,9 +12,9 @@
         <ng-content />
     </div>
 
-    @if (error) {
-    <p class="form-error">{{ error }}</p>
-    } @else if (hint) {
-    <p class="form-hint">{{ hint }}</p>
+    @if (error()) {
+    <p class="form-error">{{ error() }}</p>
+    } @else if (hint()) {
+    <p class="form-hint">{{ hint() }}</p>
     }
 </div>

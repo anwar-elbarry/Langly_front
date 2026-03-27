@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
@@ -15,9 +14,7 @@ import { BillingSettingsService } from '../../services/billing-settings.service'
 
 @Component({
   selector: 'app-billing-settings-page',
-  standalone: true,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     ButtonComponent,
     FormFieldComponent,

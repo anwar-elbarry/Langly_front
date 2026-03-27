@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
@@ -23,9 +22,7 @@ type TabFilter = 'ALL' | 'TEACHER' | 'STUDENT' | 'SCHOOL_ADMIN';
 
 @Component({
   selector: 'app-team-page',
-  standalone: true,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     TableComponent,
     PaginationComponent,

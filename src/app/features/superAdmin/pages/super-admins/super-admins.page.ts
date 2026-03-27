@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
@@ -15,9 +14,7 @@ import { SuperAdminsService } from '../../services/super-admins.service';
 
 @Component({
   selector: 'app-super-admins-page',
-  standalone: true,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     TableComponent,
     ButtonComponent,

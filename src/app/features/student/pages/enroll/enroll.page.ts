@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -27,8 +26,7 @@ export interface EnrichedCourse extends CourseResponse {
 
 @Component({
     selector: 'app-enroll',
-    standalone: true,
-    imports: [CommonModule, ModalComponent, ButtonComponent, SpinnerComponent],
+    imports: [ModalComponent, ButtonComponent, SpinnerComponent],
     templateUrl: './enroll.page.html',
 })
 export class EnrollPage implements OnInit {

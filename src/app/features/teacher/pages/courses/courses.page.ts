@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
@@ -11,8 +11,7 @@ import { TeacherCourseService } from '../../services/teacher-course.service';
 
 @Component({
   selector: 'app-courses-page',
-  standalone: true,
-  imports: [CommonModule, SpinnerComponent, TableComponent],
+  imports: [DatePipe, SpinnerComponent, TableComponent],
   templateUrl: './courses.page.html',
 })
 export class CoursesPage implements OnInit {

@@ -48,7 +48,6 @@ export class Login {
   }
 
   onSubmit() {
-    console.log(this.form.value);
     if (this.form.invalid) return;
 
     const credentials: AuthRequest = {
