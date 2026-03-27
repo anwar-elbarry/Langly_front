@@ -71,7 +71,7 @@ jobs:
           echo "export const environment = { production: false, apiUrl: 'http://localhost:8081/api' };" > src/environments/environment.development.ts
 
       - name: Run unit tests (headless)
-        run: npm run test -- --watch=false --no-progress --configuration development
+        run: npm run test -- --watch=false --no-progress
 
       - name: Upload coverage artifact
         if: always()
