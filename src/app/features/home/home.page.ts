@@ -28,32 +28,32 @@ export class HomePage {
 
   features = [
     {
-      icon: '🎓',
+      icon: 'fa-solid fa-graduation-cap',
       title: 'Smart Learning Paths',
       desc: 'AI-powered curricula that adapt to each student\'s pace and learning style.'
     },
     {
-      icon: '🏫',
+      icon: 'fa-solid fa-building-columns',
       title: 'School Management',
       desc: 'Manage classes, enrollments, teachers and students from one unified dashboard.'
     },
     {
-      icon: '📊',
+      icon: 'fa-solid fa-chart-line',
       title: 'Real-time Analytics',
       desc: 'Track progress, attendance and performance with live insights and reports.'
     },
     {
-      icon: '📜',
+      icon: 'fa-solid fa-certificate',
       title: 'Digital Certificates',
       desc: 'Automatically generate and deliver PDF certificates upon course completion.'
     },
     {
-      icon: '💬',
+      icon: 'fa-solid fa-language',
       title: 'Multilingual Support',
       desc: 'Deliver education in any language — built for global classrooms.'
     },
     {
-      icon: '🔐',
+      icon: 'fa-solid fa-shield-halved',
       title: 'Role-based Access',
       desc: 'Granular permissions for Super Admins, School Admins, Teachers and Students.'
     }
@@ -64,6 +64,56 @@ export class HomePage {
     { value: '500+', label: 'Schools Onboarded' },
     { value: '98%', label: 'Satisfaction Rate' },
     { value: '40+', label: 'Languages Supported' },
+  ];
+
+  howItWorks = [
+    {
+      step: 1,
+      icon: 'fa-solid fa-school',
+      title: 'Create Your School',
+      desc: 'Set up your institution in minutes — add your logo, configure settings and invite your team.'
+    },
+    {
+      step: 2,
+      icon: 'fa-solid fa-chalkboard-user',
+      title: 'Add Courses & Teachers',
+      desc: 'Build your curriculum, assign teachers, set schedules and define enrollment capacities.'
+    },
+    {
+      step: 3,
+      icon: 'fa-solid fa-rocket',
+      title: 'Enroll & Track Progress',
+      desc: 'Enroll students, track attendance in real-time and issue certificates upon completion.'
+    }
+  ];
+
+  testimonials = [
+    {
+      quote: 'Langly transformed how we manage our language school. Enrollment, billing and certificates — all in one place.',
+      name: 'Sarah Mitchell',
+      role: 'School Director, EduLingua Academy',
+      initials: 'SM'
+    },
+    {
+      quote: 'The real-time analytics help me track each student\'s progress and adapt my teaching instantly.',
+      name: 'David Chen',
+      role: 'Senior Teacher, GlobalSpeak',
+      initials: 'DC'
+    },
+    {
+      quote: 'As a student, I love having all my courses, materials and certificates accessible from one dashboard.',
+      name: 'Amira El-Khoury',
+      role: 'Student, LinguaBridge',
+      initials: 'AE'
+    }
+  ];
+
+  trustedLogos = [
+    { name: 'EduLingua' },
+    { name: 'GlobalSpeak' },
+    { name: 'LinguaBridge' },
+    { name: 'PolyglotHub' },
+    { name: 'VoxAcademy' },
   ];
 }
 

@@ -1,30 +1,79 @@
+<!-- ===== HERO ===== -->
 <section class="hero">
   <nav class="nav">
-    <span class="nav-logo">Langly.com</span>
+    <span class="nav-logo">Langly</span>
+    <div class="nav-links">
+      <a href="#features" class="nav-link">Features</a>
+      <a href="#how-it-works" class="nav-link">How it Works</a>
+      <a href="#testimonials" class="nav-link">Testimonials</a>
+    </div>
     @if (isAuthenticated()) {
-      <a [routerLink]="dashboardRoute()" class="nav-cta">Dashboard →</a>
+      <a [routerLink]="dashboardRoute()" class="nav-cta">Dashboard <i class="fa-solid fa-arrow-right"></i></a>
     } @else {
-      <a routerLink="/login" class="nav-cta">Sign In →</a>
+      <a routerLink="/login" class="nav-cta">Sign In <i class="fa-solid fa-arrow-right"></i></a>
     }
   </nav>
 
   <div class="hero-body">
-    <div class="hero-badge">🌍 Education Platform of the Future</div>
-    <h1 class="hero-title">
-      Learn Without<br />
-      <span class="hero-title-accent">Boundaries</span>
-    </h1>
-    <p class="hero-subtitle">
-      Langly empowers schools, teachers and students with a unified platform
-      for modern, multilingual education — from enrollment to certification.
-    </p>
-    <div class="hero-actions">
-      @if (isAuthenticated()) {
-        <a [routerLink]="dashboardRoute()" class="btn-primary">Dashboard</a>
-      } @else {
-        <a routerLink="/login" class="btn-primary">Get Started Free</a>
-      }
-      <a href="#features" class="btn-ghost">Explore Features ↓</a>
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="hero-badge-dot"></span>
+        Education Platform of the Future
+      </div>
+      <h1 class="hero-title">
+        Learn Without<br />
+        <span class="hero-title-accent">Boundaries</span>
+      </h1>
+      <p class="hero-subtitle">
+        Langly empowers schools, teachers and students with a unified platform
+        for modern, multilingual education — from enrollment to certification.
+      </p>
+      <div class="hero-actions">
+        @if (isAuthenticated()) {
+          <a [routerLink]="dashboardRoute()" class="btn-primary">Dashboard</a>
+        } @else {
+          <a routerLink="/login" class="btn-primary">Get Started Free</a>
+        }
+        <a href="#features" class="btn-ghost">Explore Features <i class="fa-solid fa-arrow-down"></i></a>
+      </div>
+    </div>
+
+    <!-- Dashboard Mockup Placeholder -->
+    <div class="hero-mockup">
+      <div class="mockup-window">
+        <div class="mockup-titlebar">
+          <span class="mockup-dot mockup-dot--red"></span>
+          <span class="mockup-dot mockup-dot--yellow"></span>
+          <span class="mockup-dot mockup-dot--green"></span>
+          <span class="mockup-titlebar-text">Langly Dashboard</span>
+        </div>
+        <div class="mockup-body">
+          <div class="mockup-sidebar">
+            <div class="mockup-sidebar-item active"></div>
+            <div class="mockup-sidebar-item"></div>
+            <div class="mockup-sidebar-item"></div>
+            <div class="mockup-sidebar-item"></div>
+          </div>
+          <div class="mockup-main">
+            <div class="mockup-stat-row">
+              <div class="mockup-stat-card"></div>
+              <div class="mockup-stat-card"></div>
+              <div class="mockup-stat-card"></div>
+            </div>
+            <div class="mockup-chart"></div>
+            <div class="mockup-table">
+              <div class="mockup-table-row header"></div>
+              <div class="mockup-table-row"></div>
+              <div class="mockup-table-row"></div>
+              <div class="mockup-table-row"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mockup-label">
+        <i class="fa-solid fa-image"></i>
+        Replace with actual dashboard screenshot
+      </div>
     </div>
   </div>
 
@@ -34,7 +83,20 @@
   <div class="orb orb-3"></div>
 </section>
 
-<!-- Stats Bar -->
+<!-- ===== TRUSTED BY ===== -->
+<section class="trusted-section">
+  <span class="trusted-label">Trusted by leading institutions</span>
+  <div class="trusted-logos">
+    @for (logo of trustedLogos; track logo.name) {
+      <div class="trusted-logo-item">
+        <i class="fa-solid fa-building"></i>
+        <span>{{ logo.name }}</span>
+      </div>
+    }
+  </div>
+</section>
+
+<!-- ===== STATS BAR ===== -->
 <section class="stats-bar">
   @for (stat of stats; track stat.label) {
     <div class="stat-item">
@@ -44,7 +106,30 @@
   }
 </section>
 
-<!-- Features -->
+<!-- ===== HOW IT WORKS ===== -->
+<section class="how-section" id="how-it-works">
+  <div class="section-header">
+    <span class="section-tag">How It Works</span>
+    <h2 class="section-title">Get started in three simple steps</h2>
+    <p class="section-subtitle">From setup to success — Langly makes it effortless.</p>
+  </div>
+  <div class="how-grid">
+    @for (step of howItWorks; track step.step) {
+      <div class="how-card">
+        <div class="how-step-number">{{ step.step }}</div>
+        <div class="how-icon-area">
+          <i [class]="step.icon"></i>
+        </div>
+        <h3 class="how-title">{{ step.title }}</h3>
+        <p class="how-desc">{{ step.desc }}</p>
+      </div>
+    }
+  </div>
+  <!-- Connector line (desktop only) -->
+  <div class="how-connector" aria-hidden="true"></div>
+</section>
+
+<!-- ===== FEATURES ===== -->
 <section class="features-section" id="features">
   <div class="section-header">
     <span class="section-tag">Features</span>
@@ -54,7 +139,9 @@
   <div class="features-grid">
     @for (f of features; track f.title) {
       <div class="feature-card">
-        <div class="feature-icon">{{ f.icon }}</div>
+        <div class="feature-icon">
+          <i [class]="f.icon"></i>
+        </div>
         <h3 class="feature-title">{{ f.title }}</h3>
         <p class="feature-desc">{{ f.desc }}</p>
       </div>
@@ -62,7 +149,31 @@
   </div>
 </section>
 
-<!-- CTA Banner -->
+<!-- ===== TESTIMONIALS ===== -->
+<section class="testimonials-section" id="testimonials">
+  <div class="section-header">
+    <span class="section-tag">Testimonials</span>
+    <h2 class="section-title">Loved by educators and students</h2>
+    <p class="section-subtitle">Hear from the people building the future of education with Langly.</p>
+  </div>
+  <div class="testimonials-grid">
+    @for (t of testimonials; track t.name) {
+      <div class="testimonial-card">
+        <div class="testimonial-quote">"</div>
+        <p class="testimonial-text">{{ t.quote }}</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">{{ t.initials }}</div>
+          <div class="testimonial-info">
+            <span class="testimonial-name">{{ t.name }}</span>
+            <span class="testimonial-role">{{ t.role }}</span>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</section>
+
+<!-- ===== CTA BANNER ===== -->
 <section class="cta-section">
   <div class="cta-inner">
     <h2 class="cta-title">Ready to transform your school?</h2>
@@ -76,8 +187,27 @@
   <div class="cta-orb"></div>
 </section>
 
-<!-- Footer -->
+<!-- ===== FOOTER ===== -->
 <footer class="footer">
-  <span class="footer-logo">Langly.com</span>
-  <span class="footer-copy">© {{ year }} Langly Inc. All rights reserved.</span>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <span class="footer-logo">Langly</span>
+      <p class="footer-tagline">Modern, multilingual education — from enrollment to certification.</p>
+    </div>
+    <div class="footer-col">
+      <span class="footer-col-title">Product</span>
+      <a href="#features" class="footer-link">Features</a>
+      <a href="#how-it-works" class="footer-link">How it Works</a>
+      <a href="#testimonials" class="footer-link">Testimonials</a>
+    </div>
+    <div class="footer-col">
+      <span class="footer-col-title">Company</span>
+      <a class="footer-link">About</a>
+      <a class="footer-link">Privacy Policy</a>
+      <a class="footer-link">Terms of Service</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">© {{ year }} Langly Inc. All rights reserved.</span>
+  </div>
 </footer>
