@@ -1,4 +1,4 @@
-import { Level } from './enums';
+import { Level } from '../../../../shared/models/enums';
 
 export interface CourseResponse {
   id: string;

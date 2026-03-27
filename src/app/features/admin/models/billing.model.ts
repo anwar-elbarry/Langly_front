@@ -1,4 +1,4 @@
-import { PaymentMethod, PaymentStatus } from './enums';
+import { PaymentMethod, PaymentStatus } from '../../../shared/models/enums';
 
 export interface BillingHistoryEntry {
   id: string;
@@ -24,5 +24,5 @@ export interface BillingResponse {
 }
 
 export interface BillingConfirmRequest {
-  paymentMethod: 'CASH' | 'BANK_TRANSFER';
+  paymentMethod: PaymentMethod;
 }

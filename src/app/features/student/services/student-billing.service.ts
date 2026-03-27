@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment.development';
 import { BillingResponse } from '../../admin/models/billing.model';
 import { PaymentResponse } from '../models/student.model';
-import { PaymentMethod } from '../../admin/models/enums';
+import { PaymentMethod } from '../../../shared/models/enums';
 
 @Injectable({ providedIn: 'root' })
 export class StudentBillingService {

@@ -3,7 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment.development';
 import { StudentResponse } from '../models/student.model';
-import { Gender, Level } from '../models/enums';
+import { Gender, Level } from '../../../shared/models/enums';
 
 @Injectable({ providedIn: 'root' })
 export class StudentService {

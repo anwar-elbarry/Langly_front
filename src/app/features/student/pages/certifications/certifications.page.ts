@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { getLanguageFlagUrl } from '../../../admin/models/enums';
+import { getLanguageFlagUrl } from '../../../../shared/models/enums';
 import { CertificationService } from '../../services/certification.service';
 import { CertificationResponse } from '../../models/student.model';
 

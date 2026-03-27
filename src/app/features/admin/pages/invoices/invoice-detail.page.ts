@@ -10,6 +10,7 @@ import { ModalComponent } from '../../../../shared/ui/modal/modal';
 import { SpinnerComponent } from '../../../../shared/ui/spinner/spinner';
 import { TableComponent } from '../../../../shared/ui/table/table';
 import { ToastService } from '../../../../shared/ui/toast/toast.service';
+import { PaymentMethod } from '../../../../shared/models/enums';
 import { InvoiceResponse } from '../../models/billing-engine.model';
 import { InvoiceService } from '../../services/invoice.service';
 import { invoiceStatusClass, invoiceStatusLabel, scheduleStatusClass, scheduleStatusLabel } from '../../utils/status.utils';
@@ -47,7 +48,7 @@ export class InvoiceDetailPage implements OnInit {
 
   paymentForm = new FormGroup({
     amount: new FormControl<number | null>(null, [Validators.required, Validators.min(0.01)]),
-    paymentMethod: new FormControl<string>('CASH', Validators.required),
+    paymentMethod: new FormControl<PaymentMethod>('CASH', { nonNullable: true, validators: [Validators.required] }),
   });
 
   ngOnInit(): void {
@@ -88,7 +89,7 @@ export class InvoiceDetailPage implements OnInit {
     this.invoiceService
       .recordPayment(inv.id, {
         amount: this.paymentForm.value.amount!,
-        paymentMethod: this.paymentForm.value.paymentMethod || 'CASH',
+        paymentMethod: this.paymentForm.controls.paymentMethod.value,
       })
       .pipe(finalize(() => this.recording.set(false)))
       .subscribe({

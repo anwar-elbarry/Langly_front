@@ -1,4 +1,4 @@
-import { EnrollmentStatus, InvoiceStatus, Level, PaymentStatus, ScheduleStatus } from '../models/enums';
+import { EnrollmentStatus, InvoiceStatus, Level, PaymentStatus, ScheduleStatus } from '../../../shared/models/enums';
 
 const SUCCESS = new Set(['PAID', 'PASSED', 'ACTIVE']);
 const WARNING = new Set(['PENDING', 'IN_PROGRESS', 'PENDING_APPROVAL']);

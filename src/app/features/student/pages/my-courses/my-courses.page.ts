@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { getLanguageFlagUrl } from '../../../admin/models/enums';
+import { getLanguageFlagUrl } from '../../../../shared/models/enums';
 import { StudentCourseService } from '../../services/student-course.service';
 import { ActiveCourseResponse } from '../../models/student.model';
 

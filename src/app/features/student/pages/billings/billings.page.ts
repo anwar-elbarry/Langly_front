@@ -3,7 +3,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { finalize } from 'rxjs';
 import { StudentBillingService } from '../../services/student-billing.service';
 import { BillingResponse } from '../../../admin/models/billing.model';
-import { PaymentMethod } from '../../../admin/models/enums';
+import { PaymentMethod } from '../../../../shared/models/enums';
 import { SpinnerComponent } from '../../../../shared/ui/spinner/spinner';
 import { TableComponent } from '../../../../shared/ui/table/table';
 import { paymentStatusClass, paymentStatusLabel } from '../../../admin/utils/status.utils';

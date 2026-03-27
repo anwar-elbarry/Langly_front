@@ -12,7 +12,7 @@ import { InputComponent } from '../../../../shared/ui/input/input';
 import { ToastService } from '../../../../shared/ui/toast/toast.service';
 import { CourseResponse } from '../../../admin/models/course.model';
 import { EnrollmentResponse } from '../../../admin/models/enrollment.model';
-import { getLanguageFlagUrl } from '../../../admin/models/enums';
+import { getLanguageFlagUrl } from '../../../../shared/models/enums';
 import { levelBadgeClass, enrollmentStatusClass, enrollmentStatusLabel } from '../../../admin/utils/status.utils';
 import { TeacherCourseService } from '../../services/teacher-course.service';
 import { TeacherSessionService } from '../../services/teacher-session.service';

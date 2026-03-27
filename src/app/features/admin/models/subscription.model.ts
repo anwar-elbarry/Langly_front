@@ -1,5 +1,4 @@
-export type BillingCycle = 'MONTHLY' | 'YEARLY';
-export type PaymentStatus = 'PAID' | 'PENDING' | 'OVERDUE' | string;
+import { BillingCycle, PaymentMethod, PaymentStatus } from '../../../shared/models/enums';
 
 export interface SubscriptionResponse {
   id: string;
@@ -18,5 +17,5 @@ export interface PaymentResponse {
 }
 
 export interface SelectPaymentMethodRequest {
-  paymentMethod: 'STRIPE' | 'BANK_TRANSFER';
+  paymentMethod: PaymentMethod;
 }

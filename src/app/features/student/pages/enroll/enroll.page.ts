@@ -9,7 +9,7 @@ import { StudentBillingService } from '../../services/student-billing.service';
 import { CourseResponse } from '../../../admin/models/course.model';
 import { EnrollmentResponse } from '../../../admin/models/enrollment.model';
 import { BillingResponse } from '../../../admin/models/billing.model';
-import { EnrollmentStatus, getLanguageFlagUrl, PaymentMethod } from '../../../admin/models/enums';
+import { EnrollmentStatus, getLanguageFlagUrl, PaymentMethod } from '../../../../shared/models/enums';
 import { StudentProfileResponse } from '../../models/student-profile.model';
 import { ToastService } from '../../../../shared/ui/toast/toast.service';
 import { ModalComponent } from '../../../../shared/ui/modal/modal';

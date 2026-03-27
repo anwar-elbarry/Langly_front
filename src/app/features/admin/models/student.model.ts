@@ -1,4 +1,4 @@
-import { Gender, Level } from './enums';
+import { Gender, Level } from '../../../../shared/models/enums';
 
 export interface StudentResponse {
   id: string;

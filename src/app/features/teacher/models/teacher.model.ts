@@ -1,4 +1,4 @@
-import { Level, EnrollmentStatus } from '../../admin/models/enums';
+import { Level, EnrollmentStatus, Mode, AttendanceStatus } from '../../../shared/models/enums';
 
 // Teacher overview / dashboard stats
 export interface TeacherOverviewResponse {
@@ -16,7 +16,7 @@ export interface SessionResponse {
   description: string;
   durationMinutes: number;
   scheduledAt: string;
-  mode: 'ONLINE' | 'IN_PERSON' | 'HYBRID';
+  mode: Mode;
   room: string;
   meetingLink: string;
   courseId: string;
@@ -29,7 +29,7 @@ export interface SessionRequest {
   description?: string;
   durationMinutes: number;
   scheduledAt: string;
-  mode: 'ONLINE' | 'IN_PERSON' | 'HYBRID';
+  mode: Mode;
   room?: string;
   meetingLink?: string;
   courseId: string;
@@ -41,7 +41,7 @@ export interface AttendanceResponse {
   id: string | null;
   studentId: string;
   studentFullName: string;
-  status: 'PRESENT' | 'ABSENT' | 'LATE' | 'EXCUSED' | 'UNMARKED';
+  status: AttendanceStatus;
   markedAt: string | null;
   sessionId: string;
 }

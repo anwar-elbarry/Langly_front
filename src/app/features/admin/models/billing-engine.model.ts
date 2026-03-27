@@ -1,4 +1,4 @@
-import { DiscountType, InstallmentPlan, InvoiceStatus, ScheduleStatus } from './enums';
+import { DiscountType, InstallmentPlan, InvoiceStatus, PaymentMethod, ScheduleStatus } from '../../../shared/models/enums';
 
 // ── Billing Settings ──
 
@@ -132,7 +132,7 @@ export interface PaymentScheduleResponse {
 
 export interface RecordPaymentRequest {
   amount: number;
-  paymentMethod: string;
+  paymentMethod: PaymentMethod;
 }
 
 // ── Financial Summary (TVA tracking) ──
