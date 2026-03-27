@@ -8,7 +8,7 @@ import { PaginationComponent } from '../../../../shared/ui/pagination/pagination
 import { SpinnerComponent } from '../../../../shared/ui/spinner/spinner';
 import { TableComponent } from '../../../../shared/ui/table/table';
 import { InvoiceResponse } from '../../models/billing-engine.model';
-import { InvoiceStatus } from '../../models/enums';
+import { InvoiceStatus } from '../../../../shared/models/enums';
 import { InvoiceService } from '../../services/invoice.service';
 import { invoiceStatusClass, invoiceStatusLabel } from '../../utils/status.utils';
 

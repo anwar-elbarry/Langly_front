@@ -8,7 +8,7 @@ import { ToastService } from '../../../../shared/ui/toast/toast.service';
 import { StudentResponse } from '../../models/student.model';
 import { EnrollmentResponse } from '../../models/enrollment.model';
 import { BillingResponse } from '../../models/billing.model';
-import { Gender, Level, PaymentMethod } from '../../models/enums';
+import { Gender, Level, PaymentMethod } from '../../../../shared/models/enums';
 import { StudentService } from '../../services/student.service';
 import { EnrollmentService } from '../../services/enrollment.service';
 import { BillingService } from '../../services/billing.service';

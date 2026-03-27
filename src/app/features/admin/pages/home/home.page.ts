@@ -17,7 +17,7 @@ import { StudentResponse } from '../../models/student.model';
 import { EnrollmentResponse } from '../../models/enrollment.model';
 import { BillingResponse } from '../../models/billing.model';
 import { FinancialSummaryResponse } from '../../models/billing-engine.model';
-import { Level, LEVELS } from '../../models/enums';
+import { Level, LEVELS } from '../../../../shared/models/enums';
 
 @Component({
   selector: 'app-home-page',

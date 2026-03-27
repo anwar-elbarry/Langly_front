@@ -15,7 +15,7 @@ import { SearchSelectComponent, Option } from '../../../../shared/ui/search-sele
 import { EnrollmentRequest, EnrollmentResponse } from '../../models/enrollment.model';
 import { StudentResponse } from '../../models/student.model';
 import { CourseResponse } from '../../models/course.model';
-import { EnrollmentStatus } from '../../models/enums';
+import { EnrollmentStatus } from '../../../../shared/models/enums';
 import { EnrollmentService } from '../../services/enrollment.service';
 import { StudentService } from '../../services/student.service';
 import { CourseService } from '../../services/course.service';

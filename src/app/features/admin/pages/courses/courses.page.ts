@@ -15,7 +15,7 @@ import { ToastService } from '../../../../shared/ui/toast/toast.service';
 import { SearchSelectComponent, Option } from '../../../../shared/ui/search-select/search-select';
 import { UserResponse } from '../../../auth/models/User.response';
 import { CourseRequest, CourseResponse } from '../../models/course.model';
-import { getLanguageFlagUrl, LANGUAGES, LEVELS } from '../../models/enums';
+import { getLanguageFlagUrl, LANGUAGES, LEVELS } from '../../../../shared/models/enums';
 import { CourseService } from '../../services/course.service';
 import { SchoolUserService } from '../../services/school-user.service';
 import { levelBadgeClass } from '../../utils/status.utils';

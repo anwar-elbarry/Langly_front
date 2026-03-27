@@ -11,7 +11,7 @@ import { SpinnerComponent } from '../../../../shared/ui/spinner/spinner';
 import { TableComponent } from '../../../../shared/ui/table/table';
 import { ToastService } from '../../../../shared/ui/toast/toast.service';
 import { DiscountRequest, DiscountResponse } from '../../models/billing-engine.model';
-import { DISCOUNT_TYPES, DiscountType } from '../../models/enums';
+import { DISCOUNT_TYPES, DiscountType } from '../../../../shared/models/enums';
 import { DiscountService } from '../../services/discount.service';
 import { discountTypeLabel } from '../../utils/status.utils';
 

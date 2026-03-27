@@ -9,7 +9,7 @@ import { InputComponent } from '../../../../shared/ui/input/input';
 import { SpinnerComponent } from '../../../../shared/ui/spinner/spinner';
 import { ToastService } from '../../../../shared/ui/toast/toast.service';
 import { BillingSettingsRequest, BillingSettingsResponse } from '../../models/billing-engine.model';
-import { INSTALLMENT_PLANS, InstallmentPlan } from '../../models/enums';
+import { INSTALLMENT_PLANS, InstallmentPlan } from '../../../../shared/models/enums';
 import { BillingSettingsService } from '../../services/billing-settings.service';
 
 @Component({

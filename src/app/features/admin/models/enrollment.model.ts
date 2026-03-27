@@ -1,4 +1,4 @@
-import { EnrollmentStatus, Level } from '../../../../shared/models/enums';
+import { EnrollmentStatus, Level } from '../../../shared/models/enums';
 
 export interface EnrollmentResponse {
   id: string;

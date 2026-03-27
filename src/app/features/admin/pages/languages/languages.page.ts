@@ -4,7 +4,7 @@ import { finalize } from 'rxjs';
 import { selectCurrentUser } from '../../../../core/store/selectors/auth.selectors';
 import { SpinnerComponent } from '../../../../shared/ui/spinner/spinner';
 import { CourseResponse } from '../../models/course.model';
-import { getLanguageFlagUrl, LANGUAGES } from '../../models/enums';
+import { getLanguageFlagUrl, LANGUAGES } from '../../../../shared/models/enums';
 import { CourseService } from '../../services/course.service';
 
 @Component({
