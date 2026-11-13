@@ -1,6 +1,6 @@
 <!-- Sidebar -->
 <aside
-  class="fixed inset-y-0 left-0 z-40 flex flex-col border-r border-gray-200 bg-white transition-all duration-300 lg:translate-x-0"
+  class="fixed inset-y-0 left-0 z-40 flex flex-col border-r border-gray-200/80 bg-white/95 backdrop-blur transition-all duration-300 lg:translate-x-0"
   [class.-translate-x-full]="!isSidebarOpen()"
   [class.translate-x-0]="isSidebarOpen()"
   [class.w-72]="!isSidebarCollapsed()"
@@ -8,21 +8,21 @@
 >
   <!-- Logo area -->
   <div
-    class="flex items-center border-b border-gray-200 px-5 py-5"
+    class="flex h-[68px] items-center px-5"
     [class.justify-between]="!isSidebarCollapsed()"
     [class.justify-center]="isSidebarCollapsed()"
   >
     @if (!isSidebarCollapsed()) {
       <div class="flex items-center gap-2.5">
         <div
-          class="flex h-9 w-9 items-center justify-center rounded-lg bg-linear-to-br"
+          class="flex h-9 w-9 items-center justify-center rounded-xl bg-linear-to-br shadow-md ring-1 ring-white/30"
           [ngClass]="[gradientFrom(), gradientTo()]"
         >
           <i [class]="logoIcon() + ' text-base text-white'"></i>
         </div>
-        <div>
-          <span class="text-[15px] font-bold tracking-tight text-gray-900">Langly</span>
-          <span class="ml-1 text-[10px] font-medium uppercase tracking-wider text-gray-400">{{ badgeLabel() }}</span>
+        <div class="flex items-center gap-2">
+          <span class="text-[17px] font-extrabold tracking-tight text-gray-900">Langly</span>
+          <span class="rounded-md bg-gray-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-gray-500">{{ badgeLabel() }}</span>
         </div>
       </div>
       <button
@@ -34,7 +34,7 @@
       </button>
     } @else {
       <div
-        class="flex h-9 w-9 items-center justify-center rounded-lg bg-linear-to-br"
+        class="flex h-9 w-9 items-center justify-center rounded-xl bg-linear-to-br shadow-md ring-1 ring-white/30"
         [ngClass]="[gradientFrom(), gradientTo()]"
       >
         <i [class]="logoIcon() + ' text-base text-white'"></i>
@@ -43,9 +43,9 @@
   </div>
 
   <!-- Main nav -->
-  <div class="flex flex-1 flex-col overflow-y-auto px-3 pt-5">
+  <div class="flex flex-1 flex-col overflow-y-auto px-3 pt-3">
     @if (!isSidebarCollapsed()) {
-      <p class="mb-2 px-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">
+      <p class="mb-2 mt-1 px-3 text-[10.5px] font-semibold uppercase tracking-[0.12em] text-gray-400">
         Menu Principal
       </p>
     }
@@ -56,12 +56,15 @@
           [routerLink]="item.route"
           routerLinkActive
           #rla="routerLinkActive"
-          class="group flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] font-medium text-gray-600 transition-colors duration-150 hover:bg-gray-100 hover:text-gray-900"
+          class="group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13.5px] font-medium text-gray-600 transition-colors duration-150 hover:bg-gray-50 hover:text-gray-900"
           [ngClass]="rla.isActive ? [accentBg(), accentText(), 'font-semibold!'] : []"
           [class.justify-center]="isSidebarCollapsed()"
           [title]="isSidebarCollapsed() ? item.label : ''"
           (click)="onCloseSidebar()"
         >
+          @if (rla.isActive) {
+            <span class="absolute -left-3 top-1/2 h-6 w-1 -translate-y-1/2 rounded-r-full bg-current"></span>
+          }
           <i
             [class]="item.icon + ' w-5 text-center text-[15px] text-gray-400 transition-colors group-hover:text-gray-600'"
             [ngClass]="rla.isActive ? [accentText()] : []"
@@ -74,9 +77,9 @@
     </nav>
 
     <!-- Bottom nav section -->
-    <div class="mt-auto border-t border-gray-200 pt-4 pb-3">
+    <div class="mt-auto border-t border-gray-100 pt-4 pb-2">
       @if (!isSidebarCollapsed()) {
-        <p class="mb-2 px-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">
+        <p class="mb-2 mt-1 px-3 text-[10.5px] font-semibold uppercase tracking-[0.12em] text-gray-400">
           Support
         </p>
       }
@@ -86,12 +89,15 @@
             [routerLink]="item.route"
             routerLinkActive
             #rlaBottom="routerLinkActive"
-            class="group flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] font-medium text-gray-600 transition-colors duration-150 hover:bg-gray-100 hover:text-gray-900"
+            class="group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13.5px] font-medium text-gray-600 transition-colors duration-150 hover:bg-gray-50 hover:text-gray-900"
             [ngClass]="rlaBottom.isActive ? [accentBg(), accentText(), 'font-semibold!'] : []"
             [class.justify-center]="isSidebarCollapsed()"
             [title]="isSidebarCollapsed() ? item.label : ''"
             (click)="onCloseSidebar()"
           >
+            @if (rlaBottom.isActive) {
+              <span class="absolute -left-3 top-1/2 h-6 w-1 -translate-y-1/2 rounded-r-full bg-current"></span>
+            }
             <i
               [class]="item.icon + ' w-5 text-center text-[15px] text-gray-400 transition-colors group-hover:text-gray-600'"
               [ngClass]="rlaBottom.isActive ? [accentText()] : []"
@@ -121,10 +127,12 @@
   </div>
 
   <!-- User section at bottom -->
-  <div class="border-t border-gray-200 px-3 py-3">
+  <div class="px-3 pt-2 pb-4">
     <div
-      class="flex items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-gray-50"
+      class="flex items-center gap-3 rounded-xl border border-gray-200 bg-gray-50/80 px-2.5 py-2.5 transition-colors hover:bg-gray-100/70"
       [class.justify-center]="isSidebarCollapsed()"
+      [class.border-transparent]="isSidebarCollapsed()"
+      [class.bg-transparent]="isSidebarCollapsed()"
     >
       @if (profileImage()) {
         <img

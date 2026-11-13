@@ -16,6 +16,7 @@ import { SpinnerComponent } from "../../../../shared/ui/spinner/spinner";
   styleUrl: './login.css',
 })
 export class Login {
+  readonly year = new Date().getFullYear();
 
   private store = inject(Store);
   form = new FormGroup({

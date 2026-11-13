@@ -1,6 +1,6 @@
 import { Component, ElementRef, HostListener, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { Subscription, interval, switchMap, startWith } from 'rxjs';
+import { EMPTY, Subscription, catchError, interval, switchMap, startWith } from 'rxjs';
 import { NotificationService } from '../../../core/services/notification.service';
 import { NotificationResponse } from '../../../core/models/notification.model';
 
@@ -26,7 +26,9 @@ export class NotificationBellComponent implements OnInit, OnDestroy {
     this.pollSub = interval(30_000)
       .pipe(
         startWith(0),
-        switchMap(() => this.notificationService.getUnreadCount())
+        // A failed request (API down, network drop) keeps the last count and the next poll retries.
+        // Without catchError, one error would end the polling and surface as an unhandled error.
+        switchMap(() => this.notificationService.getUnreadCount().pipe(catchError(() => EMPTY)))
       )
       .subscribe({
         next: (count) => this.unreadCount.set(count),
