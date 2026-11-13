@@ -1,7 +1,11 @@
 <!-- ===== HERO ===== -->
 <section class="hero">
+  <div class="hero-grid" aria-hidden="true"></div>
   <nav class="nav">
-    <span class="nav-logo">Langly</span>
+    <a routerLink="/" class="nav-logo">
+      <span class="nav-logo-mark"><i class="fa-solid fa-language"></i></span>
+      Langly
+    </a>
     <div class="nav-links">
       <a href="#features" class="nav-link">Features</a>
       <a href="#how-it-works" class="nav-link">How it Works</a>
@@ -14,73 +18,50 @@
     }
   </nav>
 
-  <div class="hero-body">
-    <div class="hero-content">
-      <div class="hero-badge">
-        <span class="hero-badge-dot"></span>
-        Education Platform of the Future
-      </div>
-      <h1 class="hero-title">
-        Learn Without<br />
-        <span class="hero-title-accent">Boundaries</span>
-      </h1>
-      <p class="hero-subtitle">
-        Langly empowers schools, teachers and students with a unified platform
-        for modern, multilingual education — from enrollment to certification.
-      </p>
-      <div class="hero-actions">
-        @if (isAuthenticated()) {
-          <a [routerLink]="dashboardRoute()" class="btn-primary">Dashboard</a>
-        } @else {
-          <a routerLink="/login" class="btn-primary">Get Started Free</a>
-        }
-        <a href="#features" class="btn-ghost">Explore Features <i class="fa-solid fa-arrow-down"></i></a>
-      </div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      Education Platform of the Future
     </div>
-
-    <!-- Dashboard Mockup Placeholder -->
-    <div class="hero-mockup">
-      <div class="mockup-window">
-        <div class="mockup-titlebar">
-          <span class="mockup-dot mockup-dot--red"></span>
-          <span class="mockup-dot mockup-dot--yellow"></span>
-          <span class="mockup-dot mockup-dot--green"></span>
-          <span class="mockup-titlebar-text">Langly Dashboard</span>
-        </div>
-        <div class="mockup-body">
-          <div class="mockup-sidebar">
-            <div class="mockup-sidebar-item active"></div>
-            <div class="mockup-sidebar-item"></div>
-            <div class="mockup-sidebar-item"></div>
-            <div class="mockup-sidebar-item"></div>
-          </div>
-          <div class="mockup-main">
-            <div class="mockup-stat-row">
-              <div class="mockup-stat-card"></div>
-              <div class="mockup-stat-card"></div>
-              <div class="mockup-stat-card"></div>
-            </div>
-            <div class="mockup-chart"></div>
-            <div class="mockup-table">
-              <div class="mockup-table-row header"></div>
-              <div class="mockup-table-row"></div>
-              <div class="mockup-table-row"></div>
-              <div class="mockup-table-row"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="mockup-label">
-        <i class="fa-solid fa-image"></i>
-        Replace with actual dashboard screenshot
-      </div>
+    <h1 class="hero-title">
+      Learn Without
+      <span class="hero-title-accent">Boundaries</span>
+    </h1>
+    <p class="hero-subtitle">
+      Langly empowers schools, teachers and students with a unified platform
+      for modern, multilingual education — from enrollment to certification.
+    </p>
+    <div class="hero-actions">
+      @if (isAuthenticated()) {
+        <a [routerLink]="dashboardRoute()" class="btn-primary">Dashboard <i class="fa-solid fa-arrow-right"></i></a>
+      } @else {
+        <a routerLink="/login" class="btn-primary">Get Started Free <i class="fa-solid fa-arrow-right"></i></a>
+      }
+      <a href="#features" class="btn-ghost">Explore Features</a>
     </div>
   </div>
 
-  <!-- Animated floating orbs -->
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
-  <div class="orb orb-3"></div>
+  <!-- Product preview -->
+  <div class="hero-preview">
+    <div class="preview-glow" aria-hidden="true"></div>
+    <div class="preview-window">
+      <div class="preview-titlebar">
+        <span class="mockup-dot mockup-dot--red"></span>
+        <span class="mockup-dot mockup-dot--yellow"></span>
+        <span class="mockup-dot mockup-dot--green"></span>
+        <span class="preview-url">app.langly.com/schoolAdmin/home</span>
+      </div>
+      <img src="/images/dashboard-preview.webp" alt="Langly school director dashboard" class="preview-image" width="1440" height="900" />
+    </div>
+    <div class="preview-chip preview-chip--left">
+      <span class="preview-chip-icon"><i class="fa-solid fa-user-graduate"></i></span>
+      <span><strong>Enrollments</strong><small>approved in one click</small></span>
+    </div>
+    <div class="preview-chip preview-chip--right">
+      <span class="preview-chip-icon preview-chip-icon--green"><i class="fa-solid fa-file-invoice"></i></span>
+      <span><strong>Invoices & VAT</strong><small>generated automatically</small></span>
+    </div>
+  </div>
 </section>
 
 <!-- ===== TRUSTED BY ===== -->
@@ -159,7 +140,7 @@
   <div class="testimonials-grid">
     @for (t of testimonials; track t.name) {
       <div class="testimonial-card">
-        <div class="testimonial-quote">"</div>
+        <div class="testimonial-stars" aria-hidden="true"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
         <p class="testimonial-text">{{ t.quote }}</p>
         <div class="testimonial-author">
           <div class="testimonial-avatar">{{ t.initials }}</div>
@@ -184,14 +165,13 @@
       <a routerLink="/login" class="btn-primary btn-lg">Start Now — It's Free</a>
     }
   </div>
-  <div class="cta-orb"></div>
 </section>
 
 <!-- ===== FOOTER ===== -->
 <footer class="footer">
   <div class="footer-grid">
     <div class="footer-brand">
-      <span class="footer-logo">Langly</span>
+      <span class="footer-logo"><span class="nav-logo-mark"><i class="fa-solid fa-language"></i></span>Langly</span>
       <p class="footer-tagline">Modern, multilingual education — from enrollment to certification.</p>
     </div>
     <div class="footer-col">
